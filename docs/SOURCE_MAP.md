@@ -5,7 +5,7 @@
 - `docs/hardware/INVENTORY.md` deriva dall'inventario hardware preliminare disponibile nel
   progetto precedente, con rimozione del contesto di simulazione.
 - `docs/hardware/CAD_REFERENCE.md` deriva dall'analisi dell'assieme STEP, mantenendo solo
- geometry, scala, componenti e limiti di verifica.
+ geometria, scala, componenti e limiti di verifica.
 - `docs/architecture/SERIAL_PROTOCOL.md` e' una specifica di protocollo proposta, non un
   firmware implementato.
 - `docs/rules/` contiene i PDF di riferimento 2026 copiati come materiale di studio.
