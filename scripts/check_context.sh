@@ -11,6 +11,8 @@ required=(
   SPEC.md
   docs/hardware/INVENTORY.md
   docs/hardware/CAD_REFERENCE.md
+  docs/hardware/CALIBRATION.md
+  docs/hardware/BRINGUP_CHECKLIST.md
   docs/rules/RCJRescueLine2026-final.pdf
   docs/rules/general-rules.pdf
   docs/objectives/DEVELOPMENT_PLAN.md

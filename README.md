@@ -27,6 +27,7 @@ controller, niente log di simulazione e niente codice funzionale gia' sviluppato
 | Inventario hardware | `docs/hardware/INVENTORY.md` |
 | Misure e TODO | `docs/MEASUREMENT_LOG.md` |
 | Riferimento CAD | `docs/hardware/CAD_REFERENCE.md` |
+| Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
 | Protocollo seriale (proposta) | `docs/architecture/SERIAL_PROTOCOL.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
