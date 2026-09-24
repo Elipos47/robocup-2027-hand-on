@@ -11,7 +11,7 @@ dipende da un simulatore e non contiene il codice sviluppato nel progetto preced
 - Documentazione Markdown e PDF ufficiali.
 - Raspberry Pi 5 4GB e Arduino Mega 2560 come piattaforma hardware prevista.
 - Python e C++/Arduino come possibili linguaggi futuri, solo dopo le verifiche hardware.
-- OpenCV e sensori fisici per la percezione; nessun simulatoreFAKE shipping.
+- OpenCV e sensori fisici per la percezione; nessun simulatore incluso nella baseline.
 - Prove su banco e sul campo; il test sul campo e' il criterio di avanzamento principale.
 
 ## Comandi
@@ -48,7 +48,7 @@ dipende da un simulatore e non contiene il codice sviluppato nel progetto preced
   provvisorio, piano hardware-first, architettura e protocollo seriale come proposta.
 - In corso: raccolta delle misure reali e definizione dei test di banco.
 - Prossimi passi: verificare batterie, motori, ruote/cinghie, masse, sensori, IMU, servo e
-  cablaggi; poi collaudareFermi/arresto e comunicazione Raspberry↔Arduino.
+  cablaggi; poi collaudare freni/arresto e comunicazione Raspberry↔Arduino.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, batterie, RPM, massa, servo,
   BNO085, ruolo della UI e criteri di raccolta vittime.
 

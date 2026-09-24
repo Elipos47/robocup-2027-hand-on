@@ -1,6 +1,6 @@
 # Architettura di sistema prevista
 
-## responsibility split
+## Separazione delle responsabilità
 
 ```text
 Telecamere + IMU + sonar
@@ -53,7 +53,7 @@ Il firmware non verrà implementato in questa fase; il contratto seriale resta u
 ## Decisioni aperte
 
 - ruolo e posizione del servo;
--IMU effettivo e Sue necessita' di Gyro;
+- IMU effettivo e sua necessita' di Gyro;
 - contratto dei sensori e frequenze;
 - interfaccia operatore e sua alimentazione;
 - formato dei log e rotazione sul Raspberry.
