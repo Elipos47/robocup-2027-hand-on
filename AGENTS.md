@@ -4,7 +4,7 @@
 
 Progetto documentale hardware-first per RoboCupJunior Rescue Line 2027. Il software viene
 sviluppato in coordinamento con misure, collaudo a banco e prove sul campo; il progetto non
-dipende da un simulatore e non contiene il codice sviluppato nel progetto precedente.
+dipende da un simulatore e non contiene il codice applicativo sviluppato nel progetto precedente.
 
 ## Stack
 
@@ -34,8 +34,8 @@ dipende da un simulatore e non contiene il codice sviluppato nel progetto preced
   strumento, condizione e incertezza in `docs/MEASUREMENT_LOG.md`.
 - Il regolamento 2026 e' provvisorio fino a disposizione del regolamento ufficiale 2027.
 - Non modificare hardware, cablaggi, firmware o collegamenti senza approvazione esplicita.
-- Non introdurre simulatori, log di simulazione o codice copiato dal progetto precedente senza
-  una decisione documentata e una prova hardware che lo giustifichi.
+- Non introdurre simulatori, log di simulazione o codice applicativo copiato dal progetto
+  precedente senza una decisione documentata e una prova hardware che lo giustifichi.
 - I TODO sono parte del contesto: non riempirli con valori inventati o inferenze non verificate.
 - I segreti stanno in `.env`, mai nel repository; non salvare credenziali, token o porte seriali
   reali con password.
