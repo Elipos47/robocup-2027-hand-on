@@ -1,0 +1,43 @@
+# dipendenze
+node_modules/
+.pnpm-store/
+vendor/
+
+# build e output
+dist/
+build/
+out/
+.next/
+.nuxt/
+.turbo/
+*.tsbuildinfo
+
+# ambiente e segreti
+.env
+.env.*
+!.env.example
+
+# cache, log, temporanei
+.cache/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# sistema
+.DS_Store
+Thumbs.db
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# editor
+.idea/
+.vscode/*
+!.vscode/extensions.json
