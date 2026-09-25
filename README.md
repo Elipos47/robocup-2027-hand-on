@@ -46,7 +46,8 @@ controller, niente log di simulazione e niente codice funzionale gia' sviluppato
 - HC-SR04, BNO085, L298N, UPS, schermo, batterie e servo sono presenti sull'hardware ma
   alcuni dettagli restano da verificare a banco.
 
-L'inventario completo e le limitazioni sono in `docs/hardware/INVENTORY.md`.
+L'inventario, il contratto minimo e le limitazioni sono in
+`docs/hardware/INVENTORY.md` e `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
 
 ## Regole d'uso
 
