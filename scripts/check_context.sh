@@ -10,6 +10,7 @@ required=(
   README.md
   SPEC.md
   docs/hardware/INVENTORY.md
+  docs/hardware/MINIMUM_HARDWARE_DATA.md
   docs/hardware/CAD_REFERENCE.md
   docs/hardware/CALIBRATION.md
   docs/hardware/BRINGUP_CHECKLIST.md

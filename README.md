@@ -12,7 +12,10 @@ controller, niente log di simulazione e niente codice funzionale gia' sviluppato
 
 ## Stato
 
-- Fase corrente: raccolta e verifica dell'hardware reale.
+- Fase corrente: definizione del contratto hardware minimo e raccolta dei pochi dati necessari
+  per iniziare il software.
+- Le quote degli ingombri gia raccolte in `docs/hardware/Misure Robotica.pdf` sono per il CAD e
+  non sono trattate come parametri del controller senza conferma.
 - Simulazione: non e' un gate di sviluppo per questa linea di lavoro.
 - Avanzamento: una funzione software viene considerata pronta solo dopo una prova ripetibile
   sul banco o sul campo, con sicurezza e diagnostica associate.
@@ -25,6 +28,7 @@ controller, niente log di simulazione e niente codice funzionale gia' sviluppato
 |---|---|
 | Obiettivi e regole | `docs/objectives/DEVELOPMENT_PLAN.md`, `docs/rules/` |
 | Inventario hardware | `docs/hardware/INVENTORY.md` |
+| Dati minimi per il software | `docs/hardware/MINIMUM_HARDWARE_DATA.md` |
 | Misure e TODO | `docs/MEASUREMENT_LOG.md` |
 | Riferimento CAD | `docs/hardware/CAD_REFERENCE.md` |
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
@@ -54,11 +58,14 @@ L'inventario completo e le limitazioni sono in `docs/hardware/INVENTORY.md`.
 
 ## Prossimo lavoro
 
-1. Compilare `docs/MEASUREMENT_LOG.md` con batterie, motori, ruote/cinghie, masse, sensori e
-   cablaggi.
-2. Verificare a banco il verso dei motori, il brake/arresto e la perdita di comunicazione.
-3. Definire il primo contratto seriale e il logger strutturato.
-4. Eseguire il primo test controllato sul campo della linea, senza dichiarare il percorso completo.
+1. Compilare il blocco prioritario di `docs/MEASUREMENT_LOG.md` con i dati minimi per il
+   software, usando `docs/hardware/MINIMUM_HARDWARE_DATA.md` come checklist.
+2. Proporre e approvare la mappa dei pin e la configurazione seriale senza modificare i
+   cablaggi per istinto.
+3. Definire il primo contratto seriale e il logger strutturato mantenendo il movimento
+   disabilitato finche i parametri di sicurezza non sono confermati.
+4. Eseguire il primo test controllato sul campo della linea, senza dichiarare il percorso
+   completo.
 
 La validazione documentale iniziale si esegue con:
 

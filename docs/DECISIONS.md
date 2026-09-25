@@ -11,6 +11,10 @@
 6. **Prove ripetibili:** ogni funzione richiede una prova, un test, un log e una spiegazione
    per l'operatore.
 7. **Sicurezza prima della missione:** stop e watchdog hanno precedenza sul percorso.
+8. **Contratto hardware minimo:** per iniziare il software si raccolgono solo alimentazione,
+   verso e limiti dei motori, ruota, comunicazione, camera linea e orientamento dei sensori
+   usati. L'inventario esteso resta differito; i parametri di sicurezza mancanti disabilitano il
+   movimento reale.
 
 ## Decisioni da prendere
 

@@ -32,6 +32,11 @@ dipende da un simulatore e non contiene il codice applicativo sviluppato nel pro
   `reset --hard`, rebase o riscritture di storia senza richiesta esplicita.
 - La fonte di verita' hardware e' `docs/hardware/`; ogni misura reale va registrata con data,
   strumento, condizione e incertezza in `docs/MEASUREMENT_LOG.md`.
+- Per iniziare il software si usa il contratto minimo in
+  `docs/hardware/MINIMUM_HARDWARE_DATA.md`: non richiedere un inventario completo di schede,
+  masse, cavi o CAD se non e' necessario al codice richiesto.
+- I parametri non critici possono restare `TODO`; quelli di sicurezza mancanti devono
+  disabilitare il movimento reale e non diventare valori di fallback.
 - Il regolamento 2026 e' provvisorio fino a disposizione del regolamento ufficiale 2027.
 - Non modificare hardware, cablaggi, firmware o collegamenti senza approvazione esplicita.
 - Non introdurre simulatori, log di simulazione o codice applicativo copiato dal progetto
@@ -46,9 +51,15 @@ dipende da un simulatore e non contiene il codice applicativo sviluppato nel pro
 
 - Fatto: struttura documentale iniziale, inventario hardware, riferimento CAD, regolamento
   provvisorio, piano hardware-first, architettura e protocollo seriale come proposta.
-- In corso: raccolta delle misure reali e definizione dei test di banco.
-- Prossimi passi: verificare batterie, motori, ruote/cinghie, masse, sensori, IMU, servo e
-  cablaggi; poi collaudare freni/arresto e comunicazione Raspberry↔Arduino.
+- Fatto: `docs/hardware/Misure Robotica.pdf` raccoglie gli ingombri di molte schede; sono un
+  input per il CAD, non ancora parametri operativi del controller.
+- Fatto: definito `docs/hardware/MINIMUM_HARDWARE_DATA.md` come contratto minimo per iniziare
+  il software, separando dati di movimento/visione da inventario esteso.
+- In corso: raccolta dei pochi dati minimi necessari e definizione dei test di banco.
+- Prossimi passi: compilare i campi di Priorita 1 del registro, proporre la mappa dei pin,
+  definire seriale e logger, poi collaudare freni/arresto e comunicazione Raspberry-Arduino.
+- Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
+  ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, batterie, RPM, massa, servo,
   BNO085, ruolo della UI e criteri di raccolta vittime.
 

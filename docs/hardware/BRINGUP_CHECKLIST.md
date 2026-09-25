@@ -1,6 +1,8 @@
 # Checklist di bring-up hardware
 
 Usare in ordine, con alimentazione controllata e un operatore che possa fermare il robot.
+Questa checklist e' il gate di sicurezza prima del movimento reale; non e' un prerequisito per
+scrivere il contratto software o per lo scaffolding del logger.
 
 - [ ] Fotografare il montaggio completo e i connettori.
 - [ ] Verificare batterie, tensione, polarità e protezioni.

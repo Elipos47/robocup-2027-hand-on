@@ -1,8 +1,9 @@
 # SPEC — Robocup2027HandOn
 
-**Versione:** 0.1
-**Data:** 24/09/2026
-**Stato:** baseline documentale hardware-first
+**Versione:** 0.2
+**Data:** 25/09/2026
+**Stato:** baseline documentale hardware-first; contratto hardware minimo definito, parametri di
+movimento ancora da confermare
 
 ## 1. Obiettivo
 
@@ -35,6 +36,22 @@ Il risultato finale deve permettere al robot di:
 | Ruote/cinghie | locomozione | modello e dimensioni mancanti |
 | Schermo | diagnostica operatore | presente, interfaccia da definire |
 
+## 2.1 Dati minimi per il software
+
+Il progetto non richiede un inventario hardware completo prima di iniziare a scrivere il
+software. Il contratto minimo e' definito in `docs/hardware/MINIMUM_HARDWARE_DATA.md` e comprende:
+
+- tensione nominale della batteria;
+- asse e verso dei motori, PWM massimo e comportamento di freno/arresto;
+- diametro effettivo della ruota;
+- tipo di collegamento Arduino-Pi e parametri seriali;
+- altezza e inclinazione della camera linea;
+- orientamento del BNO085 e montaggio di HC-SR04, se usati.
+
+Le quote degli ingombri raccolte in `docs/hardware/Misure Robotica.pdf` sono risorse per il CAD e
+non sostituiscono questi parametri. I valori mancanti restano `TODO`; quelli di sicurezza devono
+impedire il movimento reale.
+
 ## 3. Architettura
 
 - Il Raspberry gestisce percezione, decisione di alto livello, logging e interfaccia.
@@ -46,19 +63,25 @@ Il risultato finale deve permettere al robot di:
 ## 4. Regole di sviluppo
 
 1. Nessuna modifica hardware senza approvazione esplicita.
-2. Ogni misura ha provenienza, data, strumento e incertezza.
-3. Ogni funzione software ha un test ripetibile e un log.
-4. I test statici non sostituiscono una prova sul campo.
-5. I fallimenti di sicurezza hanno precedenza sulla missione.
-6. Il regolamento Rescue Line 2026 e' provvisorio; le differenze 2027 devono essere registrate
+2. Ogni misura usata dal software ha provenienza, data, strumento e incertezza; un dato non
+   confermato resta `TODO` e non viene ricostruito da stime o CAD.
+3. I parametri non critici possono mancare durante lo scaffolding; i parametri di sicurezza
+   mancanti disabilitano il movimento reale.
+4. Ogni funzione software ha un test ripetibile e un log.
+5. I test statici non sostituiscono una prova sul campo.
+6. I fallimenti di sicurezza hanno precedenza sulla missione.
+7. Il regolamento Rescue Line 2026 e' provvisorio; le differenze 2027 devono essere registrate
    prima di modificarne l'implementazione.
-7. Il progetto non contiene codice o log importati dal precedente repository.
+8. Il progetto non contiene codice o log importati dal precedente repository.
 
 ## 5. Gate di avanzamento
 
-### Gate H0 — hardware inventory
+### Gate H0 — contratto hardware minimo
 
-Inventario completo, batterie/motori/ruote/masse/cablaggi misurati, TODO separati dai fatti.
+I dati minimi per il software sono identificati in
+`docs/hardware/MINIMUM_HARDWARE_DATA.md`; i TODO sono separati dai fatti. L'inventario esteso
+e' utile per CAD, sicurezza e prove, ma non e' un prerequisito per lo scaffolding del
+software.
 
 ### Gate B0 — bench safety
 
@@ -103,6 +126,8 @@ Questa baseline non contiene:
 ## 8. Riferimenti
 
 - `docs/hardware/INVENTORY.md`
+- `docs/hardware/MINIMUM_HARDWARE_DATA.md`
+- `docs/hardware/Misure Robotica.pdf`
 - `docs/hardware/CAD_REFERENCE.md`
 - `docs/rules/`
 - `docs/architecture/SYSTEM_ARCHITECTURE.md`

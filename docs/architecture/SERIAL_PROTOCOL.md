@@ -4,6 +4,10 @@
 
 ## Obiettivi
 
+La mappa dei pin e il tipo di collegamento sono parte del contratto minimo in
+`docs/hardware/MINIMUM_HARDWARE_DATA.md`; il presente documento definisce solo il formato dei
+messaggi e non autorizza alcun cablaggio.
+
 - Trasferire comandi motori e servo dal Raspberry Pi all'Arduino.
 - Restituire sensori e stato dell'Arduino al Raspberry.
 - Rendersi leggibile nel log e facile da testare senza hardware.

@@ -1,6 +1,8 @@
 # Inventario hardware reale
 
-**Stato:** inventario preliminare; non tutte le voci sono state verificate a banco.
+**Stato:** inventario preliminare; gli ingombri di molte schede sono documentati in
+`Misure Robotica.pdf`, ma i dati di funzionamento necessari al software non sono ancora stati
+verificati a banco.
 
 ## Mappa funzionale attuale
 
@@ -34,18 +36,44 @@ Schermo ──────────────────► Raspberry Pi
 | Servo | meccanismo ausiliario | funzione e modello da verificare |
 | Ruote/cinghie | locomozione | non ancora identificate |
 
-## Dati ancora da misurare
+## Dati minimi per iniziare il software
 
-- sigla e RPM dei motori a vuoto e sotto carico;
-- diametro e larghezza ruote/cinghie, rapporto e attrito;
-- massa totale e distribuzione del peso;
-- composizione, tensione e capacità delle batterie;
-- caduta di tensione del L298N e limiti PWM sicuri;
-- posizione e orientamento delle due telecamere;
-- taratura e rumore di HC-SR04 e BNO085;
-- meccanismo e limiti del servo;
-- connettori, fusibili, massa della scocca e centro di massa;
-- porte seriali effettive e alimentazione dedicata.
+Non serve completare tutto l'inventario prima di scrivere il software. Il contratto minimo e
+descritto in `docs/hardware/MINIMUM_HARDWARE_DATA.md` e comprende:
+
+- tensione nominale della batteria;
+- asse e verso dei due motori;
+- PWM massimo sicuro e comportamento di freno/arresto;
+- diametro effettivo della ruota;
+- tipo di collegamento Arduino-Pi e configurazione seriale;
+- altezza e inclinazione della camera linea;
+- orientamento degli assi del BNO085, se viene usato;
+- altezza e inclinazione di HC-SR04, se viene usato nel primo test.
+
+Un dato di questo gruppo che resta `TODO` viene mantenuto tale nel codice. Se manca un
+parametro di sicurezza, il movimento reale resta disabilitato.
+
+## Dati differiti
+
+Questi dati sono utili per il CAD, la sicurezza e le prove sul campo, ma non sono prerequisiti
+per iniziare lo scaffolding del software:
+
+- quote complete di fori, connettori e cavi delle schede;
+- massa dei singoli componenti, massa totale e baricentro;
+- composizione, capacita' e durata della batteria;
+- RPM a vuoto e sotto carico se non sono necessari per la prima versione a PWM;
+- larghezza ruote, cinghie, pulegge e attrito completo;
+- taratura e rumore dettagliati di HC-SR04 e BNO085;
+- calibrazione ottica completa delle due telecamere;
+- caduta di tensione e riscaldamento del L298N;
+- meccanismo, corsa e limiti del servo;
+- porte seriali effettive, fusibili e alimentazione dedicata.
+
+## Riferimento dimensionale
+
+Il file `Misure Robotica.pdf` raccoglie le dimensioni di batterie, Arduino, Raspberry Pi, UPS,
+sensore di distanza, BNO085, driver e step-down. Queste quote sono utili per il disegno 3D,
+ma non sostituiscono la mappa dei pin, i parametri di movimento o le prove di sicurezza.
 
 ## Regole di sicurezza
 

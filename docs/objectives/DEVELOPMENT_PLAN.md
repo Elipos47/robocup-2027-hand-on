@@ -8,12 +8,23 @@ servono evidenze sul robot reale, condizioni di prova e un log associato.
 
 ## Fasi
 
-### H0 — Inventario e misure
+### H0a — Contratto minimo hardware
 
-- identificare motori, ruote/cinghie, batterie, masse, connettori e sensori;
-- fotografare il montaggio e annotare orientamenti;
-- misurare con strumenti identificati e data;
+- raccogliere solo i dati necessari a scrivere il software: alimentazione, verso motori,
+  limiti PWM, freno, ruota, comunicazione, camera linea e orientamento dei sensori usati;
+- usare `docs/hardware/MINIMUM_HARDWARE_DATA.md` come fonte unica dei parametri minimi;
+- mantenere espliciti i TODO e non dedurre valori dal CAD, dalle foto o dai nomi dei moduli;
+- permettere lo scaffolding di protocollo, logger e moduli di percezione anche con dati non
+  critici ancora mancanti;
+- mantenere disabilitato il movimento reale se mancano i parametri di sicurezza.
+
+### H0b — Inventario e misure estese
+
+- completare foto, ingombri, masse, cablaggi, ruote/cinghie e tarature;
+- registrare le misure con data, strumento, condizione e incertezza;
 - tenere separati fatti, stime e TODO.
+
+H0b non e' un prerequisito per iniziare a scrivere il software.
 
 ### B0 — Sicurezza e banco
 
@@ -50,5 +61,7 @@ Ogni elemento ha una prova isolata e una prova di integrazione.
 
 ## Regola di avanzamento
 
-Non si passa al gate successivo se il safety gate e' in rosso. Un test fallito e' un dato da
-correggere, non un motivo per dichiarare l'elemento opzionale.
+Un parametro non critico mancante puo restare `TODO` e non blocca lo scaffolding del software.
+Un parametro di sicurezza mancante blocca il movimento reale. Non si passa al gate successivo
+se il safety gate e' in rosso. Un test fallito e' un dato da correggere, non un motivo per
+dichiarare l'elemento opzionale.

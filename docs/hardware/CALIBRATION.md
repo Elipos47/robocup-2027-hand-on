@@ -3,6 +3,10 @@
 Non esiste auto-calibrazione in runtime. Ogni camera e ogni sensore viene calibrato con una
 procedura manuale, una condizione di luce registrata e un log salvato.
 
+La calibrazione completa viene dopo il contratto minimo del software. Per iniziare servono solo
+i parametri indicati in `docs/hardware/MINIMUM_HARDWARE_DATA.md`; le tarature dettagliate restano
+differite.
+
 ## Camera linea
 
 1. Fissare la camera nella posizione definitiva.

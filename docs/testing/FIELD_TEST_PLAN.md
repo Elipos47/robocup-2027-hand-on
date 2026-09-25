@@ -63,12 +63,27 @@ run_id, data, operatore, hardware, firmware, software,
 condizioni, test, esito, evento, azione, video/foto, note
 ```
 
+## Dati minimi prima del test di movimento
+
+Prima di eseguire qualsiasi comando con i motori collegati, devono essere confermati almeno:
+
+- tensione nominale della batteria;
+- asse e verso dei due motori;
+- PWM massimo e comportamento di freno/arresto;
+- diametro effettivo della ruota;
+- collegamento e configurazione seriale Arduino-Pi;
+- altezza e inclinazione della camera linea, se viene usata.
+
+I campi sono definiti in `docs/hardware/MINIMUM_HARDWARE_DATA.md`. Un campo `TODO` non viene
+sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilitato.
+
 ## Test ancora da creare
 
-- [ ] misure batterie e masse;
+- [ ] raccolta dei dati minimi per il software;
 - [ ] test freno e direzione motori;
 - [ ] test comunicazione e watchdog;
 - [ ] calibrazione manuale camere;
 - [ ] linea sul campo;
 - [ ] elementi missione;
-- [ ] percorso completo.
+- [ ] percorso completo;
+- [ ] misure estese di batterie, masse, cablaggi e tarature.

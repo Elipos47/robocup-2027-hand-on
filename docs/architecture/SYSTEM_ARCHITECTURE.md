@@ -42,6 +42,13 @@ Responsabilita' future:
 Il firmware non verrà implementato in questa fase; il contratto seriale resta una proposta in
 `SERIAL_PROTOCOL.md`.
 
+## Configurazione hardware minima
+
+Il software non deve incorporare valori hardware non confermati. I parametri usati dal
+controller sono raccolti in `docs/hardware/MINIMUM_HARDWARE_DATA.md`; quelli non critici
+possono restare configurabili, mentre i parametri di sicurezza mancanti disabilitano il
+movimento reale.
+
 ## Sicurezza
 
 - comandi motori limitati e osservabili;
