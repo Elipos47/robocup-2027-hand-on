@@ -7,6 +7,8 @@ senza pretendere un inventario completo di tutto l'hardware.
 configurazione. I parametri che proteggono i motori devono essere confermati prima di abilitare
 il movimento reale.
 
+**Questionario operativo:** `docs/hardware/MINIMUM_HARDWARE_QUESTIONS.md`.
+
 ## Principio di lavoro
 
 - Si può scrivere subito il protocollo, il logger e la struttura del software anche se alcuni

@@ -29,6 +29,7 @@ controller, niente log di simulazione e niente codice funzionale gia' sviluppato
 | Obiettivi e regole | `docs/objectives/DEVELOPMENT_PLAN.md`, `docs/rules/` |
 | Inventario hardware | `docs/hardware/INVENTORY.md` |
 | Dati minimi per il software | `docs/hardware/MINIMUM_HARDWARE_DATA.md` |
+| Questionario hardware minimo | `docs/hardware/MINIMUM_HARDWARE_QUESTIONS.md` |
 | Misure e TODO | `docs/MEASUREMENT_LOG.md` |
 | Riferimento CAD | `docs/hardware/CAD_REFERENCE.md` |
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |

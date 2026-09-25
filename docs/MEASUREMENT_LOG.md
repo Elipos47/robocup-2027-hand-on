@@ -23,7 +23,8 @@ reale, non essere sostituiti con valori inventati.
 | TBD | HC-SR04 | altezza e inclinazione del montaggio | TODO | TODO | TODO | TODO | obbligatorio se usato nel primo test |
 
 La mappa dei pin non e' una misura: e' una scelta progettuale da proporre e approvare prima di
-modificare i cablaggi. I dettagli sono in `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
+modificare i cablaggi. I dettagli sono in `docs/hardware/MINIMUM_HARDWARE_DATA.md`; le domande
+operative sono in `docs/hardware/MINIMUM_HARDWARE_QUESTIONS.md`.
 
 ## Priorita 2 - misure successive
 
