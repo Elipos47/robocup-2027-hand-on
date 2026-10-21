@@ -28,8 +28,8 @@ dipende da un simulatore e non contiene il codice applicativo sviluppato nel pro
 
 ## Convenzioni
 
-- Git: repository inizializzato su `main`; i checkpoint sono automatici. Non usare `push`,
-  `reset --hard`, rebase o riscritture di storia senza richiesta esplicita.
+- Git: repository inizializzato su `main`; i checkpoint sono automatici. Il push e' regolato
+  dalla sezione «Remoto e push»; `reset --hard`, rebase e riscritture di storia restano vietati.
 - La fonte di verita' hardware e' `docs/hardware/`; ogni misura reale va registrata con data,
   strumento, condizione e incertezza in `docs/MEASUREMENT_LOG.md`.
 - Per iniziare il software si usa il contratto minimo in
@@ -46,6 +46,23 @@ dipende da un simulatore e non contiene il codice applicativo sviluppato nel pro
   reali con password.
 - La lingua dei documenti e' italiano; nomi di file e simboli tecnici restano in inglese quando
   sono standard o servono per la compatibilita' con l'hardware.
+
+## Remoto e push
+
+- Il remoto e' `origin` (GitHub `Elipos47/robocup-2027-hand-on`), branch `main`.
+- **Deroga dichiarata alla regola globale «mai push senza richiesta esplicita»**: l'autore ha
+  chiesto che il remoto resti aggiornato, quindi `git push origin main` fa parte del lavoro
+  ordinario di questo progetto. La deroga vale solo qui, non negli altri progetti del workspace.
+- A fine turno, se hai modificato file e il checkpoint automatico e' gia' avvenuto: verifica
+  `bash scripts/check_context.sh` verde, `git status --short` vuoto e nessun segreto
+  (`git grep -nEi 'password|api[_-]?key|secret|token|BEGIN (RSA|OPENSSH)|192\.168\.'`),
+  poi esegui `git push origin main`.
+- Mai `push --force`, `reset --hard`, rebase o riscritture di storia. Se il remoto e'
+  divergente, fermati e chiedi.
+- Se il push fallisce per autenticazione, non inventare token o credenziali: fermati e
+  segnalalo all'utente.
+- I PDF in `docs/rules/` e `docs/hardware/Misure Robotica.pdf` sono ridistribuiti nel repo:
+  con un repo pubblico verifica che la ridistribuzione sia ammessa prima di pushare.
 
 ## Stato attuale
 
