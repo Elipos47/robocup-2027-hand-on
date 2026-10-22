@@ -39,19 +39,14 @@ Schermo ──────────────────► Raspberry Pi
 ## Dati minimi per iniziare il software
 
 Non serve completare tutto l'inventario prima di scrivere il software. Il contratto minimo e
-descritto in `docs/hardware/MINIMUM_HARDWARE_DATA.md` e comprende:
+descritto in `docs/hardware/MINIMUM_HARDWARE_DATA.md` e comprende solo:
 
-- tensione nominale della batteria;
-- asse e verso dei due motori;
-- PWM massimo sicuro e comportamento di freno/arresto;
-- diametro effettivo della ruota;
-- tipo di collegamento Arduino-Pi e configurazione seriale;
-- altezza e inclinazione della camera linea;
-- orientamento degli assi del BNO085, se viene usato;
-- altezza e inclinazione di HC-SR04, se viene usato nel primo test.
+- tensione nominale della batteria (11.1 V, acquisita);
+- asse e verso dei due motori.
 
-Un dato di questo gruppo che resta `TODO` viene mantenuto tale nel codice. Se manca un
-parametro di sicurezza, il movimento reale resta disabilitato.
+Il resto (PWM, freno, seriale, camera, IMU, sonar) e' una scelta di codice o si scopre provando.
+Un dato del contratto che resta `TODO` viene mantenuto tale nel codice e blocca solo la funzione
+che ne dipende.
 
 ## Dati differiti
 

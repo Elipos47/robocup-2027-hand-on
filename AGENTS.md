@@ -70,8 +70,8 @@ dipende da un simulatore e non contiene il codice applicativo sviluppato nel pro
   provvisorio, piano hardware-first, architettura e protocollo seriale come proposta.
 - Fatto: `docs/hardware/Misure Robotica.pdf` raccoglie gli ingombri di molte schede; sono un
   input per il CAD, non ancora parametri operativi del controller.
-- Fatto: definito `docs/hardware/MINIMUM_HARDWARE_DATA.md` come contratto minimo per iniziare
-  il software, separando dati di movimento/visione da inventario esteso.
+- Fatto: definito `docs/hardware/MINIMUM_HARDWARE_DATA.md` come contratto minimo, ridotto ai
+  tre dati che il software non puo' dedurre: tensione, asse e verso dei motori.
 - Fatto: batteria acquisita il 2026-10-22 (etichetta): 2 pacchi Li-Ion 3S 11.1 V 2.6 Ah
   28.86 Wh in parallelo, cioe' 11.1 V, 5.2 Ah, 57.72 Wh dichiarati. `battery_nominal_v` e'
   compilato; il resto dell'etichetta non serve al contratto software.
