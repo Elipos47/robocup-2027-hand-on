@@ -37,8 +37,13 @@ for forbidden_dir in src simulation; do
   }
 done
 
-if find . -type f \( -name '*.py' -o -name '*.cpp' -o -name '*.ino' \) -not -path './scripts/*' -print -quit | rg -q .; then
-  echo "unexpected application source file in documentation baseline" >&2
+unexpected_source="$(
+  find . -type f \
+    \( -name '*.py' -o -name '*.cpp' -o -name '*.ino' \) \
+    -not -path './scripts/*' -not -path './.git/*' -print -quit
+)"
+if [[ -n "$unexpected_source" ]]; then
+  echo "unexpected application source file in documentation baseline: $unexpected_source" >&2
   exit 1
 fi
 
