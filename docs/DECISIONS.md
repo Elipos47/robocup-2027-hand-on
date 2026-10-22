@@ -17,14 +17,13 @@
    movimento reale.
 9. **Batterie in parallelo:** due pacchi Li-Ion 3S da 11.1 V 2.6 Ah 28.86 Wh in parallelo,
    quindi 11.1 V e 5.2 Ah / 57.72 Wh dichiarati. In parallelo la tensione resta la stessa; i
-   pacchi si collegano solo a tensione uguale e con protezioni compatibili. Corrente, BMS,
-   fusibili, connettori e cutoff restano da confermare.
+   pacchi si collegano solo a tensione uguale e con protezioni compatibili. Corrente, BMS e
+   cutoff non sono requisiti del contratto software: si osservano sul campo se servono.
 
 ## Decisioni da prendere
 
 - [ ] regolamento ufficiale 2027;
 - [ ] ruote, cinghie e rapporto di trasmissione;
-- [ ] distribuzione di alimentazione: corrente, BMS, fusibili, connettori e cutoff;
 - [ ] massa e centro di massa;
 - [ ] modello BNO085 e calibrazione IMU;
 - [ ] ruolo del servo;

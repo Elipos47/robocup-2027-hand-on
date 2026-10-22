@@ -74,15 +74,14 @@ dipende da un simulatore e non contiene il codice applicativo sviluppato nel pro
   il software, separando dati di movimento/visione da inventario esteso.
 - Fatto: batteria acquisita il 2026-10-22 (etichetta): 2 pacchi Li-Ion 3S 11.1 V 2.6 Ah
   28.86 Wh in parallelo, cioe' 11.1 V, 5.2 Ah, 57.72 Wh dichiarati. `battery_nominal_v` e'
-  compilato; restano corrente di scarica, BMS, fusibili, connettori e cutoff.
+  compilato; il resto dell'etichetta non serve al contratto software.
 - In corso: raccolta dei pochi dati minimi necessari e definizione dei test di banco.
 - Prossimi passi: compilare i campi di Priorita 1 del registro, proporre la mappa dei pin,
   definire seriale e logger, poi collaudare freni/arresto e comunicazione Raspberry-Arduino.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
-- Blocchi / decisioni aperte: regolamento 2027, distribuzione di alimentazione (corrente, BMS,
-  fusibili, cutoff), ruote/cinghie, RPM, massa, servo, BNO085, ruolo della UI e criteri di
-  raccolta vittime.
+- Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, BNO085,
+  ruolo della UI e criteri di raccolta vittime.
 
 ## Note
 

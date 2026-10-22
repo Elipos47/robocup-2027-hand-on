@@ -52,13 +52,17 @@ In parallelo la tensione non si somma: si sommano capacita' ed energia (e la cor
 disponibile, se i due pacchi hanno protezioni compatibili). 11.1 V corrisponde a 3 celle Li-Ion
 in serie (3 x 3.7 V).
 
-Ancora `TODO` per il contratto di sicurezza:
+Per il **software** serve solo la tensione nominale: scala i limiti dei motori e permette di
+leggere la batteria. Il resto non e' un requisito del contratto:
 
-- corrente di scarica continua e di picco (A o C) e limite del BMS;
-- presenza e tipo di BMS per pacco, e se il parallelo e' ammesso dal produttore;
-- tensione di fine scarica e di carica completa;
-- connettore, sezione dei cavi e fusibile per pacco;
-- misura reale a vuoto e sotto carico: la tensione nominale non e' una misura.
+- la corrente di scarica la limita il BMS del pacco; se il robot si spegne sotto sforzo si
+  misura allora, non prima;
+- la soglia di batteria scarica si sceglie con una misura di tensione sotto carico, quando il
+  robot cammina;
+- connettore e fusibile sono scelte di cablaggio, non parametri del controller.
+
+11.1 V e' il valore dichiarato sull'etichetta: la misura a vuoto serve solo a confermare che i
+pacchi sono carichi, non a sbloccare il software.
 
 ### M2 - comunicazione
 

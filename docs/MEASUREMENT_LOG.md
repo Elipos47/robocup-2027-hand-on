@@ -30,7 +30,7 @@ operative sono in `docs/hardware/MINIMUM_HARDWARE_QUESTIONS.md`.
 
 | Data | Componente | Misura | Valore | Strumento | Condizione | Incertezza | Esito/TODO |
 |---|---|---|---:|---|---|---|---|
-| 2026-10-22 | Batterie (2 pacchi Li-Ion in parallelo) | capacita' ed energia | 5.2 Ah / 57.72 Wh | etichetta del pacco (28.86 Wh x 2) | 2 pacchi 3S in parallelo | dichiarato, non misurato; energia utile inferiore per cutoff e conversioni | resta differita la prova di scarica |
+| 2026-10-22 | Batterie (2 pacchi Li-Ion in parallelo) | capacita' ed energia | 5.2 Ah / 57.72 Wh | etichetta del pacco (28.86 Wh x 2) | 2 pacchi 3S in parallelo | dichiarato, non misurato | non richiesto dal software; prova di scarica solo se serve l'autonomia |
 | TBD | Motori | RPM a vuoto e sotto carico | TODO | TODO | TODO | TODO | differita |
 | TBD | Ruote/cinghie | larghezza, rapporto e attrito | TODO | TODO | TODO | TODO | differita |
 | TBD | Robot | massa totale e baricentro | TODO | TODO | TODO | TODO | differita |
