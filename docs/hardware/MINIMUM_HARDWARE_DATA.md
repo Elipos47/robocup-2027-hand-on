@@ -55,8 +55,8 @@ in serie (3 x 3.7 V).
 Per il **software** serve solo la tensione nominale: scala i limiti dei motori e permette di
 leggere la batteria. Il resto non e' un requisito del contratto:
 
-- la corrente di scarica la limita il BMS del pacco; se il robot si spegne sotto sforzo si
-  misura allora, non prima;
+- la corrente di scarica non e' un parametro del software: se il robot si spegne sotto sforzo,
+  si misura allora;
 - la soglia di batteria scarica si sceglie con una misura di tensione sotto carico, quando il
   robot cammina;
 - connettore e fusibile sono scelte di cablaggio, non parametri del controller.
