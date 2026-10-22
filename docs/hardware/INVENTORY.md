@@ -32,7 +32,7 @@ Schermo ──────────────────► Raspberry Pi
 | HC-SR04 | distanza frontale | presente |
 | Schermo | diagnostica | presente |
 | BNO085 | IMU candidato | da confermare modello e ruolo |
-| Batterie | alimentazione | tipo e tensione da verificare |
+| Batterie | alimentazione | 2 pacchi Li-Ion 3S 11.1 V 2.6 Ah 28.86 Wh in parallelo: 11.1 V, 5.2 Ah, 57.72 Wh dichiarati; corrente, BMS e fusibili da verificare |
 | Servo | meccanismo ausiliario | funzione e modello da verificare |
 | Ruote/cinghie | locomozione | non ancora identificate |
 

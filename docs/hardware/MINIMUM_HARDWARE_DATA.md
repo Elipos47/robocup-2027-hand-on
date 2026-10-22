@@ -27,7 +27,7 @@ il movimento reale.
 
 | Campo | Valore | Uso | Stato |
 |---|---|---|---|
-| `battery_nominal_v` | `TODO` | scala tensione e limite motori | obbligatorio per muovere |
+| `battery_nominal_v` | `11.1` | scala tensione e limite motori | confermato da etichetta 2026-10-22 (2 pacchi in parallelo); da misurare a vuoto |
 | `motor_side_map` | `TODO` | distingue sinistro e destro | obbligatorio per muovere |
 | `motor_direction_polarity` | `TODO` | inverte avanti/indietro | obbligatorio per muovere |
 | `pwm_max` | `TODO` | limita il duty dei motori | obbligatorio per muovere |
@@ -37,6 +37,28 @@ il movimento reale.
 
 Se `rpm_reference` non e disponibile, si puo scrivere una prima versione a PWM grezzo con
 calibrazione successiva, senza dichiarare la velocita nota.
+
+### Alimentazione - dato acquisito (2026-10-22)
+
+Due pacchi **Li-Ion 3S in parallelo**, dato dichiarato sull'etichetta:
+
+| Grandezza | Singolo pacco | Due in parallelo |
+|---|---:|---:|
+| Tensione nominale | 11.1 V | **11.1 V** (invariata) |
+| Capacita' | 2.6 Ah | **5.2 Ah** |
+| Energia | 28.86 Wh | **57.72 Wh** |
+
+In parallelo la tensione non si somma: si sommano capacita' ed energia (e la corrente
+disponibile, se i due pacchi hanno protezioni compatibili). 11.1 V corrisponde a 3 celle Li-Ion
+in serie (3 x 3.7 V).
+
+Ancora `TODO` per il contratto di sicurezza:
+
+- corrente di scarica continua e di picco (A o C) e limite del BMS;
+- presenza e tipo di BMS per pacco, e se il parallelo e' ammesso dal produttore;
+- tensione di fine scarica e di carica completa;
+- connettore, sezione dei cavi e fusibile per pacco;
+- misura reale a vuoto e sotto carico: la tensione nominale non e' una misura.
 
 ### M2 - comunicazione
 
@@ -113,7 +135,7 @@ incertezza vanno completati nel registro misure quando confermati.
 L'utente puo completare questo blocco con i soli dati disponibili:
 
 ```text
-battery_nominal_v =
+battery_nominal_v = 11.1
 motor_side_map =
 motor_direction_polarity =
 pwm_max =

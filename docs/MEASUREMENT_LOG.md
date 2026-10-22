@@ -10,7 +10,7 @@ reale, non essere sostituiti con valori inventati.
 
 | Data | Componente | Misura | Valore | Strumento | Condizione | Incertezza | Esito/TODO |
 |---|---|---|---:|---|---|---|---|
-| TBD | Batterie | tensione nominale | TODO | TODO | TODO | TODO | obbligatorio per muovere |
+| 2026-10-22 | Batterie (2 pacchi Li-Ion in parallelo) | tensione nominale | 11.1 V | etichetta del pacco (dato del produttore) | 2 pacchi 3S in parallelo, a riposo | valore nominale dichiarato, non misurato | confermato per il contratto; misurare a vuoto e sotto carico prima di muovere |
 | TBD | Motori | asse sinistro/destro | TODO | TODO | TODO | TODO | obbligatorio per muovere |
 | TBD | Motori | verso avanti/indietro | TODO | TODO | TODO | TODO | obbligatorio per muovere |
 | TBD | L298N | PWM massimo sicuro | TODO | TODO | TODO | TODO | obbligatorio per muovere |
@@ -30,7 +30,7 @@ operative sono in `docs/hardware/MINIMUM_HARDWARE_QUESTIONS.md`.
 
 | Data | Componente | Misura | Valore | Strumento | Condizione | Incertezza | Esito/TODO |
 |---|---|---|---:|---|---|---|---|
-| TBD | Batterie | tensione a vuoto/carico e capacita | TODO | TODO | TODO | TODO | differita |
+| 2026-10-22 | Batterie (2 pacchi Li-Ion in parallelo) | capacita' ed energia | 5.2 Ah / 57.72 Wh | etichetta del pacco (28.86 Wh x 2) | 2 pacchi 3S in parallelo | dichiarato, non misurato; energia utile inferiore per cutoff e conversioni | resta differita la prova di scarica |
 | TBD | Motori | RPM a vuoto e sotto carico | TODO | TODO | TODO | TODO | differita |
 | TBD | Ruote/cinghie | larghezza, rapporto e attrito | TODO | TODO | TODO | TODO | differita |
 | TBD | Robot | massa totale e baricentro | TODO | TODO | TODO | TODO | differita |

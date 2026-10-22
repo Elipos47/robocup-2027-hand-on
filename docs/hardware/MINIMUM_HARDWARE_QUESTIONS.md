@@ -24,7 +24,19 @@ questionario: servono al CAD, non al controller.
 Qual e' la tensione nominale della batteria?
 
 ```text
-tensione_nominale_v =
+tensione_nominale_v = 11.1    # 2 pacchi Li-Ion 3S in parallelo, 2026-10-22
+```
+
+Risposta: due pacchi Li-Ion da 11.1 V 2.6 Ah 28.86 Wh in parallelo. In parallelo la tensione
+resta 11.1 V; capacita' ed energia raddoppiano (5.2 Ah, 57.72 Wh). Restano da confermare:
+
+```text
+corrente_scarica_continua_a =
+corrente_scarica_picco_a =
+bms_per_pacco =            # si/no, modello
+tensione_fine_scarica_v =
+tensione_carica_completa_v =
+connettore_e_fusibile =
 ```
 
 ### Q2. Identificazione dei motori
