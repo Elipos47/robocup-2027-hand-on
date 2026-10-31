@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import unittest
 
-from rcj2027.safety import DEFAULT_CONFIG, HardwareConfig, SafetyError
+from rcj2027.safety import (
+    DEFAULT_CONFIG,
+    OPERATIONAL_CONFIG,
+    HardwareConfig,
+    SafetyError,
+)
 
 
 class SafetyTests(unittest.TestCase):
@@ -22,6 +27,13 @@ class SafetyTests(unittest.TestCase):
             DEFAULT_CONFIG.motor_direction_polarity,
             {"A": "inverted", "B": "inverted"},
         )
+
+    def test_operational_config_uses_selected_values(self) -> None:
+        self.assertTrue(OPERATIONAL_CONFIG.motion_enabled)
+        self.assertEqual(OPERATIONAL_CONFIG.pwm_max, 255)
+        self.assertEqual(OPERATIONAL_CONFIG.watchdog_timeout_s, 1.0)
+        self.assertEqual(OPERATIONAL_CONFIG.missing_for_motion(), [])
+        OPERATIONAL_CONFIG.require_motion()
 
     def test_complete_config_enables_motion(self) -> None:
         config = HardwareConfig(

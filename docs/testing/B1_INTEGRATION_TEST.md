@@ -108,7 +108,9 @@ con `--log-dir`; non vengono versionati.
 
 - perdita fisica del cavo USB durante la sessione: il caso e' coperto solo dal test host con
   trasporto finto, non da una prova con il cavo scollegato;
-- valori reali di HC-SR04 e BNO085: il firmware invia ancora `distance_mm = -1` e angoli a zero;
+- calibrazione di HC-SR04 e BNO085: lettura e bitmask verificati in B1-3
+  (`docs/testing/B1_SENSORS_TEST.md`), ma distanza di riferimento, orientamento assi e deriva
+  yaw restano da misurare;
 - verso di rotazione in B1-2: la rotazione e' stata confermata, non il verso avanti/indietro
   (gia' verificato in B0);
 - watchdog e spazio di arresto durante il movimento: B0 ha verificato lo stop a 1000 ms, ma
@@ -117,8 +119,8 @@ con `--log-dir`; non vengono versionati.
 - sessioni lunghe, riconnessione USB e stabilita' su piu' ore;
 - integrazione con la percezione e la UI.
 
-Il gate B1 resta aperto per sensori, calibrazione e misure. Comunicazione, logger e comandi
-motori sono verificati.
+Il gate B1 resta aperto per calibrazione e misure. Comunicazione, logger, comandi motori e
+lettura dei sensori sono verificati.
 
 ## Test B1-2 - comandi motori
 

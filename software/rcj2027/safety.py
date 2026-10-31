@@ -96,11 +96,23 @@ class HardwareConfig:
         }
 
 
-# Dati verificati a banco. pwm_max e timeout watchdog restano da scegliere.
+# Dati verificati a banco. Il default resta volutamente incompleto: il gate è chiuso.
 DEFAULT_CONFIG = HardwareConfig(
     battery_nominal_v=11.1,
     motor_side_map={"A": "right", "B": "left"},
     motor_direction_polarity={"A": "inverted", "B": "inverted"},
     pwm_max=None,
     watchdog_timeout_s=None,
+)
+
+# Valori operativi scelti il 2026-10-31.
+# pwm_max=255 è la scelta dell'operatore dopo B1-2; il watchdog di 1.0 s è l'unico
+# timeout misurato a banco (stop a 1004-1008 ms, B0). Non sono fallback: vanno
+# passati esplicitamente a RobotSession quando si vuole abilitare il movimento.
+OPERATIONAL_CONFIG = HardwareConfig(
+    battery_nominal_v=11.1,
+    motor_side_map={"A": "right", "B": "left"},
+    motor_direction_polarity={"A": "inverted", "B": "inverted"},
+    pwm_max=255,
+    watchdog_timeout_s=1.0,
 )

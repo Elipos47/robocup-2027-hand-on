@@ -46,6 +46,15 @@
     conferma dell'operatore: comandi a 255 su entrambe le ruote e sui canali separati, rotazione
     osservata, firmware sicuro ripristinato. Un tentativo intermedio ha esposto un `ACK_TIMEOUT`
     da backlog di status; `_wait_for_ack` e `stop` ora drenano fino alla deadline.
+15. **Valori operativi (2026-10-31):** `pwm_max=255` e' la scelta dell'operatore dopo B1-2; il
+    watchdog di `1.0 s` e' l'unico timeout misurato a banco (stop a 1004-1008 ms, B0). I valori
+    stanno in `OPERATIONAL_CONFIG` e vanno passati esplicitamente; `DEFAULT_CONFIG` resta
+    incompleto e il gate predefinito resta chiuso. Il firmware sicuro continua a rifiutare `D`.
+16. **Sensori B1-3 (2026-10-31):** HC-SR04 letto con state machine non bloccante (TRIG 27,
+    ECHO 26) e distanza in mm; BNO085 su I2C `0x4A` con `SH2_GAME_ROTATION_VECTOR`, quaternione
+    convertito in yaw/pitch/roll mdeg. Il BNO085 non e' pronto subito al boot, quindi
+    l'inizializzazione viene ritentata ogni secondo. Status bit 0 `SONAR_VALID` e bit 1
+    `IMU_VALID`. Orientamento assi e distanza di riferimento restano da calibrare.
 
 ## Decisioni da prendere
 

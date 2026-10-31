@@ -12,12 +12,13 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 
 ## Stato
 
-- Fase corrente: avvio dello sviluppo codice. Il firmware di banco e il software Raspberry
-  entrano nel repository; il primo sketch ha verificato lati e verso dei motori.
+- Fase corrente: B1 su banco. Protocollo, logger, comandi motori e lettura di base di sonar/IMU
+  sono verificati; calibrazione, misure termiche e punti aperti di B0 restano da completare.
 - Fatto: package `software/rcj2027/` con protocollo v1.1, trasporto finto, logger e gate di
   sicurezza; test unittest verdi e demo fake disponibile. Il movimento reale resta disabilitato.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; default con
-  movimento disabilitato e watchdog da misurare.
+  movimento disabilitato. Valori operativi `pwm_max=255` e watchdog 1.0 s in
+  `OPERATIONAL_CONFIG`; il gate predefinito resta chiuso.
 - Fatto: protocollo verificato sul Mega senza movimento (test P1): handshake, status, stop e
   gate `MOTION_DISABLED`.
 - Fatto: B0 parziale: stop X con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms; a 150 i motori
@@ -30,6 +31,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   confermata dall'operatore a 255 su entrambe le ruote e sui canali separati. Un tentativo
   intermedio ha esposto un `ACK_TIMEOUT` da backlog di status, corretto; firmware sicuro
   ripristinato.
+- Fatto: B1-3, HC-SR04 e BNO085 letti nello status con movimento disabilitato
+  (`docs/testing/B1_SENSORS_TEST.md`): sonar ~0,9-1,2 m, BNO085 su I2C `0x4A`, bit 0+1.
+  Calibrazione di assi e distanza di riferimento ancora da fare.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -57,7 +61,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
 | Protocollo seriale v1.1 | `docs/architecture/SERIAL_PROTOCOL.md` |
-| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md` |
+| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
 | Decisioni aperte | `docs/DECISIONS.md` |
 | Provenienza e scelte di importazione | `docs/SOURCE_MAP.md` |
@@ -83,9 +87,9 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Completare B1 con la lettura di HC-SR04 e BNO085, la calibrazione delle camere e le misure.
+1. Completare B1 con calibrazione di sonar, assi IMU e camere.
 2. Chiudere B0: freno/coast, ripetizione, corrente e temperatura del L298N.
-3. Scegliere `pwm_max` e timeout watchdog definitivi; misurare diametro ruota e RPM.
+3. Verificare termicamente `pwm_max=255` e watchdog 1.0 s; misurare diametro ruota e RPM.
 4. Eseguire il primo test controllato della linea sul campo.
 
 La validazione e la build si eseguono con:

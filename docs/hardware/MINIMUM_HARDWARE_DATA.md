@@ -80,7 +80,8 @@ led e interruttore.
 - I pin 26 e 27 sono digitali e non hanno funzioni alternate sul Mega: nessun conflitto con
   seriale, I2C o SPI.
 - Il modulo e' alimentato a 5 V; l'uscita `ECHO` e' compatibile con gli ingressi del Mega.
-- Altezza e inclinazione di montaggio restano da misurare quando il sensore entra in un test.
+- Lettura verificata a banco in B1-3 (0,9-1,2 m, senza riferimento metrico); altezza e
+  inclinazione di montaggio restano da misurare quando il sensore entra in un test sul campo.
 
 ### BNO085 - mappa fornita dall'utente
 
@@ -90,9 +91,9 @@ led e interruttore.
 | `SCL` | 21 | I2C hardware |
 
 - I pin 20 e 21 sono l'I2C hardware del Mega 2560: nessun conflitto con motori o sonar.
-- Il modulo e' un breakout Adafruit che accetta 5 V diretti, confermato dall'utente
-  (2026-10-31): il collegamento all'I2C a 5 V del Mega e' ammesso.
-- Modello esatto del modulo e orientamento degli assi restano `TODO`.
+- Il modulo e' un breakout Adafruit BNO085 che accetta 5 V diretti, confermato dall'utente
+  (2026-10-31). L'indirizzo I2C `0x4A` e' stato verificato con lo scanner di banco (B1-3).
+- Orientamento degli assi, calibrazione e ruolo definitivo restano `TODO`.
 
 Non ancora definiti: pin del servo, LED e interruttore.
 

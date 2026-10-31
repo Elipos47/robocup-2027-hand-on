@@ -9,7 +9,8 @@ motori ronzavano senza ruotare. Freno/coast e ripetizione da completare. Firmwar
 movimento disabilitato. B1-1: handshake, heartbeat, status, log JSONL e stop X verificati su
 Raspberry Pi 5 con il firmware sicuro (`docs/testing/B1_INTEGRATION_TEST.md`). B1-2: comandi
 motori a 255 con gate, ack, stop e rotazione confermata dall'operatore; firmware sicuro
-ripristinato.
+ripristinato. B1-3: HC-SR04 e BNO085 letti nello status, con bit di validita'
+(`docs/testing/B1_SENSORS_TEST.md`).
 
 ## Cablaggio
 
@@ -84,8 +85,9 @@ Dopo `V` il firmware invia un frame `A` ogni 100 ms:
 A,<sequence>,-1,0,0,0,<status>*HH
 ```
 
-- `distance_mm = -1`: HC-SR04 non ancora implementato;
-- angoli IMU a `0`: BNO085 non ancora implementato;
+- `distance_mm = -1`: HC-SR04 senza eco valida; bit 0 `SONAR_VALID` se la distanza e' valida;
+- `yaw_mdeg`, `pitch_mdeg`, `roll_mdeg`: BNO085 game rotation vector in milligradi; bit 1
+  `IMU_VALID` se il campione e' recente. Gli assi non sono ancora calibrati sul montaggio;
 - bit 2 dello status: motori attivi;
 - bit 3: watchdog scattato.
 
@@ -136,6 +138,7 @@ Se `D` supera `PWM_MAX`, il firmware risponde `E,BAD_RANGE` e non muove i motori
 ## Note
 
 - Il servo non e' implementato: `Z` risponde `E,SERVO_UNVERIFIED`.
-- HC-SR04 e BNO085 non sono ancora letti; lo status li segnala come non validi.
+- HC-SR04 e BNO085 sono letti e riportati nello status; l'orientamento degli assi IMU e la
+  distanza di riferimento del sonar restano da calibrare (`docs/testing/B1_SENSORS_TEST.md`).
 - Il firmware non usa `String`: buffer e memoria sono statici.
 - Il watchdog e' attivo solo con `WATCHDOG_TIMEOUT_MS > 0` e motori in movimento.

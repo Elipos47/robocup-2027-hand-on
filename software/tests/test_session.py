@@ -7,7 +7,7 @@ from pathlib import Path
 
 from rcj2027 import protocol
 from rcj2027.logger import JsonlLogger
-from rcj2027.safety import HardwareConfig, SafetyError
+from rcj2027.safety import OPERATIONAL_CONFIG, HardwareConfig, SafetyError
 from rcj2027.session import CommandRejected, RobotSession, SessionError
 from rcj2027.transport import FakeTransport
 
@@ -252,6 +252,16 @@ class DriveTests(SessionTestBase):
         self.assertEqual(sent["right"], -100)
         self.assertEqual(sent["pwm_max"], 200)
         self.assertEqual(len(self.find("drive_ack")), 1)
+
+    def test_drive_accepts_operational_pwm_max(self) -> None:
+        session = self.connect(config=OPERATIONAL_CONFIG)
+        self.transport.feed_line(protocol.ack(0))
+
+        self.assertEqual(session.drive(255, 255), 0)
+        self.assertIn(
+            protocol.drive(0, 255, 255).decode("ascii"),
+            self.transport.sent_text(),
+        )
 
     def test_drive_keeps_heartbeat_alive_while_waiting(self) -> None:
         session = self.connect(config=self.motion_config())

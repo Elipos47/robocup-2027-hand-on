@@ -19,7 +19,7 @@ contiene il codice applicativo del progetto precedente.
 ## Comandi
 
 ```sh
-# install:  arduino-cli core install arduino:avr; python3 -m pip install -r software/requirements.txt
+# install:  arduino-cli core install arduino:avr; arduino-cli lib install "Adafruit BNO08x"; python3 -m pip install -r software/requirements.txt
 # validate: bash scripts/check_context.sh
 # build:    bash scripts/build.sh
 # test:     bash scripts/test.sh
@@ -102,6 +102,13 @@ contiene il codice applicativo del progetto precedente.
   sui canali separati, ack 5-6 ms, stop 2-5 ms, bit 2 `4` -> `0`, 0 errori e rotazione osservata.
   Un tentativo intermedio ha esposto un `ACK_TIMEOUT` da backlog di status, corretto drenando
   fino alla deadline. Firmware sicuro ripristinato e `D` di nuovo `MOTION_DISABLED`.
+- Fatto: valori operativi scelti in `OPERATIONAL_CONFIG`: `pwm_max=255` (decisione
+  dell'operatore) e watchdog `1.0 s` (unico timeout misurato a banco). `DEFAULT_CONFIG` resta
+  incompleto e il gate predefinito resta chiuso.
+- Fatto: B1-3, HC-SR04 e BNO085 letti sul robot con movimento disabilitato
+  (`docs/testing/B1_SENSORS_TEST.md`): sonar valido 50/51 status, distanze ~0,9-1,2 m; BNO085
+  su I2C `0x4A`, IMU valido 49/51, status bit 0+1. Assi IMU e distanza di riferimento restano
+  da calibrare.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in
@@ -111,14 +118,15 @@ contiene il codice applicativo del progetto precedente.
   con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms con PWM 150/255 e timeout 1000 ms. A 150 i
   motori ronzavano senza ruotare; a 255 hanno girato (conferma dell'operatore). Firmware
   riportato a movimento disabilitato.
-- In corso: completare B1 con sensori, calibrazione e misure; chiudere i punti aperti di B0
+- In corso: calibrare sonar e assi IMU, calibrare le camere e chiudere i punti aperti di B0
   (freno/coast, ripetizione, corrente e temperatura).
-- Prossimi passi: leggere HC-SR04 e BNO085, calibrare le camere, scegliere `pwm_max` e timeout
-  watchdog definitivi dopo le misure, poi passare a F0.
+- Prossimi passi: misurare una distanza di riferimento per il sonar, ruotare il robot per
+  verificare gli assi IMU, calibrare le camere, verificare termicamente PWM 255 e watchdog,
+  poi passare a F0.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
-- Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, BNO085,
-  ruolo della UI e criteri di raccolta vittime.
+- Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione
+  BNO085, ruolo della UI e criteri di raccolta vittime.
 
 ## Note
 

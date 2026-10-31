@@ -54,9 +54,9 @@ in `logs/` (ignorata da git) oppure nella directory indicata con `--log-dir`.
 
 `RobotSession.drive(left, right)` e' il livello software per `D`: applica il gate di
 `safety.py`, rifiuta i valori oltre `pwm_max`, invia il comando e attende l'ack continuando gli
-heartbeat. Non e' esposto dalla CLI e non viene chiamato dalle sessioni di logging: con la
-configurazione attuale `DEFAULT_CONFIG` ha `pwm_max` e timeout watchdog vuoti, quindi `drive`
-solleva `SafetyError` prima di scrivere qualsiasi frame.
+heartbeat. Non e' esposto dalla CLI e non viene chiamato dalle sessioni di logging. Il gate usa
+`DEFAULT_CONFIG`, che resta volutamente incompleto (gate chiuso); per abilitare il movimento va
+passata esplicitamente `OPERATIONAL_CONFIG`.
 
 La prova B1-2 e' stata eseguita con ruote sollevate e conferma dell'operatore: comandi a 255
 su entrambe le ruote e sui canali separati, ack, stop e rotazione osservata. Il firmware sicuro
@@ -64,18 +64,24 @@ e' stato ripristinato; il report e' in `docs/testing/B1_INTEGRATION_TEST.md`.
 
 ## Configurazione
 
-`DEFAULT_CONFIG` in `safety.py` contiene i dati verificati a banco:
+`safety.py` espone due configurazioni:
 
-- batteria 11.1 V;
-- canale A = ruota destra, canale B = ruota sinistra;
-- polarita' di entrambi i canali invertita.
+- `DEFAULT_CONFIG`: batteria 11.1 V, A = ruota destra, B = ruota sinistra, polarita' invertita;
+  `pwm_max` e `watchdog_timeout_s` restano vuoti, quindi il gate e' chiuso. E' il default delle
+  sessioni di logging e non e' un valore di fallback.
+- `OPERATIONAL_CONFIG`: stessi dati piu' `pwm_max=255` e `watchdog_timeout_s=1.0`. Sono i valori
+  operativi scelti il 2026-10-31; vanno usati solo esplicitamente e con il firmware di banco o
+  operativo corrispondente. Il firmware sicuro continua a rifiutare `D` con
+  `MOTION_DISABLED`.
 
-`pwm_max` e `watchdog_timeout_s` sono ancora vuoti: finche' mancano, `motion_enabled` e' falso e
-il gate rifiuta il movimento. Non sono valori di fallback.
+`pwm_max=255` e' la scelta dell'operatore dopo B1-2. Il watchdog di 1.0 s e' l'unico valore
+misurato a banco (stop a 1004-1008 ms, B0).
 
 ## Regole
 
-- Il movimento reale resta disabilitato finche' i parametri di sicurezza non sono completi.
+- Il movimento reale resta disabilitato di default: `DEFAULT_CONFIG` ha il gate chiuso e il
+  firmware sicuro rifiuta `D`. Per muoversi servono `OPERATIONAL_CONFIG` esplicito e firmware di
+  banco/operativo.
 - Ogni funzione ha un test ripetibile e un log associato.
 - Il trasporto finto serve a testare il protocollo senza robot; non e' un simulatore del
   percorso.

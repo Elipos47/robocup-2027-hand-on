@@ -1,12 +1,13 @@
 # SPEC — Robocup2027HandOn
 
-**Versione:** 0.9
+**Versione:** 0.10
 **Data:** 31/10/2026
 **Stato:** sviluppo attivo; protocollo v1.1 implementato e verificato a banco. B0 parziale:
 rotazione a 255, stop e watchdog verificati; freno/coast e ripetizione da completare. B1-1:
-sessione reale Raspberry-Mega con handshake, heartbeat, status, logger e stop verificata senza
-movimento. B1-2: comandi motori a 255 con gate, ack, stop e rotazione confermata dall'operatore.
-Sensori e calibrazione ancora aperti. Movimento reale disabilitato di default.
+sessione reale con handshake, heartbeat, status, logger e stop. B1-2: comandi motori a 255 con
+gate, ack, stop e rotazione confermata. B1-3: HC-SR04 e BNO085 letti nello status. Valori
+operativi `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`; gate predefinito chiuso.
+Sensori da calibrare. Movimento reale disabilitato di default.
 
 ## 1. Obiettivo
 
@@ -112,8 +113,9 @@ Comunicazione, heartbeat, logger, motori e sensori ripetibili su banco.
 Stato 2026-10-31: B1-1 verificata su Raspberry Pi 5 con firmware sicuro (handshake, heartbeat
 a 200 ms, status a circa 100 ms, log JSONL, stop `X` con ack, nessun movimento). B1-2 verificata
 con ruote sollevate e conferma dell'operatore: comandi a 255 su entrambe le ruote e sui canali
-separati, ack e stop in pochi ms, rotazione osservata; firmware sicuro ripristinato. Sensori,
-calibrazione e misure restano da completare; il gate B1 non e' ancora chiuso.
+separati, ack e stop in pochi ms, rotazione osservata; firmware sicuro ripristinato. B1-3:
+HC-SR04 e BNO085 letti nello status, bit 0+1, sonar ~0,9-1,2 m. Calibrazione di sonar, assi IMU
+e camere e misure termiche restano da completare; il gate B1 non e' ancora chiuso.
 
 ### Gate F0 — line
 

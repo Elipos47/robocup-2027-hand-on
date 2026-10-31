@@ -41,8 +41,8 @@ Responsabilita':
 
 Il firmware parte dagli sketch di banco in `firmware/test/`. Il protocollo v1.1 e' definito in
 `SERIAL_PROTOCOL.md` e implementato sia lato Raspberry (`software/rcj2027/`) sia lato Arduino
-(`firmware/rcj2027/`). P1, B0, B1-1 e B1-2 hanno verificato link, logger e comandi motori; B0
-resta parziale per freno/coast, ripetizione, corrente e temperatura.
+(`firmware/rcj2027/`). P1, B0, B1-1, B1-2 e B1-3 hanno verificato link, logger, comandi motori,
+sonar e IMU; B0 resta parziale per freno/coast, ripetizione, corrente e temperatura.
 
 ## Layout del codice
 

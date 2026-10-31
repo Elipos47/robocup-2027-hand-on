@@ -25,12 +25,15 @@ required=(
   docs/testing/PROTOCOL_BENCH_TEST.md
   docs/testing/B0_BENCH_TEST.md
   docs/testing/B1_INTEGRATION_TEST.md
+  docs/testing/B1_SENSORS_TEST.md
   docs/MEASUREMENT_LOG.md
   docs/DECISIONS.md
   docs/SOURCE_MAP.md
   firmware/README.md
   firmware/test/motor_direction_test/motor_direction_test.ino
   firmware/test/motor_direction_test/README.md
+  firmware/test/i2c_scan/i2c_scan.ino
+  firmware/test/i2c_scan/README.md
   firmware/rcj2027/rcj2027.ino
   firmware/rcj2027/README.md
   software/README.md

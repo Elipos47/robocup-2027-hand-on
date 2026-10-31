@@ -2,8 +2,8 @@
 
 **Stato:** specifica approvata e implementata su Raspberry Pi 5 e Arduino Mega 2560. Il
 protocollo e' verificato a banco senza movimento (P1) e con motori (B0 parziale); la sessione
-seriale con handshake, heartbeat, status e logger e' verificata in B1-1. Nessun cablaggio e'
-stato modificato per il protocollo.
+seriale con handshake, heartbeat, status e logger e' verificata in B1-1, i comandi motori in
+B1-2 e la lettura di sonar/IMU in B1-3. Nessun cablaggio e' stato modificato per il protocollo.
 
 ## Obiettivi
 
@@ -216,3 +216,6 @@ E,BAD_RANGE*2E\n
   invia `X` su rifiuto/timeout; e' coperto da test host. B1-2 e' stata eseguita con ruote
   sollevate: comandi a 255 su entrambe le ruote e sui canali separati, rotazione confermata,
   firmware sicuro ripristinato.
+- B1-3 ha verificato HC-SR04 (bit 0, distanza in mm) e BNO085 su I2C `0x4A` (bit 1, yaw/pitch/
+  roll in mdeg); assi e distanza di riferimento restano da calibrare
+  (`docs/testing/B1_SENSORS_TEST.md`).

@@ -16,6 +16,9 @@
 */
 
 #include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_BNO08x.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,6 +31,8 @@ const uint8_t PIN_IN1 = 22;
 const uint8_t PIN_IN2 = 23;
 const uint8_t PIN_IN3 = 24;
 const uint8_t PIN_IN4 = 25;
+const uint8_t PIN_TRIG = 27;
+const uint8_t PIN_ECHO = 26;
 
 const bool INVERT_A = true;
 const bool INVERT_B = true;
@@ -41,6 +46,16 @@ const bool SERVO_ENABLED = false;
 const unsigned long STATUS_PERIOD_MS = 100;
 const uint8_t MAX_FRAME_BYTES = 96;
 
+const unsigned long SONAR_PERIOD_MS = 100;
+const unsigned long SONAR_TIMEOUT_US = 30000;
+const int SONAR_MIN_MM = 20;
+const int SONAR_MAX_MM = 4000;
+const unsigned long IMU_REPORT_INTERVAL_US = 50000;
+const unsigned long IMU_STALE_MS = 500;
+const float RAD_TO_MDEG = 57295.7795f;
+
+const uint16_t STATUS_SONAR_VALID = 1u << 0;
+const uint16_t STATUS_IMU_VALID = 1u << 1;
 const uint16_t STATUS_MOTORS_ACTIVE = 1u << 2;
 const uint16_t STATUS_WATCHDOG_TRIPPED = 1u << 3;
 
@@ -53,6 +68,22 @@ bool rxOverflow = false;
 bool handshakeSeen = false;
 bool motorsActive = false;
 bool watchdogTripped = false;
+
+Adafruit_BNO08x bno08x;
+bool imuReady = false;
+bool imuValid = false;
+unsigned long lastImuMs = 0;
+unsigned long lastImuInitMs = 0;
+long imuYawMdeg = 0;
+long imuPitchMdeg = 0;
+long imuRollMdeg = 0;
+
+bool sonarMeasuring = false;
+bool sonarValid = false;
+unsigned long sonarLastTriggerMs = 0;
+unsigned long sonarTriggerUs = 0;
+unsigned long sonarRiseUs = 0;
+int sonarDistanceMm = -1;
 
 unsigned long lastPiSeenMs = 0;
 unsigned long lastStatusMs = 0;
@@ -426,8 +457,143 @@ void checkWatchdog() {
   }
 }
 
+void triggerSonar() {
+  digitalWrite(PIN_TRIG, LOW);
+  delayMicroseconds(2);
+  digitalWrite(PIN_TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(PIN_TRIG, LOW);
+
+  sonarTriggerUs = micros();
+  sonarRiseUs = 0;
+  sonarMeasuring = true;
+  sonarLastTriggerMs = millis();
+}
+
+void serviceSonar() {
+  if (!sonarMeasuring) {
+    if (static_cast<unsigned long>(millis() - sonarLastTriggerMs) >= SONAR_PERIOD_MS) {
+      triggerSonar();
+    }
+    return;
+  }
+
+  const unsigned long nowUs = micros();
+  const bool echoHigh = digitalRead(PIN_ECHO) == HIGH;
+
+  if (echoHigh && sonarRiseUs == 0) {
+    sonarRiseUs = nowUs;
+    return;
+  }
+
+  if (!echoHigh && sonarRiseUs != 0) {
+    const unsigned long durationUs = nowUs - sonarRiseUs;
+    sonarMeasuring = false;
+    sonarRiseUs = 0;
+
+    if (durationUs >= 100 && durationUs <= SONAR_TIMEOUT_US) {
+      const unsigned long distanceMm = durationUs * 10UL / 58UL;
+      if (distanceMm >= SONAR_MIN_MM && distanceMm <= SONAR_MAX_MM) {
+        sonarDistanceMm = static_cast<int>(distanceMm);
+        sonarValid = true;
+        return;
+      }
+    }
+
+    sonarDistanceMm = -1;
+    sonarValid = false;
+    return;
+  }
+
+  if (sonarRiseUs == 0 && nowUs - sonarTriggerUs > SONAR_TIMEOUT_US) {
+    sonarMeasuring = false;
+    sonarDistanceMm = -1;
+    sonarValid = false;
+  } else if (sonarRiseUs != 0 && nowUs - sonarRiseUs > SONAR_TIMEOUT_US) {
+    sonarMeasuring = false;
+    sonarRiseUs = 0;
+    sonarDistanceMm = -1;
+    sonarValid = false;
+  }
+}
+
+void updateImuEuler(float qi, float qj, float qk, float qr) {
+  const float sinRoll = 2.0f * (qr * qi + qj * qk);
+  const float cosRoll = 1.0f - 2.0f * (qi * qi + qj * qj);
+  const float roll = atan2(sinRoll, cosRoll);
+
+  float sinPitch = 2.0f * (qr * qj - qk * qi);
+  if (sinPitch > 1.0f) {
+    sinPitch = 1.0f;
+  } else if (sinPitch < -1.0f) {
+    sinPitch = -1.0f;
+  }
+  const float pitch = asin(sinPitch);
+
+  const float sinYaw = 2.0f * (qr * qk + qi * qj);
+  const float cosYaw = 1.0f - 2.0f * (qj * qj + qk * qk);
+  const float yaw = atan2(sinYaw, cosYaw);
+
+  imuRollMdeg = lround(roll * RAD_TO_MDEG);
+  imuPitchMdeg = lround(pitch * RAD_TO_MDEG);
+  imuYawMdeg = lround(yaw * RAD_TO_MDEG);
+}
+
+void setupImu() {
+  Wire.begin();
+  const uint8_t addresses[] = {0x4A, 0x4B};
+
+  for (uint8_t index = 0; index < 2; ++index) {
+    Wire.beginTransmission(addresses[index]);
+    if (Wire.endTransmission() != 0) {
+      continue;
+    }
+
+    if (bno08x.begin_I2C(addresses[index], &Wire)) {
+      imuReady = bno08x.enableReport(
+          SH2_GAME_ROTATION_VECTOR,
+          IMU_REPORT_INTERVAL_US);
+      return;
+    }
+  }
+
+  imuReady = false;
+}
+
+void serviceImu() {
+  if (!imuReady) {
+    if (static_cast<unsigned long>(millis() - lastImuInitMs) >= 1000) {
+      lastImuInitMs = millis();
+      setupImu();
+    }
+    return;
+  }
+
+  sh2_SensorValue_t event;
+  while (bno08x.getSensorEvent(&event)) {
+    if (event.sensorId != SH2_GAME_ROTATION_VECTOR) {
+      continue;
+    }
+
+    const sh2_RotationVector_t& quaternion = event.un.gameRotationVector;
+    updateImuEuler(quaternion.i, quaternion.j, quaternion.k, quaternion.real);
+    imuValid = true;
+    lastImuMs = millis();
+  }
+
+  if (imuValid && static_cast<unsigned long>(millis() - lastImuMs) > IMU_STALE_MS) {
+    imuValid = false;
+  }
+}
+
 void sendStatus() {
   uint16_t status = 0;
+  if (sonarValid) {
+    status |= STATUS_SONAR_VALID;
+  }
+  if (imuValid) {
+    status |= STATUS_IMU_VALID;
+  }
   if (motorsActive) {
     status |= STATUS_MOTORS_ACTIVE;
   }
@@ -439,8 +605,12 @@ void sendStatus() {
   snprintf(
       payload,
       sizeof(payload),
-      "A,%u,-1,0,0,0,%u",
+      "A,%u,%d,%ld,%ld,%ld,%u",
       static_cast<unsigned>(statusSeq++),
+      sonarDistanceMm,
+      imuYawMdeg,
+      imuPitchMdeg,
+      imuRollMdeg,
       static_cast<unsigned>(status));
   sendFrame(payload);
 }
@@ -466,8 +636,12 @@ void setup() {
   pinMode(PIN_IN2, OUTPUT);
   pinMode(PIN_IN3, OUTPUT);
   pinMode(PIN_IN4, OUTPUT);
+  pinMode(PIN_TRIG, OUTPUT);
+  pinMode(PIN_ECHO, INPUT);
 
+  digitalWrite(PIN_TRIG, LOW);
   stopMotors();
+  setupImu();
 
   lastPiSeenMs = millis();
   lastStatusMs = millis();
@@ -475,6 +649,8 @@ void setup() {
 
 void loop() {
   pollSerial();
+  serviceSonar();
+  serviceImu();
   checkWatchdog();
   sendStatusIfDue();
 }

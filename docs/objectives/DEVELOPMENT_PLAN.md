@@ -54,8 +54,9 @@ H0b non e' un prerequisito per iniziare a scrivere il software.
 Stato 2026-10-31: B1-1 verificata sul link reale Raspberry Pi 5 - Mega con firmware sicuro
 (handshake, heartbeat, status, logger JSONL, stop `X`). B1-2 verificata con ruote sollevate e
 conferma dell'operatore: comandi a 255 su entrambe le ruote e sui canali separati, ack, stop e
-rotazione osservata; firmware sicuro ripristinato. Lettura sensori e calibrazione restano da
-completare.
+rotazione osservata; firmware sicuro ripristinato. B1-3: HC-SR04 e BNO085 letti nello status.
+Valori operativi `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`, con gate predefinito
+chiuso. Calibrazione di sonar, assi IMU e camere ancora da completare.
 
 ### F0 — Linea
 
