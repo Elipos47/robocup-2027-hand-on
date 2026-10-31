@@ -13,9 +13,10 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 ## Stato
 
 - Fase corrente: avvio dello sviluppo codice. Il firmware di banco e il software Raspberry
-  entrano nel repository; il primo sketch misura lati e verso dei motori.
-- Contratto minimo: batteria 11.1 V nota da etichetta; lati e verso dei motori da confermare a
-  banco. La mappa dei pin e' in `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
+  entrano nel repository; il primo sketch ha verificato lati e verso dei motori.
+- Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
+  sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
+  `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
 - Le quote degli ingombri gia raccolte in `docs/hardware/Misure Robotica.pdf` sono per il CAD e
   non sono trattate come parametri del controller senza conferma.
 - Simulazione: non e' un gate di sviluppo per questa linea di lavoro.
@@ -65,11 +66,11 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Eseguire il test `firmware/test/motor_direction_test/` e riportare lato e verso dei motori.
-2. Aggiornare il contratto minimo con `motor_side_map` e `motor_direction_polarity`.
-3. Scrivere parser del protocollo e logger sul Raspberry, con movimento disabilitato finche i
+1. Approvare il formato del protocollo seriale in `docs/architecture/SERIAL_PROTOCOL.md`.
+2. Scrivere parser del protocollo e logger sul Raspberry, con movimento disabilitato finche i
    dati di sicurezza non sono confermati.
-4. Collaudare freni, arresto e comunicazione Raspberry-Arduino; poi eseguire il primo test
+3. Collaudare freni, arresto e comunicazione Raspberry-Arduino.
+4. Misurare diametro ruota e RPM reali per la velocita' lineare; poi eseguire il primo test
    controllato della linea sul campo.
 
 La validazione e la build si eseguono con:

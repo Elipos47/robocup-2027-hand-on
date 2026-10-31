@@ -12,16 +12,15 @@ mancante non blocca la scrittura del codice: blocca solo la funzione che ne dipe
 | Campo | Valore | Uso |
 |---|---|---|
 | `battery_nominal_v` | `11.1` | scala tensione e limiti dei motori |
-| `motor_side_map` | `TODO` | quale motore e' sinistro e quale destro |
+| `motor_side_map` | `A = destra, B = sinistra` | quale motore e' sinistro e quale destro |
 | `motor_direction_polarity` | `A e B invertiti` | verso avanti/indietro; corretto nel software |
 
 Sono tre dati fisici che il software non puo' dedurre, e si ricavano in cinque minuti con le
 ruote sollevate: si comanda un motore alla volta e si guarda quale gira e in che verso.
 
-La polarita' e' stata verificata a banco il 2026-10-31: con il cablaggio attuale entrambi i
-canali girano indietro con il comando "avanti", quindi la correzione e' applicata nel software
-dello sketch di test. Dopo l'upload, `1` e `3` vanno avanti. `motor_side_map` resta da
-confermare.
+La polarita' e la mappa dei lati sono state verificate a banco il 2026-10-31: entrambi i canali
+girano indietro con il comando "avanti" (corretto nel software; dopo l'upload `1` e `3` vanno
+avanti) e il canale A e' la ruota destra, il canale B la ruota sinistra.
 
 La batteria e' nota dall'etichetta (2026-10-22): due pacchi Li-Ion 3S da 11.1 V 2.6 Ah 28.86 Wh
 in parallelo, cioe' 11.1 V, 5.2 Ah e 57.72 Wh dichiarati. In parallelo la tensione non cambia.
@@ -67,9 +66,8 @@ led e interruttore.
   lampeggia e non va usato come indicatore di stato.
 - Il modulo L298N non ha jumper `ENA`/`ENB`: gli enable sono pilotati direttamente dai pin 12 e
   13.
-- La corrispondenza tra canale A/B e lato sinistro/destro resta `TODO` (`motor_side_map`) e va
-  determinata a banco con le ruote sollevate.
-- La mappa e' una decisione, non una misura: verso, freno e limite PWM restano da verificare.
+- La corrispondenza e' verificata a banco: canale A = ruota destra, canale B = ruota sinistra.
+- La mappa e' una decisione, non una misura: freno e limite PWM restano da verificare.
 
 ### HC-SR04 - mappa fornita dall'utente
 
@@ -108,6 +106,6 @@ al controller: non vanno riportate qui.
 
 ```text
 battery_nominal_v = 11.1
-motor_side_map =
+motor_side_map = A=destra, B=sinistra
 motor_direction_polarity = A e B invertiti
 ```

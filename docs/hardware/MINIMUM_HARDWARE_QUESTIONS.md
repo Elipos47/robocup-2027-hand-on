@@ -14,8 +14,8 @@ Per il software basta la tensione.
 ## Q2. Quale motore e' il sinistro
 
 ```text
-motore_sinistro =
-motore_destro =
+motore_sinistro = B
+motore_destro = A
 ```
 
 ## Q3. Verso di ciascun motore
@@ -23,8 +23,8 @@ motore_destro =
 Con il comando "avanti":
 
 ```text
-verso_sinistro = avanti / indietro / non verificato
-verso_destro   = avanti / indietro / non verificato
+verso_sinistro = avanti (polarita' corretta nel software)
+verso_destro   = avanti (polarita' corretta nel software)
 ```
 
 ## Come si misurano

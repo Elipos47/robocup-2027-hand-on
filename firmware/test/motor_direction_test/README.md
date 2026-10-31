@@ -5,6 +5,8 @@ motori prima di scrivere il controller.
 
 **Motori:** RS PRO 834-7631, 4.5-15 V DC, riduttore 100:1.
 
+**Mappa:** canale A = ruota destra, canale B = ruota sinistra (verificato 2026-10-31).
+
 **Stato:** compilato; prova a banco in corso.
 
 ## Cablaggio usato

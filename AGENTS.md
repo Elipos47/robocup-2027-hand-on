@@ -82,14 +82,12 @@ contiene il codice applicativo del progetto precedente.
 - Fatto: mappa pin L298N (ENA/ENB 12/13, IN1..IN4 22..25), HC-SR04 (TRIG 27, ECHO 26) e
   BNO085 (SDA 20, SCL 21); breakout Adafruit BNO085 confermato compatibile con I2C a 5 V.
 - Fatto: primo sketch di banco in `firmware/test/motor_direction_test/`, compilato con
-  `bash scripts/build.sh`. Prova a banco in corso: la polarita' di entrambi i canali e'
-  invertita, corretta nel software e riverificata (`1`/`3` avanti); manca la mappa
-  sinistra/destra.
-- In corso: fase di sviluppo codice; determinare lati e velocita' dei motori, poi seriale e
-  logger.
-- Prossimi passi: confermare la mappa sinistra/destra e la velocita' reale, completare il
-  contratto minimo, scrivere parser e logger con movimento disabilitato, poi collaudare
-  freni/arresto e comunicazione Raspberry-Arduino.
+  `bash scripts/build.sh`. Prova a banco completata: polarita' di entrambi i canali invertita e
+  corretta nel software (`1`/`3` avanti); mappa lati verificata: A = ruota destra, B = ruota
+  sinistra.
+- In corso: fase di sviluppo codice; contratto minimo completo, si passa a seriale e logger.
+- Prossimi passi: approvare il protocollo, scrivere parser e logger con movimento disabilitato,
+  poi collaudare freni/arresto e comunicazione Raspberry-Arduino.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, BNO085,

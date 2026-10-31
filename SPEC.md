@@ -2,8 +2,8 @@
 
 **Versione:** 0.3
 **Data:** 31/10/2026
-**Stato:** sviluppo attivo; firmware di banco e software in costruzione. Contratto minimo:
-batteria 11.1 V nota, lati e verso dei motori da confermare a banco.
+**Stato:** sviluppo attivo; firmware di banco e software in costruzione. Contratto minimo
+completo: batteria 11.1 V da etichetta, mappa lati e polarita' dei motori verificate a banco.
 
 ## 1. Obiettivo
 
@@ -42,7 +42,8 @@ Il progetto non richiede un inventario hardware completo prima di iniziare a scr
 software. Il contratto minimo e' definito in `docs/hardware/MINIMUM_HARDWARE_DATA.md` e comprende:
 
 - tensione nominale della batteria (11.1 V da etichetta);
-- asse e verso dei motori.
+- asse e verso dei motori: A = ruota destra, B = ruota sinistra; entrambi invertiti e corretti
+  nel software.
 
 Le quote degli ingombri raccolte in `docs/hardware/Misure Robotica.pdf` sono risorse per il CAD e
 non sostituiscono questi parametri. I valori mancanti restano `TODO` e bloccano solo la funzione

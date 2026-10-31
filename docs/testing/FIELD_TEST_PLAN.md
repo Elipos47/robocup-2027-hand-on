@@ -77,8 +77,8 @@ sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilit
 ## Test ancora da creare
 
 - [x] sketch di banco per le direzioni dei motori (`firmware/test/motor_direction_test/`),
-  polarita' verificata; manca la mappa sinistra/destra;
-- [ ] raccolta dei dati minimi: lati e verso dei motori;
+  polarita' e mappa lati verificate;
+- [x] raccolta dei dati minimi: lati e verso dei motori;
 - [ ] test freno e direzione motori;
 - [ ] test comunicazione e watchdog;
 - [ ] calibrazione manuale camere;
