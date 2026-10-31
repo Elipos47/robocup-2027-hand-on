@@ -79,10 +79,13 @@ sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilit
 - [x] sketch di banco per le direzioni dei motori (`firmware/test/motor_direction_test/`),
   polarita' e mappa lati verificate;
 - [x] raccolta dei dati minimi: lati e verso dei motori;
-- [ ] test freno e direzione motori;
 - [x] comunicazione V/H/X/D con movimento disabilitato (P1,
   `docs/testing/PROTOCOL_BENCH_TEST.md`);
-- [ ] watchdog con motori attivi e perdita del cavo;
+- [x] direzione motori e stop X con motori attivi (B0,
+  `docs/testing/B0_BENCH_TEST.md`);
+- [x] watchdog con motori attivi e perdita del cavo (B0, 1007-1008 ms);
+- [ ] freno/coast e arresto fisico misurato;
+- [ ] conferma visiva e ripetizione B0 su piu' run;
 - [ ] calibrazione manuale camere;
 - [ ] linea sul campo;
 - [ ] elementi missione;

@@ -17,7 +17,8 @@ della camera, IMU, sonar. Il registro non e' un inventario da completare.
 
 | Data | Componente | Misura | Valore | Strumento | Condizione | Incertezza | Esito |
 |---|---|---|---|---|---|---|---|
-| TBD | Arduino/L298N | tempo di arresto del watchdog | TODO | video o timestamp seriale | PWM di banco, ruote sollevate | - | da misurare in B0 |
+| 2026-10-31 | Arduino/L298N | tempo di arresto del watchdog | 1007-1008 ms dall'ultimo H | timestamp seriale | PWM 150, ruote sollevate, timeout 1000 ms | pochi ms (seriale) | verificato su 2 prove |
+| 2026-10-31 | Arduino/L298N | latenza ack stop X | 3.9 ms | timestamp seriale | PWM 150, motori attivi | pochi ms (seriale) | verificato; status fermo a 98 ms |
 | TBD | Ruota | diametro effettivo | TODO | calibro | ruota montata | - | per la velocita' lineare |
 | TBD | Motori | RPM a PWM noto | TODO | conteggio giri in 10 s | ruote sollevate, PWM 255 | - | opzionale |
 

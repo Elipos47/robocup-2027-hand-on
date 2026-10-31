@@ -1,10 +1,10 @@
 # SPEC — Robocup2027HandOn
 
-**Versione:** 0.6
+**Versione:** 0.7
 **Data:** 31/10/2026
-**Stato:** sviluppo attivo; protocollo v1.1 implementato su Raspberry e Arduino e verificato a
-banco senza movimento (P1). Test B0 con motori attivi da eseguire; movimento reale disabilitato
-di default.
+**Stato:** sviluppo attivo; protocollo v1.1 implementato e verificato a banco. B0 parziale: stop
+e watchdog verificati con motori attivi; freno/coast e conferma visiva da completare. Movimento
+reale disabilitato di default.
 
 ## 1. Obiettivo
 
@@ -99,6 +99,9 @@ Build riproducibile e sketch di test con README. Non abilita ancora il movimento
 ### Gate B0 — bench safety
 
 Freni, verso motori, stop di emergenza, watchdog e perdita seriale verificati a robot sollevato.
+
+Stato 2026-10-31: stop e watchdog verificati con motori attivi (B0-1); freno/coast e conferma
+visiva da completare.
 
 ### Gate B1 — primitive
 

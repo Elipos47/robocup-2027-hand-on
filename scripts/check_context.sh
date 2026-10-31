@@ -23,6 +23,7 @@ required=(
   docs/architecture/SERIAL_PROTOCOL.md
   docs/testing/FIELD_TEST_PLAN.md
   docs/testing/PROTOCOL_BENCH_TEST.md
+  docs/testing/B0_BENCH_TEST.md
   docs/MEASUREMENT_LOG.md
   docs/DECISIONS.md
   docs/SOURCE_MAP.md

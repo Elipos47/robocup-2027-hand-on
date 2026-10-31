@@ -29,8 +29,9 @@
     `firmware/rcj2027/`.
 12. **Firmware protocollo v1.1 (2026-10-31):** implementato in `firmware/rcj2027/` con
     checksum, ack, status, stop e watchdog. Il movimento e' disabilitato di default; il
-    protocollo e' verificato a banco senza movimento (P1). Per il test B0 si usano valori di
-    banco espliciti (PWM 150, watchdog 1000 ms), non definitivi.
+    protocollo e' verificato a banco senza movimento (P1). Il test B0-1 ha verificato stop e
+    watchdog con motori attivi; freno/coast e conferma visiva restano aperti. Per il test B0 si
+    usano valori di banco espliciti (PWM 150, watchdog 1000 ms), non definitivi.
 
 ## Decisioni da prendere
 

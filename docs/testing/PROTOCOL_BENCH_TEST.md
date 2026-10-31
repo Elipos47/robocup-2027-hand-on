@@ -48,4 +48,4 @@ python3 -m rcj2027 --port /dev/ttyACM0 --interactive --run-id p1-ripetizione
 ```
 
 Il prossimo test e' B0 con i motori attivi: configurazione di banco, ruote sollevate e misura
-del tempo di watchdog.
+del tempo di watchdog. B0-1 e' stato eseguito: vedi `docs/testing/B0_BENCH_TEST.md`.

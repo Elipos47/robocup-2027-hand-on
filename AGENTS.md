@@ -96,9 +96,12 @@ contiene il codice applicativo del progetto precedente.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in
   `docs/testing/PROTOCOL_BENCH_TEST.md`): V, H, status, X e `D` rifiutato con
   `MOTION_DISABLED`.
-- In corso: test di banco B0 con motori attivi (watchdog, perdita del cavo).
-- Prossimi passi: eseguire B0 con la configurazione di banco, misurare il tempo reale del
-  watchdog, poi integrare Raspberry e Arduino con il trasporto reale.
+- Fatto: B0 parziale con motori attivi (test B0-1 in `docs/testing/B0_BENCH_TEST.md`): stop X
+  con ack 3,9 ms e watchdog a 1007-1008 ms con PWM 150 e timeout 1000 ms. Firmware riportato a
+  movimento disabilitato.
+- In corso: completare B0 con conferma visiva, freno/coast e ripetizione; poi B1.
+- Prossimi passi: chiudere B0, integrare Raspberry e Arduino con il trasporto reale e il
+  logger, poi scegliere i valori definitivi di `pwm_max` e watchdog.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, BNO085,

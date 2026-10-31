@@ -20,6 +20,8 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   movimento disabilitato e watchdog da misurare.
 - Fatto: protocollo verificato sul Mega senza movimento (test P1): handshake, status, stop e
   gate `MOTION_DISABLED`.
+- Fatto: B0 parziale: stop X con ack 3,9 ms e watchdog a 1007-1008 ms con PWM 150; freno/coast
+  e conferma visiva da completare.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -47,6 +49,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
 | Protocollo seriale v1.1 | `docs/architecture/SERIAL_PROTOCOL.md` |
+| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
 | Decisioni aperte | `docs/DECISIONS.md` |
 | Provenienza e scelte di importazione | `docs/SOURCE_MAP.md` |
@@ -72,10 +75,10 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Provare B0 con i motori attivi: watchdog, stop e perdita del cavo (ruote sollevate).
-2. Misurare il tempo reale del watchdog e scegliere `pwm_max`; aggiornare la configurazione.
-3. Integrare Raspberry e Arduino con il trasporto reale e registrare i log.
-4. Misurare diametro ruota e RPM; poi eseguire il primo test controllato della linea.
+1. Completare B0: conferma visiva, freno/coast e ripetizione del test.
+2. Integrare Raspberry e Arduino con il trasporto reale e registrare i log (B1).
+3. Scegliere `pwm_max` e timeout watchdog definitivi; misurare diametro ruota e RPM.
+4. Eseguire il primo test controllato della linea sul campo.
 
 La validazione e la build si eseguono con:
 
