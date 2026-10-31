@@ -57,12 +57,25 @@ led e interruttore.
 - Canale B: `ENB` + `IN3`/`IN4`, verso `OUT3`/`OUT4` del L298N.
 - I pin 12 e 13 sono PWM sul Mega 2560. Il pin 13 ha il LED di bordo: con `ENB` in PWM il LED
   lampeggia e non va usato come indicatore di stato.
+- Il modulo L298N non ha jumper `ENA`/`ENB`: gli enable sono pilotati direttamente dai pin 12 e
+  13.
 - La corrispondenza tra canale A/B e lato sinistro/destro resta `TODO` (`motor_side_map`) e va
   determinata a banco con le ruote sollevate.
 - La mappa e' una decisione, non una misura: verso, freno e limite PWM restano da verificare.
 
-Non ancora definiti: pin del servo, trigger/echo di HC-SR04, I2C del BNO085, LED e
-interruttore.
+### HC-SR04 - mappa fornita dall'utente
+
+| Segnale | Pin Arduino Mega 2560 | Note |
+|---|---:|---|
+| `TRIG` | 27 | uscita digitale |
+| `ECHO` | 26 | ingresso digitale, 5 V |
+
+- I pin 26 e 27 sono digitali e non hanno funzioni alternate sul Mega: nessun conflitto con
+  seriale, I2C o SPI.
+- Il modulo e' alimentato a 5 V; l'uscita `ECHO` e' compatibile con gli ingressi del Mega.
+- Altezza e inclinazione di montaggio restano da misurare quando il sensore entra in un test.
+
+Non ancora definiti: pin del servo, I2C del BNO085, LED e interruttore.
 
 Nessun cablaggio va modificato prima dell'approvazione esplicita della mappa.
 
