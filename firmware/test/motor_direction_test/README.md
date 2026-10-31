@@ -3,6 +3,8 @@
 Sketch di banco per Arduino Mega 2560 + L298N. Serve a verificare lato e verso dei due
 motori prima di scrivere il controller.
 
+**Motori:** RS PRO 834-7631, 4.5-15 V DC, riduttore 100:1.
+
 **Stato:** compilato; prova a banco in corso.
 
 ## Cablaggio usato
@@ -45,13 +47,17 @@ La porta puo' cambiare: verificala con `arduino-cli board list`.
 | `3` | canale B avanti (`IN3` alto, `IN4` basso) |
 | `4` | canale B indietro (`IN3` basso, `IN4` alto) |
 | `0` / `s` | stop entrambi i canali |
-| `+` / `-` | PWM di test +/- 10 (parte da 80, limite 120) |
+| `+` / `-` | PWM di test +/- 10 (parte da 150, limite 255) |
 | `?` | aiuto |
 
 Ogni comando resta attivo fino a stop manuale (`0` o `s`); non c'e' stop automatico. Un nuovo
 comando `1`-`4` sostituisce quello attivo. Tieni le ruote sollevate e l'alimentazione a portata
-di mano. Se la ruota non si muove, premi `+` e riprova; se arriva a 120 senza muoversi, fermati
-e riporta il comportamento.
+di mano.
+
+Il PWM parte da 150 perche' i motori RS PRO 834-7631 hanno una tensione minima di 4,5 V: a
+120/255, dopo la caduta del L298N, il motore riceveva circa 4,3 V e restava fermo ronzando. Se
+la ruota non si muove, premi `+` e riprova; se arriva a 255 senza muoversi, fermati e riporta il
+comportamento. Non lasciare un motore bloccato a lungo: scalda motore e driver.
 
 ## Risultato da riportare
 

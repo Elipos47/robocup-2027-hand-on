@@ -23,6 +23,11 @@
   Le ruote devono essere sollevate e l'alimentazione dei motori separata
   dall'Arduino, con GND comune.
 
+  Motori: RS PRO 834-7631, 4.5-15 V DC, riduttore 100:1.
+  Con batteria 11,1 V nominali e caduta del L298N (~2 V), a PWM 120 il
+  motore riceveva circa 4,3 V, sotto la tensione minima di 4,5 V: per
+  questo ronzava senza partire. Il test parte quindi da 150/255.
+
   Questo e' uno strumento di banco: il PWM usato qui non e' il pwm_max
   definitivo del robot.
 */
@@ -34,8 +39,8 @@ const uint8_t PIN_IN2 = 23;
 const uint8_t PIN_IN3 = 24;
 const uint8_t PIN_IN4 = 25;
 
-const uint8_t PWM_START = 80;
-const uint8_t PWM_LIMIT = 120;
+const uint8_t PWM_START = 150;
+const uint8_t PWM_LIMIT = 255;
 const uint8_t PWM_STEP = 10;
 
 uint8_t testPwm = PWM_START;
