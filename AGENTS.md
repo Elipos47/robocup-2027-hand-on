@@ -89,10 +89,11 @@ contiene il codice applicativo del progetto precedente.
   sinistra.
 - Fatto: package `software/rcj2027/` con protocollo v1.1, trasporto finto, logger, gate di
   sicurezza e test unittest; la demo fake funziona e il movimento resta disabilitato.
-- In corso: firmware Arduino del protocollo v1.1; poi test di banco di heartbeat, stop e
-  watchdog.
-- Prossimi passi: scrivere il firmware del protocollo, provarlo con il trasporto reale, eseguire
-  il gate B0 e poi integrare il Raspberry con i sensori.
+- Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
+  disabilitato di default.
+- In corso: test di banco B0 (heartbeat, stop, watchdog e perdita del cavo).
+- Prossimi passi: eseguire B0 con la configurazione di banco, misurare il tempo reale del
+  watchdog, poi integrare Raspberry e Arduino con il trasporto reale.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, BNO085,

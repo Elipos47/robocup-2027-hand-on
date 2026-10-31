@@ -1,9 +1,9 @@
 # SPEC — Robocup2027HandOn
 
-**Versione:** 0.4
+**Versione:** 0.5
 **Data:** 31/10/2026
-**Stato:** sviluppo attivo; firmware di banco e software Pi in costruzione. Contratto minimo
-completo; protocollo seriale v1.1 implementato lato Raspberry, firmware Arduino da scrivere.
+**Stato:** sviluppo attivo; protocollo v1.1 implementato su Raspberry e Arduino. Test di banco
+B0 (heartbeat, stop, watchdog) da eseguire; movimento reale disabilitato di default.
 
 ## 1. Obiettivo
 
@@ -59,7 +59,7 @@ risultato atteso.
 - Arduino gestisce attuatori e sensori a bassa latenza, con heartbeat e stop sicuro.
 - La comunicazione seriale e' versionata, leggibile e protetta da una scadenza di sicurezza.
 - Il protocollo v1.1 usa checksum XOR, ack e status bitmask; il lato Raspberry e' implementato
-  in `software/rcj2027/`.
+  in `software/rcj2027/` e il lato Arduino in `firmware/rcj2027/`.
 - Il controller non usa coordinate di percorso al posto di sensori e IMU.
 - La telemetria deve distinguere stato, sensori, attuatori, errori e prove.
 
@@ -137,6 +137,7 @@ Il progetto non contiene:
 ## 8. Riferimenti
 
 - `firmware/`
+- `firmware/rcj2027/`
 - `software/rcj2027/`
 - `scripts/`
 - `docs/hardware/INVENTORY.md`

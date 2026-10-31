@@ -203,5 +203,6 @@ E,BAD_RANGE*2E\n
 - La specifica v1.1 e' documentata.
 - Il package Python `software/rcj2027/` contiene parser, trasporto finto, logger, gate di
   sicurezza e test host.
-- Il firmware Arduino del protocollo non e' ancora stato scritto: e' il passo successivo.
-- Lo sketch di banco `firmware/test/motor_direction_test/` resta separato dal protocollo.
+- Il firmware Arduino e' in `firmware/rcj2027/`: implementa checksum, ack, status, stop e
+  watchdog, con movimento disabilitato di default.
+- Restano da provare sul banco heartbeat, stop, watchdog e perdita del cavo (gate B0).

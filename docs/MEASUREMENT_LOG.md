@@ -15,6 +15,12 @@
 Si aggiungono solo quando servono a una prova: autonomia, RPM, corrente sotto carico, geometria
 della camera, IMU, sonar. Il registro non e' un inventario da completare.
 
+| Data | Componente | Misura | Valore | Strumento | Condizione | Incertezza | Esito |
+|---|---|---|---|---|---|---|---|
+| TBD | Arduino/L298N | tempo di arresto del watchdog | TODO | video o timestamp seriale | PWM di banco, ruote sollevate | - | da misurare in B0 |
+| TBD | Ruota | diametro effettivo | TODO | calibro | ruota montata | - | per la velocita' lineare |
+| TBD | Motori | RPM a PWM noto | TODO | conteggio giri in 10 s | ruote sollevate, PWM 255 | - | opzionale |
+
 ## Dimensioni gia raccolte
 
 Le quote degli ingombri sono in `docs/hardware/Misure Robotica.pdf` e servono al CAD, non al

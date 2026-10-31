@@ -6,8 +6,8 @@
   progetto precedente, con rimozione del contesto di simulazione.
 - `docs/hardware/CAD_REFERENCE.md` deriva dall'analisi dell'assieme STEP, mantenendo solo
   geometria, scala, componenti e limiti di verifica.
-- `docs/architecture/SERIAL_PROTOCOL.md` e' la specifica del protocollo v1.1, implementata lato
-  Raspberry in `software/rcj2027/`; il firmware Arduino del protocollo e' da scrivere.
+- `docs/architecture/SERIAL_PROTOCOL.md` e' la specifica del protocollo v1.1, implementata sia
+  lato Raspberry (`software/rcj2027/`) sia lato Arduino (`firmware/rcj2027/`).
 - `docs/rules/` contiene i PDF di riferimento 2026 copiati come materiale di studio.
 
 ## Escluso intenzionalmente

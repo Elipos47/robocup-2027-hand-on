@@ -40,8 +40,8 @@ Responsabilita':
 - risposte e contatori di errore.
 
 Il firmware parte dagli sketch di banco in `firmware/test/`. Il protocollo v1.1 e' definito in
-`SERIAL_PROTOCOL.md` e il lato Raspberry e' implementato in `software/rcj2027/`; il firmware
-Arduino del protocollo e' il passo successivo.
+`SERIAL_PROTOCOL.md` e implementato sia lato Raspberry (`software/rcj2027/`) sia lato Arduino
+(`firmware/rcj2027/`); il prossimo passo e' il test di banco del watchdog e dello stop (B0).
 
 ## Layout del codice
 

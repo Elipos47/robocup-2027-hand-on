@@ -28,6 +28,8 @@ required=(
   firmware/README.md
   firmware/test/motor_direction_test/motor_direction_test.ino
   firmware/test/motor_direction_test/README.md
+  firmware/rcj2027/rcj2027.ino
+  firmware/rcj2027/README.md
   software/README.md
   software/requirements.txt
   software/rcj2027/__init__.py

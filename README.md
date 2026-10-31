@@ -16,6 +16,8 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   entrano nel repository; il primo sketch ha verificato lati e verso dei motori.
 - Fatto: package `software/rcj2027/` con protocollo v1.1, trasporto finto, logger e gate di
   sicurezza; test unittest verdi e demo fake disponibile. Il movimento reale resta disabilitato.
+- Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; default con
+  movimento disabilitato e watchdog da misurare.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -31,7 +33,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 
 | Area | Percorso |
 |---|---|
-| Firmware Arduino | `firmware/`, `firmware/test/` |
+| Firmware Arduino | `firmware/`, `firmware/test/`, `firmware/rcj2027/` |
 | Software Raspberry Pi | `software/rcj2027/`, `software/tests/` |
 | Build e test | `scripts/build.sh`, `scripts/test.sh`, `scripts/check_context.sh` |
 | Obiettivi e regole | `docs/objectives/DEVELOPMENT_PLAN.md`, `docs/rules/` |
@@ -68,8 +70,8 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Scrivere il firmware Arduino del protocollo v1.1 (checksum, ack, status, stop).
-2. Provare heartbeat, stop e watchdog sul banco (gate B0).
+1. Provare il firmware `firmware/rcj2027/` sul banco (V, H, D, X, watchdog e perdita del cavo).
+2. Misurare il tempo reale del watchdog e scegliere `pwm_max`; aggiornare la configurazione.
 3. Integrare Raspberry e Arduino con il trasporto reale e registrare i log.
 4. Misurare diametro ruota e RPM; poi eseguire il primo test controllato della linea.
 

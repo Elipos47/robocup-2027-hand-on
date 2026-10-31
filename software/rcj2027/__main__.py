@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import time
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -88,6 +89,8 @@ def run_real(logger: JsonlLogger, port: str, baud: int) -> None:
         safety=DEFAULT_CONFIG.snapshot(),
     )
     try:
+        # L'apertura della porta resetta il Mega: lascia finire il bootloader.
+        time.sleep(2.0)
         transport.write(protocol.version_request())
         _log_version(logger, _read_reply(transport, timeout=2.0))
         transport.write(protocol.heartbeat(1))

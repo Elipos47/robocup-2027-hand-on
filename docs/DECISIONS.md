@@ -25,8 +25,11 @@
     avanzamento.
 11. **Protocollo v1.1 e software Pi (2026-10-31):** checksum XOR su ogni frame, ack
     `K,<sequence>` per i comandi, status a 16 bit. Il package `software/rcj2027/` implementa
-    parser, trasporto finto, logger e gate di sicurezza; il firmware Arduino del protocollo e'
-    il passo successivo.
+    parser, trasporto finto, logger e gate di sicurezza; il firmware Arduino e' in
+    `firmware/rcj2027/`.
+12. **Firmware protocollo v1.1 (2026-10-31):** implementato in `firmware/rcj2027/` con
+    checksum, ack, status, stop e watchdog. Il movimento e' disabilitato di default; per il
+    test B0 si usano valori di banco espliciti (PWM 150, watchdog 1000 ms), non definitivi.
 
 ## Decisioni da prendere
 

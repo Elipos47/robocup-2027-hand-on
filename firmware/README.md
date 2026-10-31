@@ -17,3 +17,4 @@ Codice C++/Arduino per Arduino Mega 2560.
 ## Sketch presenti
 
 - `test/motor_direction_test/`: verifica lato e verso dei due motori con L298N.
+- `rcj2027/`: firmware del protocollo seriale v1.1 (movimento disabilitato di default).
