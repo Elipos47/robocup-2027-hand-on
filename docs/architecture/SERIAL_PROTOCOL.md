@@ -212,3 +212,6 @@ E,BAD_RANGE*2E\n
 - B1-1 ha verificato su Raspberry Pi 5 il trasporto reale, l'handshake, il heartbeat a 200 ms,
   gli status a circa 100 ms, il log JSONL e lo stop `X` con ack
   (`docs/testing/B1_INTEGRATION_TEST.md`). La perdita fisica del cavo non e' ancora provata.
+- Il gate software per `D` (`RobotSession.drive`) limita i valori a `pwm_max`, attende l'ack e
+  invia `X` su rifiuto/timeout; e' coperto da test host. La prova B1-2 sul robot richiede ruote
+  sollevate e non e' ancora stata eseguita.

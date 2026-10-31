@@ -26,6 +26,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 - Fatto: B1-1, sessione reale Raspberry Pi 5 - Arduino Mega con firmware sicuro: handshake,
   heartbeat 200 ms, status a circa 100 ms, log JSONL e stop X con ack 3-5 ms, senza movimento
   (`docs/testing/B1_INTEGRATION_TEST.md`).
+- Fatto: gate software per i comandi motori (`RobotSession.drive`) con limite `pwm_max`, ack,
+  heartbeat durante l'attesa e stop su rifiuto/timeout; test host con trasporto finto. La prova
+  B1-2 sul robot richiede ruote sollevate e non e' ancora stata eseguita.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -79,8 +82,8 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Completare B1: comandi motori e lettura sensori ripetibili, ripetendo la sessione reale con
-   i sensori collegati.
+1. Eseguire B1-2, comandi motori con gate e ack, solo con ruote sollevate e conferma
+   dell'operatore; poi completare B1 con la lettura sensori.
 2. Chiudere B0: freno/coast, ripetizione, corrente e temperatura del L298N.
 3. Scegliere `pwm_max` e timeout watchdog definitivi; misurare diametro ruota e RPM.
 4. Eseguire il primo test controllato della linea sul campo.

@@ -110,7 +110,9 @@ con `--log-dir`; non vengono versionati.
 - perdita fisica del cavo USB durante la sessione: il caso e' coperto solo dal test host con
   trasporto finto, non da una prova con il cavo scollegato;
 - valori reali di HC-SR04 e BNO085: il firmware invia ancora `distance_mm = -1` e angoli a zero;
-- comandi motori e risposta `D`: non inviati in B1, restano coperti da B0/P1;
+- comandi motori e risposta `D`: non inviati in B1, restano coperti da B0/P1; il gate software
+  `RobotSession.drive()` e' pronto e testato con trasporto finto, ma la prova B1-2 sul robot
+  non e' stata eseguita;
 - watchdog con timeout maggiore di zero e firmware di banco: la configurazione attuale ha
   `WATCHDOG_TIMEOUT_MS = 0`;
 - sessioni lunghe, riconnessione USB e stabilita' su piu' ore;
@@ -118,6 +120,58 @@ con `--log-dir`; non vengono versionati.
 
 Il gate B1 non e' chiuso: comunicazione e logger sono verificati, mentre motori e sensori
 ripetibili restano da completare.
+
+## Prossimo test B1-2 - comandi motori (non eseguito)
+
+**Stato:** pianificato. `RobotSession.drive(left, right)` applica il gate di `safety.py`, limita
+i valori a `pwm_max`, invia `D` e attende l'ack continuando gli heartbeat. La funzione e'
+coperta dai test host, ma nessun comando `D` e' stato inviato al robot.
+
+Prerequisiti obbligatori:
+
+- ruote sollevate, confermate dall'operatore prima di iniziare;
+- firmware di banco con `BENCH_MOTION_ENABLED=true`, `PWM_MAX` e `WATCHDOG_TIMEOUT_MS=1000`;
+- configurazione Pi allineata allo stesso `pwm_max` e allo stesso timeout;
+- operatore presente con alimentazione motori controllabile;
+- valori di banco espliciti, non definitivi.
+
+Sequenza prevista:
+
+1. handshake e status con motori fermi;
+2. `drive(100, 100)` e attesa `K`;
+3. `run(1.0)` per mantenere heartbeat e status con bit 2 attivo;
+4. `stop()` e verifica `K` e bit 2 a zero;
+5. ripetizione con canali separati e verso opposto;
+6. registrazione di latenze, corrente e temperatura.
+
+Esempio di sessione, da usare solo con ruote sollevate:
+
+```python
+from rcj2027.logger import JsonlLogger
+from rcj2027.safety import HardwareConfig
+from rcj2027.session import RobotSession
+from rcj2027.transport import SerialTransport
+
+config = HardwareConfig(
+    battery_nominal_v=11.1,
+    motor_side_map={"A": "right", "B": "left"},
+    motor_direction_polarity={"A": "inverted", "B": "inverted"},
+    pwm_max=150,
+    watchdog_timeout_s=1.0,
+)
+
+with JsonlLogger("logs/b1-2.jsonl", "b1-2") as logger:
+    with SerialTransport("/dev/ttyACM0", 115200) as transport:
+        with RobotSession(transport, logger, config=config) as session:
+            session.handshake(boot_delay_s=2.0)
+            session.drive(100, 100)
+            session.run(1.0)
+            session.stop()
+```
+
+I valori `pwm_max=150` e `watchdog=1.0 s` sono di banco. Il test va eseguito solo dopo la
+conferma delle ruote sollevate; l'esito e le misure andranno aggiunti a questo documento e a
+`docs/MEASUREMENT_LOG.md`. Non eseguire la sessione con il robot a terra.
 
 ## Note
 

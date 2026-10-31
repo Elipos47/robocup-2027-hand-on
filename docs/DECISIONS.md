@@ -39,6 +39,11 @@
     bufferizza le righe parziali. B1-1 ha verificato la catena reale Raspberry Pi 5 - Mega con
     firmware sicuro, senza movimento (`docs/testing/B1_INTEGRATION_TEST.md`). La perdita fisica
     del cavo e i comandi motori restano fuori da B1-1.
+14. **Gate comandi motori (2026-10-31):** `RobotSession.drive(left, right)` richiede il gate di
+    `safety.py` completo, limita i valori a `pwm_max`, invia `D` solo dopo l'handshake e attende
+    l'ack continuando gli heartbeat. Su rifiuto o timeout invia `X` e solleva
+    `CommandRejected`. Non e' esposto dalla CLI; la prova B1-2 sul robot richiede ruote
+    sollevate e conferma dell'operatore.
 
 ## Decisioni da prendere
 

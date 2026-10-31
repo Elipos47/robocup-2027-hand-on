@@ -109,7 +109,9 @@ i motori ronzavano senza ruotare. Freno/coast e ripetizione da completare.
 Comunicazione, heartbeat, logger, motori e sensori ripetibili su banco.
 
 Stato 2026-10-31: B1-1 verificata su Raspberry Pi 5 con firmware sicuro (handshake, heartbeat
-a 200 ms, status a circa 100 ms, log JSONL, stop `X` con ack, nessun movimento). Motori e
+a 200 ms, status a circa 100 ms, log JSONL, stop `X` con ack, nessun movimento). Il gate
+software per i comandi motori (`RobotSession.drive`) e' implementato e coperto da test host;
+la prova B1-2 sul robot richiede ruote sollevate e non e' ancora stata eseguita. Motori e
 sensori ripetibili restano da completare; il gate B1 non e' chiuso.
 
 ### Gate F0 — line

@@ -21,6 +21,14 @@ class SessionError(RuntimeError):
     """La sessione non puo' continuare (handshake fallito o link non pronto)."""
 
 
+class CommandRejected(RuntimeError):
+    """L'Arduino ha rifiutato un comando o non ha risposto in tempo."""
+
+    def __init__(self, code: str) -> None:
+        self.code = code
+        super().__init__(f"comando rifiutato: {code}")
+
+
 class RobotSession:
     """Collega trasporto, protocollo, sicurezza e logger in un'unica sessione."""
 
@@ -154,14 +162,106 @@ class RobotSession:
         self.logger.log("heartbeat", sequence=sequence)
         return sequence
 
+    def drive(
+        self,
+        left: int,
+        right: int,
+        *,
+        wait_ack_s: float = 0.5,
+        read_timeout_s: float = 0.05,
+    ) -> int:
+        """Invia ``D`` solo se il gate di movimento e' completo.
+
+        I valori sono limitati a ``config.pwm_max`` e devono essere interi.
+        Durante l'attesa dell'ack la sessione continua a inviare heartbeat.
+        """
+        self.config.require_motion()
+        self._require_handshake()
+        if wait_ack_s < 0:
+            raise ValueError("wait_ack_s non puo' essere negativo")
+        if read_timeout_s <= 0:
+            raise ValueError("read_timeout_s deve essere positivo")
+
+        pwm_max = self.config.pwm_max
+        if isinstance(pwm_max, bool) or not isinstance(pwm_max, int):
+            raise SessionError("pwm_max non valido dopo il gate")
+
+        for name, value in (("left", left), ("right", right)):
+            if isinstance(value, bool) or not isinstance(value, int):
+                raise TypeError(f"{name} must be an int")
+            if abs(value) > pwm_max:
+                raise ValueError(f"{name} fuori limite pwm_max={pwm_max}: {value}")
+
+        sequence = self._next_sequence()
+        self.transport.write(protocol.drive(sequence, left, right))
+        self.logger.log(
+            "drive_sent",
+            sequence=sequence,
+            left=left,
+            right=right,
+            pwm_max=pwm_max,
+        )
+
+        try:
+            accepted = self._wait_for_ack(
+                sequence,
+                wait_ack_s=wait_ack_s,
+                read_timeout_s=read_timeout_s,
+            )
+        except CommandRejected as exc:
+            self.logger.log("drive_rejected", sequence=sequence, code=exc.code)
+            self._safe_stop(reason="drive_rejected")
+            raise
+
+        if not accepted:
+            self.logger.log(
+                "drive_ack_timeout",
+                sequence=sequence,
+                wait_s=wait_ack_s,
+            )
+            self._safe_stop(reason="drive_ack_timeout")
+            raise CommandRejected("ACK_TIMEOUT")
+
+        self.logger.log("drive_ack", sequence=sequence)
+        return sequence
+
+    def _wait_for_ack(
+        self,
+        sequence: int,
+        *,
+        wait_ack_s: float,
+        read_timeout_s: float,
+    ) -> bool:
+        attempts = max(1, int(wait_ack_s / read_timeout_s))
+        for _ in range(attempts):
+            self._maybe_heartbeat(self._clock())
+            line = self.transport.read_line(timeout=read_timeout_s)
+            if line is None:
+                continue
+            message = self._consume_line(line)
+            if isinstance(message, int) and message == sequence:
+                return True
+            if isinstance(message, str):
+                raise CommandRejected(message)
+        return False
+
+    def _safe_stop(self, *, reason: str) -> None:
+        try:
+            self.stop(wait_ack_s=0.2)
+        except (OSError, RuntimeError) as exc:
+            self.logger.log("stop_failed", error=str(exc), reason=reason)
+
+    def _maybe_heartbeat(self, now: float) -> None:
+        if now >= self._next_heartbeat_at:
+            self.send_heartbeat()
+            self._next_heartbeat_at = now + self.heartbeat_interval_s
+
     def step(self, *, now: float | None = None, read_timeout_s: float = 0.05) -> bool:
         """Esegue un ciclo: heartbeat se dovuto, una lettura, controllo link."""
         self._require_handshake()
         current = self._clock() if now is None else now
 
-        if current >= self._next_heartbeat_at:
-            self.send_heartbeat()
-            self._next_heartbeat_at = current + self.heartbeat_interval_s
+        self._maybe_heartbeat(current)
 
         line = self.transport.read_line(timeout=read_timeout_s)
         received = line is not None

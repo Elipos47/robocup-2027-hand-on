@@ -7,7 +7,8 @@ from pathlib import Path
 
 from rcj2027 import protocol
 from rcj2027.logger import JsonlLogger
-from rcj2027.session import RobotSession, SessionError
+from rcj2027.safety import HardwareConfig, SafetyError
+from rcj2027.session import CommandRejected, RobotSession, SessionError
 from rcj2027.transport import FakeTransport
 
 
@@ -213,6 +214,98 @@ class HeartbeatTests(SessionTestBase):
 
         self.assertEqual(len(self.find("link_restored")), 1)
         self.assertEqual(session.status_count, 1)
+
+
+class DriveTests(SessionTestBase):
+    def motion_config(self, pwm_max: int = 200) -> HardwareConfig:
+        return HardwareConfig(
+            battery_nominal_v=11.1,
+            motor_side_map={"A": "right", "B": "left"},
+            motor_direction_polarity={"A": "inverted", "B": "inverted"},
+            pwm_max=pwm_max,
+            watchdog_timeout_s=1.0,
+        )
+
+    def test_drive_is_blocked_without_complete_safety_config(self) -> None:
+        session = self.connect()
+
+        with self.assertRaises(SafetyError) as ctx:
+            session.drive(10, 10)
+
+        self.assertIn("pwm_max", ctx.exception.missing)
+        self.assertIn("watchdog_timeout_s", ctx.exception.missing)
+        self.assertEqual(self.transport.sent_text(), ["V,1*4B\n"])
+
+    def test_drive_sends_command_and_waits_for_ack(self) -> None:
+        session = self.connect(config=self.motion_config())
+        self.transport.feed_line(protocol.ack(0))
+
+        sequence = session.drive(100, -100)
+
+        self.assertEqual(sequence, 0)
+        self.assertIn(
+            protocol.drive(0, 100, -100).decode("ascii"),
+            self.transport.sent_text(),
+        )
+        sent = self.find("drive_sent")[0]
+        self.assertEqual(sent["left"], 100)
+        self.assertEqual(sent["right"], -100)
+        self.assertEqual(sent["pwm_max"], 200)
+        self.assertEqual(len(self.find("drive_ack")), 1)
+
+    def test_drive_keeps_heartbeat_alive_while_waiting(self) -> None:
+        session = self.connect(config=self.motion_config())
+        self.transport.feed_line(protocol.ack(0))
+
+        session.drive(100, 100)
+
+        self.assertEqual(session.heartbeat_count, 1)
+        self.assertIn(protocol.heartbeat(1).decode("ascii"), self.transport.sent_text())
+
+    def test_drive_rejects_value_above_pwm_max(self) -> None:
+        session = self.connect(config=self.motion_config(pwm_max=200))
+
+        with self.assertRaises(ValueError):
+            session.drive(201, 0)
+
+        self.assertEqual(self.transport.sent_text(), ["V,1*4B\n"])
+
+    def test_drive_rejects_non_integer_value(self) -> None:
+        session = self.connect(config=self.motion_config())
+
+        with self.assertRaises(TypeError):
+            session.drive(True, 0)  # type: ignore[arg-type]
+
+        self.assertEqual(self.transport.sent_text(), ["V,1*4B\n"])
+
+    def test_drive_reports_firmware_error_and_stops(self) -> None:
+        session = self.connect(config=self.motion_config())
+        self.transport.feed_line(protocol.error("MOTION_DISABLED"))
+        self.transport.feed_line(protocol.ack(2))
+
+        with self.assertRaises(CommandRejected) as ctx:
+            session.drive(100, 100)
+
+        self.assertEqual(ctx.exception.code, "MOTION_DISABLED")
+        self.assertEqual(self.find("drive_rejected")[0]["code"], "MOTION_DISABLED")
+        self.assertIn(protocol.stop(2).decode("ascii"), self.transport.sent_text())
+
+    def test_drive_ack_timeout_stops_the_link(self) -> None:
+        session = self.connect(config=self.motion_config())
+        self.transport.feed_line(protocol.ack(2))
+
+        with self.assertRaises(CommandRejected) as ctx:
+            session.drive(100, 100, wait_ack_s=0.0)
+
+        self.assertEqual(ctx.exception.code, "ACK_TIMEOUT")
+        self.assertEqual(len(self.find("drive_ack_timeout")), 1)
+        self.assertIn(protocol.stop(2).decode("ascii"), self.transport.sent_text())
+
+    def test_drive_requires_handshake_with_complete_config(self) -> None:
+        session = self.make_session(config=self.motion_config())
+
+        with self.assertRaises(SessionError):
+            session.drive(10, 10)
 
 
 class StopTests(SessionTestBase):

@@ -50,6 +50,17 @@ Esempi di payload: `v,1`, `h,1`, `x,2`, `d,1,100,100`. Scrivi `quit` per uscire.
 La demo usa il trasporto finto: non apre la porta seriale e non muove il robot. I log finiscono
 in `logs/` (ignorata da git) oppure nella directory indicata con `--log-dir`.
 
+## Comandi motori
+
+`RobotSession.drive(left, right)` e' il livello software per `D`: applica il gate di
+`safety.py`, rifiuta i valori oltre `pwm_max`, invia il comando e attende l'ack continuando gli
+heartbeat. Non e' esposto dalla CLI e non viene chiamato dalle sessioni di logging: con la
+configurazione attuale `DEFAULT_CONFIG` ha `pwm_max` e timeout watchdog vuoti, quindi `drive`
+solleva `SafetyError` prima di scrivere qualsiasi frame.
+
+La prova B1-2 con i motori e' pianificata in `docs/testing/B1_INTEGRATION_TEST.md` e va eseguita
+solo con ruote sollevate e firmware di banco esplicito.
+
 ## Configurazione
 
 `DEFAULT_CONFIG` in `safety.py` contiene i dati verificati a banco:

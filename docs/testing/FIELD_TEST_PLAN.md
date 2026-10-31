@@ -86,6 +86,7 @@ sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilit
 - [x] rotazione visiva a 255 (confermata dall'operatore);
 - [x] sessione seriale reale Raspberry-Mega con handshake, heartbeat, status a 10 Hz, logger
   JSONL e stop `X` (B1-1, `docs/testing/B1_INTEGRATION_TEST.md`);
+- [ ] comandi motori con gate, ack e stop durante il movimento (B1-2, ruote sollevate);
 - [ ] perdita fisica del cavo USB durante una sessione reale;
 - [ ] freno/coast e arresto fisico misurato;
 - [ ] ripetizione B0 su piu' run;
