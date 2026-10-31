@@ -3,9 +3,9 @@
 Firmware Arduino Mega 2560 + L298N per il protocollo definito in
 `docs/architecture/SERIAL_PROTOCOL.md`.
 
-**Stato:** compilato; protocollo verificato a banco (P1). B0 parziale: stop X con ack 3,7-3,9 ms
-e watchdog a 1007-1008 ms con PWM 150/255 e timeout 1000 ms. A 150 i motori ronzavano senza
-ruotare; a 255 la rotazione e' da confermare. Freno/coast da completare. Firmware riportato a
+**Stato:** compilato; protocollo verificato a banco (P1). B0 parziale: rotazione a 255, stop X
+con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms con PWM 150/255 e timeout 1000 ms; a 150 i
+motori ronzavano senza ruotare. Freno/coast e ripetizione da completare. Firmware riportato a
 movimento disabilitato.
 
 ## Cablaggio

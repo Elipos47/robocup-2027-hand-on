@@ -17,9 +17,9 @@ della camera, IMU, sonar. Il registro non e' un inventario da completare.
 
 | Data | Componente | Misura | Valore | Strumento | Condizione | Incertezza | Esito |
 |---|---|---|---|---|---|---|---|
-| 2026-10-31 | Arduino/L298N | tempo di arresto del watchdog | 1007-1008 ms dall'ultimo H | timestamp seriale | PWM 150/255, ruote sollevate, timeout 1000 ms | pochi ms (seriale) | verificato su piu' prove |
+| 2026-10-31 | Arduino/L298N | tempo di arresto del watchdog | 1004.9-1008.3 ms dall'ultimo H | timestamp seriale | PWM 150/255, ruote sollevate, timeout 1000 ms | pochi ms (seriale) | verificato su piu' prove |
 | 2026-10-31 | Arduino/L298N | latenza ack stop X | 3.7-3.9 ms | timestamp seriale | PWM 150/255, motori attivi | pochi ms (seriale) | verificato; status fermo a 98-99 ms |
-| 2026-10-31 | Motori | PWM di banco che muove | 150: solo ronzio; 255: comando accettato, rotazione da confermare | osservazione visiva + telemetria | ruote sollevate | - | 255 non e' il pwm_max definitivo |
+| 2026-10-31 | Motori | PWM di banco che muove | 150: solo ronzio; 255: rotazione confermata dall'operatore | osservazione visiva + telemetria | ruote sollevate | - | 255 non e' il pwm_max definitivo |
 | TBD | Ruota | diametro effettivo | TODO | calibro | ruota montata | - | per la velocita' lineare |
 | TBD | Motori | RPM a PWM noto | TODO | conteggio giri in 10 s | ruote sollevate, PWM 255 | - | opzionale |
 

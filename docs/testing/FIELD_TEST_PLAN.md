@@ -83,7 +83,7 @@ sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilit
   `docs/testing/PROTOCOL_BENCH_TEST.md`);
 - [x] stop X con ponte abilitato (B0, `docs/testing/B0_BENCH_TEST.md`);
 - [x] watchdog con ponte abilitato e perdita del cavo (B0, 1007-1008 ms);
-- [ ] rotazione visiva a 255;
+- [x] rotazione visiva a 255 (confermata dall'operatore);
 - [ ] freno/coast e arresto fisico misurato;
 - [ ] ripetizione B0 su piu' run;
 - [ ] calibrazione manuale camere;

@@ -20,8 +20,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   movimento disabilitato e watchdog da misurare.
 - Fatto: protocollo verificato sul Mega senza movimento (test P1): handshake, status, stop e
   gate `MOTION_DISABLED`.
-- Fatto: B0 parziale: stop X con ack 3,7-3,9 ms e watchdog a 1007-1008 ms; a 150 i motori
-  ronzavano senza ruotare, a 255 la rotazione e' da confermare. Freno/coast ancora aperti.
+- Fatto: B0 parziale: stop X con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms; a 150 i motori
+  ronzavano senza ruotare, a 255 hanno girato (conferma dell'operatore). Freno/coast ancora
+  aperti.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.

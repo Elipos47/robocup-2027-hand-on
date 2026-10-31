@@ -97,10 +97,10 @@ contiene il codice applicativo del progetto precedente.
   `docs/testing/PROTOCOL_BENCH_TEST.md`): V, H, status, X e `D` rifiutato con
   `MOTION_DISABLED`.
 - Fatto: B0 parziale con motori attivi (test B0-1 in `docs/testing/B0_BENCH_TEST.md`): stop X
-  con ack 3,7-3,9 ms e watchdog a 1007-1008 ms con PWM 150/255 e timeout 1000 ms. A 150 i
-  motori ronzavano senza ruotare; a 255 il comando e' stato accettato, rotazione visiva da
-  confermare. Firmware riportato a movimento disabilitato.
-- In corso: completare B0 con conferma visiva, freno/coast e ripetizione; poi B1.
+  con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms con PWM 150/255 e timeout 1000 ms. A 150 i
+  motori ronzavano senza ruotare; a 255 hanno girato (conferma dell'operatore). Firmware
+  riportato a movimento disabilitato.
+- In corso: completare B0 con freno/coast e ripetizione; poi B1.
 - Prossimi passi: chiudere B0, integrare Raspberry e Arduino con il trasporto reale e il
   logger, poi scegliere i valori definitivi di `pwm_max` e watchdog.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
