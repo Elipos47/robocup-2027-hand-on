@@ -75,7 +75,20 @@ led e interruttore.
 - Il modulo e' alimentato a 5 V; l'uscita `ECHO` e' compatibile con gli ingressi del Mega.
 - Altezza e inclinazione di montaggio restano da misurare quando il sensore entra in un test.
 
-Non ancora definiti: pin del servo, I2C del BNO085, LED e interruttore.
+### BNO085 - mappa fornita dall'utente
+
+| Segnale | Pin Arduino Mega 2560 | Note |
+|---|---:|---|
+| `SDA` | 20 | I2C hardware |
+| `SCL` | 21 | I2C hardware |
+
+- I pin 20 e 21 sono l'I2C hardware del Mega 2560: nessun conflitto con motori o sonar.
+- Il Mega lavora con livelli a 5 V sull'I2C. Prima di usare il BNO085 va verificato che il
+  modulo specifico sia 5 V tolerant oppure abbia un level shifter: molti breakout BNO085 sono
+  a 3,3 V. Non modificare il cablaggio senza questa verifica.
+- Modello del modulo e orientamento degli assi restano `TODO`.
+
+Non ancora definiti: pin del servo, LED e interruttore.
 
 Nessun cablaggio va modificato prima dell'approvazione esplicita della mappa.
 
