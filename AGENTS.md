@@ -19,7 +19,7 @@ contiene il codice applicativo del progetto precedente.
 ## Comandi
 
 ```sh
-# install:  arduino-cli core install arduino:avr; dipendenze Python in software/
+# install:  arduino-cli core install arduino:avr; python3 -m pip install -r software/requirements.txt
 # validate: bash scripts/check_context.sh
 # build:    bash scripts/build.sh
 # test:     bash scripts/test.sh
@@ -33,9 +33,11 @@ contiene il codice applicativo del progetto precedente.
 
 - Git: repository inizializzato su `main`; i checkpoint sono automatici. Il push e' regolato
   dalla sezione «Remoto e push»; `reset --hard`, rebase e riscritture di storia restano vietati.
-- Layout del codice: `firmware/` per gli sketch Arduino, `software/` per il Python del
+- Layout del codice: `firmware/` per gli sketch Arduino, `software/rcj2027/` per il Python del
   Raspberry, `firmware/test/<nome>/<nome>.ino` per gli sketch di banco. Ogni sketch di test ha
   un `README.md` con cablaggio, comandi e risultato atteso.
+- Il software Python si testa con `bash scripts/test.sh` (check, build e unittest). Il movimento
+  resta disabilitato se `pwm_max` o il timeout watchdog mancano.
 - La fonte di verita' hardware e' `docs/hardware/`; ogni misura reale va registrata con data,
   strumento, condizione e incertezza in `docs/MEASUREMENT_LOG.md`.
 - Per il software si usa il contratto minimo in
@@ -76,7 +78,7 @@ contiene il codice applicativo del progetto precedente.
 ## Stato attuale
 
 - Fatto: struttura documentale, inventario hardware, riferimento CAD, regolamento provvisorio,
-  piano hardware-first, architettura e protocollo seriale come proposta.
+  piano hardware-first, architettura e protocollo seriale v1.1.
 - Fatto: contratto minimo ridotto ai tre dati che il software non puo' dedurre: tensione,
   asse e verso dei motori. Batteria 11.1 V da etichetta (2 pacchi Li-Ion 3S in parallelo).
 - Fatto: mappa pin L298N (ENA/ENB 12/13, IN1..IN4 22..25), HC-SR04 (TRIG 27, ECHO 26) e
@@ -85,9 +87,12 @@ contiene il codice applicativo del progetto precedente.
   `bash scripts/build.sh`. Prova a banco completata: polarita' di entrambi i canali invertita e
   corretta nel software (`1`/`3` avanti); mappa lati verificata: A = ruota destra, B = ruota
   sinistra.
-- In corso: fase di sviluppo codice; contratto minimo completo, si passa a seriale e logger.
-- Prossimi passi: approvare il protocollo, scrivere parser e logger con movimento disabilitato,
-  poi collaudare freni/arresto e comunicazione Raspberry-Arduino.
+- Fatto: package `software/rcj2027/` con protocollo v1.1, trasporto finto, logger, gate di
+  sicurezza e test unittest; la demo fake funziona e il movimento resta disabilitato.
+- In corso: firmware Arduino del protocollo v1.1; poi test di banco di heartbeat, stop e
+  watchdog.
+- Prossimi passi: scrivere il firmware del protocollo, provarlo con il trasporto reale, eseguire
+  il gate B0 e poi integrare il Raspberry con i sensori.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, BNO085,

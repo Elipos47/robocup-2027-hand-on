@@ -14,6 +14,8 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 
 - Fase corrente: avvio dello sviluppo codice. Il firmware di banco e il software Raspberry
   entrano nel repository; il primo sketch ha verificato lati e verso dei motori.
+- Fatto: package `software/rcj2027/` con protocollo v1.1, trasporto finto, logger e gate di
+  sicurezza; test unittest verdi e demo fake disponibile. Il movimento reale resta disabilitato.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -30,7 +32,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Area | Percorso |
 |---|---|
 | Firmware Arduino | `firmware/`, `firmware/test/` |
-| Software Raspberry Pi | `software/` |
+| Software Raspberry Pi | `software/rcj2027/`, `software/tests/` |
 | Build e test | `scripts/build.sh`, `scripts/test.sh`, `scripts/check_context.sh` |
 | Obiettivi e regole | `docs/objectives/DEVELOPMENT_PLAN.md`, `docs/rules/` |
 | Inventario hardware | `docs/hardware/INVENTORY.md` |
@@ -40,7 +42,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Riferimento CAD | `docs/hardware/CAD_REFERENCE.md` |
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
-| Protocollo seriale (proposta) | `docs/architecture/SERIAL_PROTOCOL.md` |
+| Protocollo seriale v1.1 | `docs/architecture/SERIAL_PROTOCOL.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
 | Decisioni aperte | `docs/DECISIONS.md` |
 | Provenienza e scelte di importazione | `docs/SOURCE_MAP.md` |
@@ -66,12 +68,10 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Approvare il formato del protocollo seriale in `docs/architecture/SERIAL_PROTOCOL.md`.
-2. Scrivere parser del protocollo e logger sul Raspberry, con movimento disabilitato finche i
-   dati di sicurezza non sono confermati.
-3. Collaudare freni, arresto e comunicazione Raspberry-Arduino.
-4. Misurare diametro ruota e RPM reali per la velocita' lineare; poi eseguire il primo test
-   controllato della linea sul campo.
+1. Scrivere il firmware Arduino del protocollo v1.1 (checksum, ack, status, stop).
+2. Provare heartbeat, stop e watchdog sul banco (gate B0).
+3. Integrare Raspberry e Arduino con il trasporto reale e registrare i log.
+4. Misurare diametro ruota e RPM; poi eseguire il primo test controllato della linea.
 
 La validazione e la build si eseguono con:
 

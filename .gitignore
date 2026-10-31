@@ -20,6 +20,7 @@ out/
 # cache, log, temporanei
 .cache/
 *.log
+logs/
 npm-debug.log*
 pnpm-debug.log*
 yarn-error.log*

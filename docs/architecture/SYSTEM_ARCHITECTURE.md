@@ -39,15 +39,18 @@ Responsabilita':
 - heartbeat e stop watchdog;
 - risposte e contatori di errore.
 
-Il firmware parte dagli sketch di banco in `firmware/test/`; il contratto seriale resta una
-proposta in `SERIAL_PROTOCOL.md` finche' non viene implementato e provato sul banco.
+Il firmware parte dagli sketch di banco in `firmware/test/`. Il protocollo v1.1 e' definito in
+`SERIAL_PROTOCOL.md` e il lato Raspberry e' implementato in `software/rcj2027/`; il firmware
+Arduino del protocollo e' il passo successivo.
 
 ## Layout del codice
 
 ```text
 firmware/
   test/<nome>/<nome>.ino   sketch di banco con README
-software/                  Python del Raspberry Pi
+software/
+  rcj2027/                 protocollo, trasporto, logger, safety
+  tests/                   test host (unittest)
 scripts/                   build, test e validazione
 ```
 

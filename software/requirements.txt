@@ -1,0 +1,2 @@
+# pyserial serve solo per il trasporto reale; i test usano FakeTransport.
+pyserial>=3.5

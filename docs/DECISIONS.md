@@ -23,6 +23,10 @@
     `firmware/test/<nome>/<nome>.ino` con un README. Restano validi hardware-first, nessun
     simulatore, nessun codice del progetto precedente e prova reale come criterio di
     avanzamento.
+11. **Protocollo v1.1 e software Pi (2026-10-31):** checksum XOR su ogni frame, ack
+    `K,<sequence>` per i comandi, status a 16 bit. Il package `software/rcj2027/` implementa
+    parser, trasporto finto, logger e gate di sicurezza; il firmware Arduino del protocollo e'
+    il passo successivo.
 
 ## Decisioni da prendere
 
@@ -31,7 +35,8 @@
 - [ ] massa e centro di massa;
 - [ ] modello BNO085 e calibrazione IMU;
 - [ ] ruolo del servo;
-- [ ] contratto seriale e timeout watchdog;
+- [ ] timeout watchdog (da misurare a banco);
+- [ ] driver e velocita' del robot (ruote, riduzione, eventuale driver MOSFET);
 - [ ] interfaccia operatore;
 - [ ] procedura di raccolta vittime;
 - [ ] criteri di score e reporting di gara.

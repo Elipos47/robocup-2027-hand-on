@@ -22,7 +22,7 @@ corrisponda al nome del file.
 `build.sh` compila tutti gli sketch con `arduino-cli` per `arduino:avr:mega`; il FQBN si puo'
 sovrascrivere con la variabile `FQBN`.
 
-`test.sh` esegue il controllo, la build e, se presenti, i test Python in `software/`.
+`test.sh` esegue il controllo, la build e i test Python (`unittest`) in `software/tests/`.
 
 ## Criterio
 

@@ -11,7 +11,7 @@ bash scripts/build.sh
 python_tests="$(find software -type f -name 'test_*.py' -print -quit)"
 if [[ -n "$python_tests" ]]; then
   echo "== test Python =="
-  python3 -m pytest software
+  (cd software && python3 -m unittest discover -s tests -t . -v)
 else
   echo "test: nessun test Python in software/"
 fi

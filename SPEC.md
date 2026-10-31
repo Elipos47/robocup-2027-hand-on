@@ -1,9 +1,9 @@
 # SPEC — Robocup2027HandOn
 
-**Versione:** 0.3
+**Versione:** 0.4
 **Data:** 31/10/2026
-**Stato:** sviluppo attivo; firmware di banco e software in costruzione. Contratto minimo
-completo: batteria 11.1 V da etichetta, mappa lati e polarita' dei motori verificate a banco.
+**Stato:** sviluppo attivo; firmware di banco e software Pi in costruzione. Contratto minimo
+completo; protocollo seriale v1.1 implementato lato Raspberry, firmware Arduino da scrivere.
 
 ## 1. Obiettivo
 
@@ -58,6 +58,8 @@ risultato atteso.
 - Il Raspberry gestisce percezione, decisione di alto livello, logging e interfaccia.
 - Arduino gestisce attuatori e sensori a bassa latenza, con heartbeat e stop sicuro.
 - La comunicazione seriale e' versionata, leggibile e protetta da una scadenza di sicurezza.
+- Il protocollo v1.1 usa checksum XOR, ack e status bitmask; il lato Raspberry e' implementato
+  in `software/rcj2027/`.
 - Il controller non usa coordinate di percorso al posto di sensori e IMU.
 - La telemetria deve distinguere stato, sensori, attuatori, errori e prove.
 
@@ -77,6 +79,8 @@ risultato atteso.
 9. Ogni sketch di banco ha un `README.md` con cablaggio, comandi e risultato atteso.
 10. Il firmware si compila con `scripts/build.sh` prima dell'upload; i test di movimento si
     eseguono con ruote sollevate e alimentazione controllata.
+11. Il software Pi si testa con `bash scripts/test.sh`; il gate di movimento rifiuta i comandi
+    se `pwm_max` o il timeout watchdog mancano.
 
 ## 5. Gate di avanzamento
 
@@ -133,7 +137,7 @@ Il progetto non contiene:
 ## 8. Riferimenti
 
 - `firmware/`
-- `software/`
+- `software/rcj2027/`
 - `scripts/`
 - `docs/hardware/INVENTORY.md`
 - `docs/hardware/MINIMUM_HARDWARE_DATA.md`
