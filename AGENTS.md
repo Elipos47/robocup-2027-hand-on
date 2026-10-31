@@ -83,7 +83,8 @@ contiene il codice applicativo del progetto precedente.
   BNO085 (SDA 20, SCL 21); breakout Adafruit BNO085 confermato compatibile con I2C a 5 V.
 - Fatto: primo sketch di banco in `firmware/test/motor_direction_test/`, compilato con
   `bash scripts/build.sh`. Prova a banco in corso: la polarita' di entrambi i canali e'
-  invertita ed e' stata corretta nel software; manca la mappa sinistra/destra.
+  invertita, corretta nel software e riverificata (`1`/`3` avanti); manca la mappa
+  sinistra/destra.
 - In corso: fase di sviluppo codice; determinare lati e velocita' dei motori, poi seriale e
   logger.
 - Prossimi passi: confermare la mappa sinistra/destra e la velocita' reale, completare il

@@ -8,7 +8,7 @@
 |---|---|---|---|---|---|---|---|
 | 2026-10-22 | Batterie | tensione nominale | 11.1 V | etichetta del pacco (dato del produttore) | 2 pacchi Li-Ion 3S in parallelo | dichiarato, non misurato | confermato; misura a vuoto solo per controllo |
 | TBD | Motori | asse sinistro/destro | TODO | occhio, ruote sollevate | un motore alla volta | - | obbligatorio per muovere |
-| 2026-10-31 | Motori | verso avanti/indietro | entrambi invertiti (A e B) | occhio, ruote sollevate | PWM 255, canali separati | - | corretto nel software; riverificare dopo l'upload |
+| 2026-10-31 | Motori | verso avanti/indietro | entrambi invertiti (A e B) | occhio, ruote sollevate | PWM 255, canali separati | - | corretto nel software e riverificato: 1/3 avanti |
 
 ## Altre misure
 

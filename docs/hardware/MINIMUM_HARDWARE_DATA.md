@@ -20,7 +20,8 @@ ruote sollevate: si comanda un motore alla volta e si guarda quale gira e in che
 
 La polarita' e' stata verificata a banco il 2026-10-31: con il cablaggio attuale entrambi i
 canali girano indietro con il comando "avanti", quindi la correzione e' applicata nel software
-dello sketch di test. `motor_side_map` resta da confermare.
+dello sketch di test. Dopo l'upload, `1` e `3` vanno avanti. `motor_side_map` resta da
+confermare.
 
 La batteria e' nota dall'etichetta (2026-10-22): due pacchi Li-Ion 3S da 11.1 V 2.6 Ah 28.86 Wh
 in parallelo, cioe' 11.1 V, 5.2 Ah e 57.72 Wh dichiarati. In parallelo la tensione non cambia.
