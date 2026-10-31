@@ -1,2 +1,5 @@
 # pyserial serve solo per il trasporto reale; i test usano FakeTransport.
 pyserial>=3.5
+# OpenCV/numpy per la diagnostica delle telecamere; i test camera vengono saltati se mancano.
+opencv-python-headless>=4.10
+numpy>=1.24

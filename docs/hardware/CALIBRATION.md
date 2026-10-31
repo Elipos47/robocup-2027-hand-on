@@ -7,6 +7,30 @@ La calibrazione completa viene dopo il contratto minimo del software. Per inizia
 i parametri indicati in `docs/hardware/MINIMUM_HARDWARE_DATA.md`; le tarature dettagliate restano
 differite.
 
+## Strumenti software
+
+La CLI `python3 -m rcj2027.diagnostics` (dalla cartella `software/`) supporta:
+
+```sh
+python3 -m rcj2027.diagnostics camera --list
+python3 -m rcj2027.diagnostics camera --device 0 --save /tmp/camera0.jpg
+python3 -m rcj2027.diagnostics camera --device 0 --checkerboard 9x6
+python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10 \
+  --reference-mm 500 --reference-tolerance 50
+python3 -m rcj2027.diagnostics imu --port /dev/ttyACM0 --duration 10 \
+  --imu-mode motion --expected-axis yaw --countdown 5
+python3 -m rcj2027.diagnostics camera-calibrate \
+  --images "calib/*.jpg" --pattern 9x6 --square-mm 25 --output calib.json
+```
+
+- `camera` misura luminosita', contrasto, nitidezza e, se richiesto, rileva il checkerboard;
+- `sonar` confronta la media con una distanza misurata e controlla i salti;
+- `imu` verifica rumore a riposo o movimento sull'asse atteso;
+- `camera-calibrate` calcola matrice intrinseca e distorsione da almeno 3 immagini valide.
+
+I test software non sostituiscono la misura fisica: il lato del checkerboard, la distanza di
+riferimento e l'orientamento degli assi vanno dichiarati dall'operatore.
+
 ## Camera linea
 
 1. Fissare la camera nella posizione definitiva.

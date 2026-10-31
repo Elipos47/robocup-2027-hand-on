@@ -1,13 +1,14 @@
 # SPEC — Robocup2027HandOn
 
-**Versione:** 0.10
+**Versione:** 0.11
 **Data:** 31/10/2026
 **Stato:** sviluppo attivo; protocollo v1.1 implementato e verificato a banco. B0 parziale:
 rotazione a 255, stop e watchdog verificati; freno/coast e ripetizione da completare. B1-1:
 sessione reale con handshake, heartbeat, status, logger e stop. B1-2: comandi motori a 255 con
-gate, ack, stop e rotazione confermata. B1-3: HC-SR04 e BNO085 letti nello status. Valori
-operativi `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`; gate predefinito chiuso.
-Sensori da calibrare. Movimento reale disabilitato di default.
+gate, ack, stop e rotazione confermata. B1-3: HC-SR04 e BNO085 letti nello status. B1-4:
+diagnostica software per camera, sonar e IMU; camera e IMU passano, sonar valido ma instabile.
+Valori operativi `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`; gate predefinito
+chiuso. Movimento reale disabilitato di default.
 
 ## 1. Obiettivo
 
@@ -114,8 +115,10 @@ Stato 2026-10-31: B1-1 verificata su Raspberry Pi 5 con firmware sicuro (handsha
 a 200 ms, status a circa 100 ms, log JSONL, stop `X` con ack, nessun movimento). B1-2 verificata
 con ruote sollevate e conferma dell'operatore: comandi a 255 su entrambe le ruote e sui canali
 separati, ack e stop in pochi ms, rotazione osservata; firmware sicuro ripristinato. B1-3:
-HC-SR04 e BNO085 letti nello status, bit 0+1, sonar ~0,9-1,2 m. Calibrazione di sonar, assi IMU
-e camere e misure termiche restano da completare; il gate B1 non e' ancora chiuso.
+HC-SR04 e BNO085 letti nello status, bit 0+1, sonar ~0,9-1,2 m. B1-4: diagnostica software con
+probe camera, calibrazione checkerboard e analisi sonar/IMU; camera e IMU passano, sonar valido
+ma instabile. Calibrazione di sonar, assi IMU e camere e misure termiche restano da completare;
+il gate B1 non e' ancora chiuso.
 
 ### Gate F0 — line
 

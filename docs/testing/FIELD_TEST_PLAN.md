@@ -90,7 +90,11 @@ sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilit
   rotazione confermata dall'operatore);
 - [x] lettura HC-SR04 e BNO085 con bit di validita' (B1-3,
   `docs/testing/B1_SENSORS_TEST.md`);
-- [ ] calibrazione distanza di riferimento del sonar e assi IMU;
+- [x] suite software camera/sonar/IMU con analisi e calibrazione checkerboard (B1-4,
+  `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`); camera 0 e IMU passano, sonar instabile;
+- [ ] ripetere il sonar con bersaglio stabile e distanza di riferimento;
+- [ ] calibrazione reale della camera con checkerboard e verifica della seconda telecamera;
+- [ ] calibrazione assi IMU rispetto al telaio;
 - [ ] perdita fisica del cavo USB durante una sessione reale;
 - [ ] freno/coast e arresto fisico misurato;
 - [ ] ripetizione B0 su piu' run;

@@ -34,6 +34,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 - Fatto: B1-3, HC-SR04 e BNO085 letti nello status con movimento disabilitato
   (`docs/testing/B1_SENSORS_TEST.md`): sonar ~0,9-1,2 m, BNO085 su I2C `0x4A`, bit 0+1.
   Calibrazione di assi e distanza di riferimento ancora da fare.
+- Fatto: B1-4, suite software di diagnostica (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`):
+  probe camera con metriche, calibrazione checkerboard, analisi sonar/IMU e test IMU in
+  movimento. Camera 0 e IMU passano; il sonar e' valido ma instabile (salto ~695 mm).
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -61,7 +64,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
 | Protocollo seriale v1.1 | `docs/architecture/SERIAL_PROTOCOL.md` |
-| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md` |
+| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
 | Decisioni aperte | `docs/DECISIONS.md` |
 | Provenienza e scelte di importazione | `docs/SOURCE_MAP.md` |
@@ -87,9 +90,10 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Completare B1 con calibrazione di sonar, assi IMU e camere.
-2. Chiudere B0: freno/coast, ripetizione, corrente e temperatura del L298N.
-3. Verificare termicamente `pwm_max=255` e watchdog 1.0 s; misurare diametro ruota e RPM.
+1. Ripetere il test sonar con un bersaglio stabile e una distanza di riferimento; calibrare la
+   camera con un checkerboard e verificare la seconda telecamera.
+2. Completare la calibrazione degli assi IMU rispetto al telaio.
+3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Eseguire il primo test controllato della linea sul campo.
 
 La validazione e la build si eseguono con:

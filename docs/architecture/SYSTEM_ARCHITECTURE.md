@@ -50,7 +50,7 @@ sonar e IMU; B0 resta parziale per freno/coast, ripetizione, corrente e temperat
 firmware/
   test/<nome>/<nome>.ino   sketch di banco con README
 software/
-  rcj2027/                 protocollo, trasporto, logger, safety, sessione
+  rcj2027/                 protocollo, trasporto, logger, safety, sessione, diagnostica
   tests/                   test host (unittest)
 scripts/                   build, test e validazione
 ```

@@ -9,6 +9,7 @@ scrivere il contratto software o per lo scaffolding del logger.
 - [ ] Verificare massa, stabilita' e centro di massa.
 - [ ] Collegare Raspberry e Arduino con alimentazione e messa a terra definite.
 - [ ] Testare comunicazione senza motori collegati.
+- [ ] Verificare camera, sonar e IMU con `python3 -m rcj2027.diagnostics`.
 - [ ] Verificare heartbeat, stop e watchdog.
 - [ ] Collegare un motore alla volta con ruote sollevate.
 - [ ] Verificare verso, freno e limite PWM.

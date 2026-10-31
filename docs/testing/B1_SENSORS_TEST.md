@@ -76,7 +76,8 @@ firmware ritenta l'inizializzazione ogni secondo finche' il bus risponde. Dopo i
 - distanza del sonar confrontata con un metro campione;
 - orientamento e montaggio degli assi BNO085, calibrazione e deriva yaw;
 - risposta dell'IMU a rotazioni controllate del robot;
-- camere, calibrazione ottica e percezione;
+- camere: probe e metriche verificate in B1-4 (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`),
+  calibrazione ottica e percezione non ancora eseguite;
 - temperatura, corrente e autonomia.
 
 I valori IMU sono dati grezzi del game rotation vector, non una calibrazione di mounting. Il

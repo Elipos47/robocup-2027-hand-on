@@ -12,9 +12,13 @@ software/
     logger.py      log JSONL con run_id e timestamp UTC
     safety.py      gate di movimento e configurazione hardware
     session.py     handshake, heartbeat, status, stop e log della sessione
+    sensor_checks.py      analisi sonar/IMU
+    camera_checks.py      probe e metriche frame
+    camera_calibration.py calibrazione checkerboard
+    diagnostics.py        CLI di diagnostica camera/sonar/IMU
     __main__.py    demo, sessione reale e console manuale
   tests/           test host con unittest
-  requirements.txt pyserial per il trasporto reale
+  requirements.txt pyserial, OpenCV e numpy
 ```
 
 ## Comandi
@@ -36,6 +40,32 @@ python3 -m rcj2027 --port /dev/ttyACM0 --duration 5 --run-id b1-001
 Il comando attende 2 s il boot del Mega, invia `V,1`, registra gli status in JSONL e termina con
 `X`. Non invia comandi motori: il movimento resta disabilitato dal firmware e dal gate di
 `safety.py`. Il report della prova e' in `docs/testing/B1_INTEGRATION_TEST.md`.
+
+## Diagnostica software
+
+La CLI `diagnostics` verifica i dati di camera, sonar e IMU senza abilitare il movimento:
+
+```sh
+cd software
+python3 -m rcj2027.diagnostics camera --list
+python3 -m rcj2027.diagnostics camera --device 0 --save /tmp/camera0.jpg
+python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10
+python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10 \
+  --reference-mm 500 --reference-tolerance 50
+python3 -m rcj2027.diagnostics imu --port /dev/ttyACM0 --duration 10 \
+  --imu-mode stationary
+python3 -m rcj2027.diagnostics imu --port /dev/ttyACM0 --duration 10 \
+  --imu-mode motion --expected-axis yaw --countdown 5
+python3 -m rcj2027.diagnostics camera-calibrate \
+  --images "calib/*.jpg" --pattern 9x6 --square-mm 25 --output calib.json
+```
+
+Exit code `0` = test superato, `1` = test fallito, `2` = errore di configurazione o dispositivo.
+I report si salvano con `--json-out`. Il test sonar fallisce se il salto tra campioni supera
+`--max-jump`; il test IMU `motion` richiede che si muova l'asse indicato. La telecamera e'
+esclusiva: non eseguire due probe in parallelo.
+
+Risultati e limiti sono in `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`.
 
 Per una console manuale sulla porta reale, che accetta comandi in minuscolo e calcola il
 checksum:

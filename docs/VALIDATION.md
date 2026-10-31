@@ -24,8 +24,9 @@ sovrascrivere con la variabile `FQBN`.
 
 `test.sh` esegue il controllo, la build e i test Python (`unittest`) in `software/tests/`. La
 suite copre protocollo, logger, safety, trasporto finto e reale bufferizzato, sessione
-(handshake, heartbeat, status, stop, link), comandi motori con gate e ack e normalizzazione
-della console.
+(handshake, heartbeat, status, stop, link), comandi motori con gate e ack, analisi sonar/IMU,
+metriche camera, calibrazione checkerboard sintetica, CLI diagnostica e normalizzazione della
+console.
 
 ## Criterio
 

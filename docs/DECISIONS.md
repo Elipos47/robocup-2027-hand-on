@@ -55,6 +55,11 @@
     convertito in yaw/pitch/roll mdeg. Il BNO085 non e' pronto subito al boot, quindi
     l'inizializzazione viene ritentata ogni secondo. Status bit 0 `SONAR_VALID` e bit 1
     `IMU_VALID`. Orientamento assi e distanza di riferimento restano da calibrare.
+17. **Diagnostica software B1-4 (2026-10-31):** `sensor_checks.py` analizza sonar e IMU,
+    `camera_checks.py` misura frame e rileva checkerboard, `camera_calibration.py` calcola la
+    matrice intrinseca, `diagnostics.py` espone i comandi con exit code 0/1/2. Camera 0 e IMU
+    stazionario/yaw passano; il sonar e' valido ma il salto di ~695 mm fa fallire il test di
+    stabilita'. La soglia non viene abbassata senza una prova con bersaglio stabile.
 
 ## Decisioni da prendere
 

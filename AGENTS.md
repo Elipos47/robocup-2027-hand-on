@@ -109,6 +109,10 @@ contiene il codice applicativo del progetto precedente.
   (`docs/testing/B1_SENSORS_TEST.md`): sonar valido 50/51 status, distanze ~0,9-1,2 m; BNO085
   su I2C `0x4A`, IMU valido 49/51, status bit 0+1. Assi IMU e distanza di riferimento restano
   da calibrare.
+- Fatto: B1-4, suite software di diagnostica per camera, sonar e IMU
+  (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`): probe camera con metriche e calibrazione
+  checkerboard, analisi statistica sonar/IMU, test IMU stazionario e in movimento. Camera 0 e
+  IMU passano; il sonar e' valido ma instabile (salto ~695 mm) e il test fallisce.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in
@@ -118,11 +122,10 @@ contiene il codice applicativo del progetto precedente.
   con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms con PWM 150/255 e timeout 1000 ms. A 150 i
   motori ronzavano senza ruotare; a 255 hanno girato (conferma dell'operatore). Firmware
   riportato a movimento disabilitato.
-- In corso: calibrare sonar e assi IMU, calibrare le camere e chiudere i punti aperti di B0
-  (freno/coast, ripetizione, corrente e temperatura).
-- Prossimi passi: misurare una distanza di riferimento per il sonar, ruotare il robot per
-  verificare gli assi IMU, calibrare le camere, verificare termicamente PWM 255 e watchdog,
-  poi passare a F0.
+- In corso: ripetere il sonar con bersaglio stabile e riferimento metrico, calibrare la camera
+  con checkerboard e completare gli assi IMU; chiudere i punti aperti di B0.
+- Prossimi passi: usare `python3 -m rcj2027.diagnostics` per sonar/camera/IMU, verificare la
+  seconda telecamera, poi passare a F0.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

@@ -25,8 +25,8 @@ Schermo ──────────────────► Raspberry Pi
 |---|---|---|
 | Raspberry Pi 5 4GB | elaborazione e visione | presente |
 | Arduino Mega 2560 | controllo basso livello | presente |
-| Camera linea | imaging della linea | presente |
-| Camera vittime | imaging stanza/vittime | presente |
+| Camera linea | imaging della linea | presente; USB 5MP su `/dev/video0`, verificata in B1-4 |
+| Camera vittime | imaging stanza/vittime | presente; seconda camera non enumerata al 2026-10-31 |
 | UPS | continuità alimentazione Pi | presente |
 | L298N | driver motori | presente |
 | HC-SR04 | distanza frontale | presente, letto in B1-3 |

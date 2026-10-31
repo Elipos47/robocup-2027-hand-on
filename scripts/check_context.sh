@@ -26,6 +26,7 @@ required=(
   docs/testing/B0_BENCH_TEST.md
   docs/testing/B1_INTEGRATION_TEST.md
   docs/testing/B1_SENSORS_TEST.md
+  docs/testing/B1_SOFTWARE_DIAGNOSTICS.md
   docs/MEASUREMENT_LOG.md
   docs/DECISIONS.md
   docs/SOURCE_MAP.md
@@ -45,12 +46,20 @@ required=(
   software/rcj2027/logger.py
   software/rcj2027/safety.py
   software/rcj2027/session.py
+  software/rcj2027/camera_checks.py
+  software/rcj2027/camera_calibration.py
+  software/rcj2027/sensor_checks.py
+  software/rcj2027/diagnostics.py
   software/tests/__init__.py
   software/tests/test_protocol.py
   software/tests/test_logger.py
   software/tests/test_safety.py
   software/tests/test_transport.py
   software/tests/test_session.py
+  software/tests/test_sensor_checks.py
+  software/tests/test_camera_checks.py
+  software/tests/test_camera_calibration.py
+  software/tests/test_diagnostics.py
   software/tests/test_main.py
   scripts/build.sh
   scripts/test.sh
