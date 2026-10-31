@@ -15,6 +15,7 @@ required=(
   docs/hardware/MINIMUM_HARDWARE_QUESTIONS.md
   docs/hardware/CAD_REFERENCE.md
   docs/hardware/CALIBRATION.md
+  docs/hardware/checkerboard-a4.pdf
   docs/hardware/BRINGUP_CHECKLIST.md
   docs/rules/RCJRescueLine2026-final.pdf
   docs/rules/general-rules.pdf

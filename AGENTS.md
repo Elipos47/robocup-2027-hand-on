@@ -116,7 +116,10 @@ contiene il codice applicativo del progetto precedente.
   stati corretti nel firmware con test pitch/roll PASS; CSI acquisisce ma il frame e' sfocato;
   il sonar e' valido ma instabile e il test fallisce se il target si muove. Con target fermo a
   ~500 mm, 005/006 passano col criterio robusto (mediane 522/507,5 mm, outlier 3,0%/1,0%); la
-  007 con target spostato a ~600 mm ha mediana 597 mm e 9,2% outlier, FAIL.
+  007 con target spostato a ~600 mm ha mediana 597 mm e 9,2% outlier, FAIL. L'operatore accetta
+  il test a 500 mm per ostacoli piu' vicini di 0,5 m.
+- Fatto: target checkerboard A4 pronto in `docs/hardware/checkerboard-a4.pdf` e comando
+  `camera-capture` per acquisire 12-20 frame di calibrazione.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in
@@ -126,11 +129,10 @@ contiene il codice applicativo del progetto precedente.
   con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms con PWM 150/255 e timeout 1000 ms. A 150 i
   motori ronzavano senza ruotare; a 255 hanno girato (conferma dell'operatore). Firmware
   riportato a movimento disabilitato.
-- In corso: ripetere il sonar con bersaglio stabile e riferimento metrico, verificare messa a
-  fuoco/montaggio della CSI e calibrare le camere con checkerboard; validare i segni IMU e
-  chiudere i punti aperti di B0.
-- Prossimi passi: usare `python3 -m rcj2027.diagnostics` per sonar/camera/IMU, definire la
-  convenzione dei segni pitch/roll, sistemare la messa a fuoco della CSI, poi passare a F0.
+- In corso: calibrare la camera USB con checkerboard, sistemare messa a fuoco/montaggio della
+  CSI e calibrarla; validare i segni IMU e chiudere i punti aperti di B0.
+- Prossimi passi: usare `camera-capture` e `camera-calibrate`, definire la convenzione dei segni
+  pitch/roll, poi passare a F0.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

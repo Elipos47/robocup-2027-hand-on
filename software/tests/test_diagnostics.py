@@ -107,6 +107,17 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertEqual(args.pattern, "9x6")
         self.assertEqual(args.square_mm, 25.0)
 
+    def test_parser_builds_camera_capture_command(self) -> None:
+        parser = build_parser()
+
+        args = parser.parse_args(
+            ["camera-capture", "--csi", "--count", "12", "--interval", "2"]
+        )
+
+        self.assertTrue(args.csi)
+        self.assertEqual(args.count, 12)
+        self.assertEqual(args.interval, 2.0)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -346,6 +346,111 @@ def probe_libcamera_camera(
             pass
 
 
+def capture_sequence_opencv(
+    device: int | str,
+    output_dir: str | Path,
+    *,
+    count: int = 15,
+    interval_s: float = 1.0,
+    prefix: str = "frame",
+) -> list[Path]:
+    """Acquisisce una sequenza da OpenCV, utile per la calibrazione."""
+    _require_cv2()
+    if count < 1:
+        raise ValueError("count deve essere positivo")
+    if interval_s < 0:
+        raise ValueError("interval_s non puo' essere negativo")
+
+    output = Path(output_dir)
+    output.mkdir(parents=True, exist_ok=True)
+    capture = cv2.VideoCapture(device)
+    if not capture.isOpened():
+        capture.release()
+        raise CameraError(f"telecamera non apribile: {device}")
+
+    paths: list[Path] = []
+    try:
+        for index in range(count):
+            ok, frame = capture.read()
+            if not ok or frame is None:
+                raise CameraError(f"frame {index} non leggibile")
+            path = output / f"{prefix}-{index:03d}.jpg"
+            if not cv2.imwrite(str(path), frame):
+                raise CameraError(f"impossibile salvare {path}")
+            paths.append(path)
+            if index < count - 1 and interval_s:
+                time.sleep(interval_s)
+    finally:
+        capture.release()
+    return paths
+
+
+def capture_sequence_libcamera(
+    camera_num: int,
+    output_dir: str | Path,
+    *,
+    count: int = 15,
+    interval_s: float = 1.0,
+    prefix: str = "frame",
+    size: tuple[int, int] = (640, 480),
+    warmup_s: float = 1.0,
+) -> list[Path]:
+    """Acquisisce una sequenza da Picamera2 (CSI o USB libcamera)."""
+    if not HAS_PICAMERA2:
+        raise CameraError("Picamera2 non installato")
+    if not HAS_CV2:
+        raise CameraError("OpenCV/numpy non installati")
+    if count < 1:
+        raise ValueError("count deve essere positivo")
+    if interval_s < 0:
+        raise ValueError("interval_s non puo' essere negativo")
+    if warmup_s < 0:
+        raise ValueError("warmup_s non puo' essere negativo")
+
+    output = Path(output_dir)
+    output.mkdir(parents=True, exist_ok=True)
+    camera = Picamera2(camera_num=camera_num)
+    started = False
+    paths: list[Path] = []
+    try:
+        config = camera.create_still_configuration(
+            main={"size": size, "format": "RGB888"}
+        )
+        camera.configure(config)
+        camera.start()
+        started = True
+        try:
+            from libcamera import controls
+
+            camera.set_controls({"AfMode": controls.AfModeEnum.Continuous})
+        except Exception:
+            pass
+        if warmup_s:
+            time.sleep(warmup_s)
+
+        for index in range(count):
+            frame = camera.capture_array("main")
+            if frame.ndim == 3 and frame.shape[2] == 3:
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            path = output / f"{prefix}-{index:03d}.jpg"
+            if not cv2.imwrite(str(path), frame):
+                raise CameraError(f"impossibile salvare {path}")
+            paths.append(path)
+            if index < count - 1 and interval_s:
+                time.sleep(interval_s)
+    finally:
+        if started:
+            try:
+                camera.stop()
+            except Exception:
+                pass
+        try:
+            camera.close()
+        except Exception:
+            pass
+    return paths
+
+
 def list_cameras(indices: range = range(0, 4), **kwargs: object) -> list[CameraProbe]:
     """Prova una serie di indici OpenCV e restituisce un report per ciascuno."""
     return [probe_camera(index, **kwargs) for index in indices]

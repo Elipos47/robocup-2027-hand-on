@@ -40,11 +40,18 @@ riferimento e l'orientamento degli assi vanno dichiarati dall'operatore.
 
 ## Calibrazione camera con checkerboard
 
-1. Genera il target con `checkerboard` (default 9x6 corner interni, quadrati 25 mm).
+1. Genera il target con `checkerboard` (default 9x6 corner interni, quadrati 25 mm). Il file
+   pronto e' `docs/hardware/checkerboard-a4.pdf`; si puo' aprire con
+   `xdg-open docs/hardware/checkerboard-a4.pdf` e rigenerare con il comando.
 2. Stampa al 100% e verifica con un righello che la barra in basso sia lunga 100 mm.
 3. Fissa il target su una superficie piana e opaca; cattura 12-20 immagini con la camera
   definitiva, a distanze e angolazioni diverse, con il pattern che occupa circa il 50-80% del
-   frame. Evita riflessi, ombre e mosso.
+   frame. Evita riflessi, ombre e mosso. Con la USB:
+   ```sh
+   python3 -m rcj2027.diagnostics camera-capture --device 0 \
+     --count 15 --interval 2 --output-dir calib/usb
+   ```
+   Per la CSI usare `--csi --camera-num 0`; prima va risolta la sfocatura.
 4. Salva le immagini in una cartella, ad esempio `calib/`.
 5. Esegui `camera-calibrate` con lo stesso pattern e lato usati per la stampa.
 6. Conserva il JSON prodotto e verifica l'RMS: sotto 1 px e' accettabile, sotto 0,5 px e' buono.

@@ -3,10 +3,16 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 
-from rcj2027.camera_checks import HAS_CV2, analyze_frame, frame_metrics
+from rcj2027.camera_checks import (
+    HAS_CV2,
+    analyze_frame,
+    capture_sequence_opencv,
+    frame_metrics,
+)
 
 if HAS_CV2:
     import cv2
@@ -33,6 +39,20 @@ def checkerboard(
                 )
                 cv2.rectangle(image, top_left, bottom_right, (0, 0, 0), -1)
     return image
+
+
+class FakeCapture:
+    def __init__(self) -> None:
+        self.released = False
+
+    def isOpened(self) -> bool:
+        return True
+
+    def read(self) -> tuple[bool, np.ndarray]:
+        return True, np.full((40, 60, 3), 128, np.uint8)
+
+    def release(self) -> None:
+        self.released = True
 
 
 @unittest.skipUnless(HAS_CV2, "OpenCV/numpy non disponibili")
@@ -113,6 +133,22 @@ class CameraChecksTests(unittest.TestCase):
 
             self.assertEqual(probe.saved_path, str(path))
             self.assertTrue(path.exists())
+
+    def test_capture_sequence_opencv(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch(
+                "rcj2027.camera_checks.cv2.VideoCapture",
+                return_value=FakeCapture(),
+            ):
+                paths = capture_sequence_opencv(
+                    0,
+                    tmp,
+                    count=2,
+                    interval_s=0,
+                )
+
+            self.assertEqual(len(paths), 2)
+            self.assertTrue(all(path.exists() for path in paths))
 
     def test_frame_metrics_shape(self) -> None:
         metrics = frame_metrics(np.zeros((10, 20, 3), np.uint8))

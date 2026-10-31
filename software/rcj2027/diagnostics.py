@@ -25,6 +25,8 @@ from .camera_checks import (
     HAS_PICAMERA2,
     CameraError,
     CameraProbe,
+    capture_sequence_libcamera,
+    capture_sequence_opencv,
     list_cameras,
     list_libcamera_cameras,
     probe_camera,
@@ -214,6 +216,37 @@ def _camera_report(args: argparse.Namespace) -> int:
     return 0 if probe.passed else 1
 
 
+def _camera_capture_report(args: argparse.Namespace) -> int:
+    if args.csi:
+        paths = capture_sequence_libcamera(
+            args.camera_num,
+            args.output_dir,
+            count=args.count,
+            interval_s=args.interval,
+            prefix=args.prefix,
+            warmup_s=args.warmup,
+        )
+    else:
+        device: int | str = int(args.device) if args.device.isdigit() else args.device
+        paths = capture_sequence_opencv(
+            device,
+            args.output_dir,
+            count=args.count,
+            interval_s=args.interval,
+            prefix=args.prefix,
+        )
+
+    report = {
+        "count": len(paths),
+        "output_dir": str(Path(args.output_dir)),
+        "images": [str(path) for path in paths],
+        "csi": bool(args.csi),
+    }
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+    _write_json(report, args.json_out)
+    return 0
+
+
 def _camera_calibrate_report(args: argparse.Namespace) -> int:
     pattern = _parse_pattern(args.pattern)
     images = sorted(glob.glob(args.images))
@@ -352,6 +385,24 @@ def build_parser() -> argparse.ArgumentParser:
     calibration.add_argument("--output", default="camera_calibration.json")
     calibration.add_argument("--json-out", default=None)
 
+    capture = subparsers.add_parser(
+        "camera-capture",
+        help="acquisisce una sequenza di frame per la calibrazione",
+    )
+    capture.add_argument("--device", default="0", help="indice o path OpenCV")
+    capture.add_argument(
+        "--csi",
+        action="store_true",
+        help="usa Picamera2/libcamera",
+    )
+    capture.add_argument("--camera-num", type=int, default=0)
+    capture.add_argument("--warmup", type=float, default=1.0)
+    capture.add_argument("--count", type=int, default=15)
+    capture.add_argument("--interval", type=float, default=1.0)
+    capture.add_argument("--output-dir", default="calib")
+    capture.add_argument("--prefix", default="frame")
+    capture.add_argument("--json-out", default=None)
+
     target = subparsers.add_parser(
         "checkerboard",
         help="genera un target checkerboard PDF a dimensione reale",
@@ -375,6 +426,8 @@ def main(argv: list[str] | None = None) -> int:
             return _serial_report(args)
         if args.command == "camera":
             return _camera_report(args)
+        if args.command == "camera-capture":
+            return _camera_capture_report(args)
         if args.command == "camera-calibrate":
             return _camera_calibrate_report(args)
         if args.command == "checkerboard":

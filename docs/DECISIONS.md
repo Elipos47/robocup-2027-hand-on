@@ -66,6 +66,10 @@
     al telaio. Il firmware applica `IMU_SWAP_PITCH_ROLL=true`; non e' una calibrazione del
     sensore. I test pitch e roll passano con l'asse dominante corretto. La convenzione dei segni
     e il comportamento dopo un rimontaggio restano da verificare.
+19. **Sonar 500 mm accettato (2026-10-31):** con target fermo a ~500 mm le run 005/006 passano
+    con mediana 522/507,5 mm, outlier 3,0%/1,0% e riferimento entro ±50 mm. L'operatore accetta
+    questo test per ostacoli piu' vicini di 0,5 m; il test a 1000 mm non e' necessario ora. Il
+    test resta FAIL se il target si muove.
 
 ## Decisioni da prendere
 

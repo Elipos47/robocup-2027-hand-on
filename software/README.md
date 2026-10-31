@@ -61,6 +61,8 @@ python3 -m rcj2027.diagnostics imu --port /dev/ttyACM0 --duration 10 \
   --imu-mode motion --expected-axis yaw --countdown 5
 python3 -m rcj2027.diagnostics camera-calibrate \
   --images "calib/*.jpg" --pattern 9x6 --square-mm 25 --output calib.json
+python3 -m rcj2027.diagnostics camera-capture --device 0 \
+  --count 15 --interval 2 --output-dir calib/usb
 python3 -m rcj2027.diagnostics checkerboard \
   --pattern 9x6 --square-mm 25 --output checkerboard.pdf
 ```
@@ -68,8 +70,9 @@ python3 -m rcj2027.diagnostics checkerboard \
 Exit code `0` = test superato, `1` = test fallito, `2` = errore di configurazione o dispositivo.
 I report si salvano con `--json-out`. `camera --list` mostra sia gli indici OpenCV sia le camere
 libcamera; la CSI IMX708 si prova con `--csi` (Picamera2), non con un indice OpenCV. Il target
-`checkerboard` e' un PDF A4 con quadrati da 25 mm e barra da 100 mm: stampalo al 100% prima di
-calibrare. Il test sonar usa la mediana e ammette al massimo il 5% di outlier oltre
+`checkerboard` e' pronto in `docs/hardware/checkerboard-a4.pdf`: PDF A4 con quadrati da 25 mm e
+barra da 100 mm, da stampare al 100%. `camera-capture` salva una sequenza di frame mentre sposti
+il target. Il test sonar usa la mediana e ammette al massimo il 5% di outlier oltre
 `--outlier-mm`; il test IMU `motion` richiede che si muova l'asse indicato. Ogni telecamera e'
 esclusiva: non eseguire due probe in parallelo.
 

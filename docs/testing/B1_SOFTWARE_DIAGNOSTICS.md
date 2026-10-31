@@ -65,7 +65,7 @@ I test host non richiedono hardware:
 - calibrazione con viste checkerboard sintetiche;
 - raccolta status con sessione finta.
 
-La suite completa e' a **132 test**, tutti verdi.
+La suite completa e' a **134 test**, tutti verdi.
 
 ## Camera
 
@@ -102,10 +102,17 @@ della camera. Il test fallisce correttamente.
 
 La calibrazione intrinseca e' implementata e testata con immagini sintetiche; la CLI
 `camera-calibrate` e' stata eseguita end-to-end su 5 viste sintetiche (RMS 0,045) per verificare
-il percorso, ma non e' una calibrazione delle camere reali. Il target si genera con
-`python3 -m rcj2027.diagnostics checkerboard` (A4 landscape, 9x6 corner, quadrati 25 mm, barra
-da 100 mm) e va stampato al 100% su carta opaca. Servono 12-20 viste reali con il pattern che
-occupa circa il 50-80% del frame.
+il percorso, ma non e' una calibrazione delle camere reali. Il target pronto e' in
+`docs/hardware/checkerboard-a4.pdf` (A4 landscape, 9x6 corner, quadrati 25 mm, barra da 100 mm);
+va stampato al 100% su carta opaca. Servono 12-20 viste reali con il pattern che occupa circa il
+50-80% del frame. La sequenza si acquisisce con:
+
+```sh
+python3 -m rcj2027.diagnostics camera-capture --device 0 \
+  --count 15 --interval 2 --output-dir calib/usb
+```
+
+Per la CSI si usa `--csi --camera-num 0`; prima va risolta la sfocatura.
 
 ## Sonar
 
@@ -199,7 +206,8 @@ dominante, non il verso.
 
 ## Cosa non e' verificato
 
-- stabilita' del sonar con bersaglio fermo e riferimento metrico;
+- sonar a 1000 mm e stabilita' con target in movimento; il test a 500 mm con target fermo e'
+  accettato per ostacoli piu' vicini di 0,5 m;
 - messa a fuoco e montaggio della CSI: il frame attuale e' sfocato;
 - calibrazione reale di USB e CSI con checkerboard;
 - convenzione dei segni pitch/roll e comportamento dopo un rimontaggio del BNO085;
