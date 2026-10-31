@@ -285,6 +285,7 @@ def _checkerboard_report(args: argparse.Namespace) -> int:
         "square_size_mm": args.square_mm,
         "board_size_mm": [columns * args.square_mm, rows * args.square_mm],
         "print": "100% / dimensione reale",
+        "scale_check": "barra 100 mm; se misura 95 mm usare --square-mm 23.75",
     }
     print(json.dumps(report, indent=2, ensure_ascii=False))
     _write_json(report, args.json_out)

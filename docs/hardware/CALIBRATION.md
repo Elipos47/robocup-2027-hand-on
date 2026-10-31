@@ -43,7 +43,9 @@ riferimento e l'orientamento degli assi vanno dichiarati dall'operatore.
 1. Genera il target con `checkerboard` (default 9x6 corner interni, quadrati 25 mm). Il file
    pronto e' `docs/hardware/checkerboard-a4.pdf`; si puo' aprire con
    `xdg-open docs/hardware/checkerboard-a4.pdf` e rigenerare con il comando.
-2. Stampa al 100% e verifica con un righello che la barra in basso sia lunga 100 mm.
+2. Stampa al 100% e verifica con un righello che la barra in basso sia lunga 100 mm. Se la barra
+   misura 95 mm, la stampa e' al 95%: usa `--square-mm 23.75` (25 x 0.95) oppure ristampa senza
+   scalatura. Il valore da passare e' sempre il lato **reale** del quadrato stampato.
 3. Fissa il target su una superficie piana e opaca; cattura 12-20 immagini con la camera
   definitiva, a distanze e angolazioni diverse, con il pattern che occupa circa il 50-80% del
    frame. Evita riflessi, ombre e mosso. Con la USB:

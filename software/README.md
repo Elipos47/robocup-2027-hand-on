@@ -71,8 +71,9 @@ Exit code `0` = test superato, `1` = test fallito, `2` = errore di configurazion
 I report si salvano con `--json-out`. `camera --list` mostra sia gli indici OpenCV sia le camere
 libcamera; la CSI IMX708 si prova con `--csi` (Picamera2), non con un indice OpenCV. Il target
 `checkerboard` e' pronto in `docs/hardware/checkerboard-a4.pdf`: PDF A4 con quadrati da 25 mm e
-barra da 100 mm, da stampare al 100%. `camera-capture` salva una sequenza di frame mentre sposti
-il target. Il test sonar usa la mediana e ammette al massimo il 5% di outlier oltre
+barra da 100 mm, da stampare al 100%. Se la barra misura 95 mm, la stampa e' al 95%: usa
+`--square-mm 23.75` o ristampa. `camera-capture` salva una sequenza di frame mentre sposti il
+target. Il test sonar usa la mediana e ammette al massimo il 5% di outlier oltre
 `--outlier-mm`; il test IMU `motion` richiede che si muova l'asse indicato. Ogni telecamera e'
 esclusiva: non eseguire due probe in parallelo.
 

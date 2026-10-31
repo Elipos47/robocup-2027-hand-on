@@ -104,8 +104,9 @@ La calibrazione intrinseca e' implementata e testata con immagini sintetiche; la
 `camera-calibrate` e' stata eseguita end-to-end su 5 viste sintetiche (RMS 0,045) per verificare
 il percorso, ma non e' una calibrazione delle camere reali. Il target pronto e' in
 `docs/hardware/checkerboard-a4.pdf` (A4 landscape, 9x6 corner, quadrati 25 mm, barra da 100 mm);
-va stampato al 100% su carta opaca. Servono 12-20 viste reali con il pattern che occupa circa il
-50-80% del frame. La sequenza si acquisisce con:
+va stampato al 100% su carta opaca. Se la barra misura 95 mm, la stampa e' al 95%: usare
+`--square-mm 23.75` oppure ristampare senza scalatura. Servono 12-20 viste reali con il pattern
+che occupa circa il 50-80% del frame. La sequenza si acquisisce con:
 
 ```sh
 python3 -m rcj2027.diagnostics camera-capture --device 0 \
