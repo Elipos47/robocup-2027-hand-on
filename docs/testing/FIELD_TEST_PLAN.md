@@ -81,11 +81,11 @@ sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilit
 - [x] raccolta dei dati minimi: lati e verso dei motori;
 - [x] comunicazione V/H/X/D con movimento disabilitato (P1,
   `docs/testing/PROTOCOL_BENCH_TEST.md`);
-- [x] direzione motori e stop X con motori attivi (B0,
-  `docs/testing/B0_BENCH_TEST.md`);
-- [x] watchdog con motori attivi e perdita del cavo (B0, 1007-1008 ms);
+- [x] stop X con ponte abilitato (B0, `docs/testing/B0_BENCH_TEST.md`);
+- [x] watchdog con ponte abilitato e perdita del cavo (B0, 1007-1008 ms);
+- [ ] rotazione visiva a 255;
 - [ ] freno/coast e arresto fisico misurato;
-- [ ] conferma visiva e ripetizione B0 su piu' run;
+- [ ] ripetizione B0 su piu' run;
 - [ ] calibrazione manuale camere;
 - [ ] linea sul campo;
 - [ ] elementi missione;

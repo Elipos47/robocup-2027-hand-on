@@ -30,7 +30,8 @@ in parallelo, cioe' 11.1 V, 5.2 Ah e 57.72 Wh dichiarati. In parallelo la tensio
 - `pwm_max`: motori RS PRO 834-7631 (4.5-15 V DC, riduttore 100:1, 60 rpm di uscita a 12 V da
   scheda). Con batteria 11.1 V nominali e caduta del L298N, il duty pieno resta sotto i 15 V;
   il valore definitivo si sceglie dopo la prova di spunto, corrente e temperatura. E' un limite
-  scelto, non misurato.
+  scelto, non misurato. Prova di banco 2026-10-31: a 150 i motori ronzavano senza ruotare; a
+  255 il comando e' stato accettato, rotazione visiva da confermare.
 - freno, coast e stop: comportamento deciso nel codice.
 - baud e porta seriale: impostati e verificati quando si collega l'Arduino.
 - velocita' in mm/s, odometria e RPM: servono solo quando si passa dal PWM grezzo alla velocita'

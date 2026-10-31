@@ -19,6 +19,27 @@
 | 5 | stop heartbeat | `E,WATCHDOG_STOP*2B`; status `8` | PASS |
 | 6 | `X,5*41` | `K,5*52`; status `0` | PASS |
 
+La prova a 150 ha prodotto solo ronzio: il firmware ha abilitato il ponte (status bit 2 = 4), ma
+i motori non sono partiti. La telemetria conferma il comando, non la rotazione. La prova a 255
+ha ricevuto lo stesso comando; la rotazione e' da confermare visivamente.
+
+## Prova a 255
+
+La stessa sequenza e' stata ripetuta con `PWM_MAX=255`:
+
+| # | Azione | Risposta | Esito |
+|---:|---|---|---|
+| 1 | `D,2,255,255*5A` | `K,2*55`; status bit 2 = `4` | PASS |
+| 2 | `X,3*47` mentre i motori sono abilitati | `K,3*54`; status fermo al frame successivo | PASS |
+| 3 | `D,4,255,255*5C` | `K,4*53`; status bit 2 = `4` | PASS |
+| 4 | stop heartbeat | `E,WATCHDOG_STOP*2B`; status `8` | PASS |
+
+- stop `X`: ack dopo **3,7 ms**, status fermo dopo **99,3 ms**;
+- watchdog: **1007,3 ms** dall'ultimo `H`;
+- **rotazione visiva a 255: da confermare da parte dell'operatore.**
+
+`PWM_MAX=255` e' un valore di banco, non il `pwm_max` definitivo.
+
 ## Misure
 
 - **Stop manuale `X`**: ack ricevuto dopo **3,9 ms**; il primo status con motori fermi e'
@@ -33,9 +54,9 @@
 
 ## Cosa e' verificato
 
-- handshake e status con motori attivi;
-- comando `D` accettato con PWM 150 e ack;
-- stop `X` con motori in movimento;
+- handshake e status con ponte abilitato;
+- comando `D` accettato con PWM 150 e 255; a 150 i motori ronzavano senza ruotare;
+- stop `X` con ponte abilitato;
 - perdita di heartbeat con arresto watchdog;
 - status coerente prima e dopo l'arresto;
 - firmware riportato alla configurazione sicura dopo il test: `BENCH_MOTION_ENABLED=false`,
@@ -43,7 +64,7 @@
 
 ## Cosa non e' ancora verificato
 
-- conferma visiva del movimento e dell'arresto fisico delle ruote;
+- conferma visiva della rotazione a 255 e dell'arresto fisico delle ruote;
 - comportamento freno/coast e spazio di arresto: il firmware usa coast (`EN=0`, `IN` bassi);
 - ripetizione B0 su piu' run e con batteria a tensioni diverse;
 - corrente e temperatura del L298N sotto carico;
@@ -51,5 +72,5 @@
 
 ## Nota
 
-`PWM_MAX=150` e' un valore di banco, non il `pwm_max` definitivo. Il test e' stato eseguito con
-le ruote sollevate; nessun comando e' stato eseguito a terra.
+`PWM_MAX=150` e `PWM_MAX=255` sono valori di banco, non il `pwm_max` definitivo. Il test e'
+stato eseguito con le ruote sollevate; nessun comando e' stato eseguito a terra.

@@ -3,8 +3,8 @@
 **Versione:** 0.7
 **Data:** 31/10/2026
 **Stato:** sviluppo attivo; protocollo v1.1 implementato e verificato a banco. B0 parziale: stop
-e watchdog verificati con motori attivi; freno/coast e conferma visiva da completare. Movimento
-reale disabilitato di default.
+e watchdog verificati con ponte abilitato; a 150 i motori ronzavano senza ruotare, a 255 la
+rotazione e' da confermare. Freno/coast da completare; movimento reale disabilitato di default.
 
 ## 1. Obiettivo
 
@@ -100,8 +100,8 @@ Build riproducibile e sketch di test con README. Non abilita ancora il movimento
 
 Freni, verso motori, stop di emergenza, watchdog e perdita seriale verificati a robot sollevato.
 
-Stato 2026-10-31: stop e watchdog verificati con motori attivi (B0-1); freno/coast e conferma
-visiva da completare.
+Stato 2026-10-31: stop e watchdog verificati con ponte abilitato (B0-1); a 150 i motori
+ronzavano senza ruotare, a 255 la rotazione e' da confermare. Freno/coast da completare.
 
 ### Gate B1 — primitive
 
