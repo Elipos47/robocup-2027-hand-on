@@ -82,12 +82,34 @@ la creazione del contratto software.
 
 La mappa dei pin viene trattata come una decisione progettuale separata. Deve includere:
 
-- `ENA`, `ENB`, `IN1..IN4` per L298N, se confermati;
+- `ENA`, `ENB`, `IN1..IN4` per L298N: forniti il 31/10/2026, vedi sotto;
 - pin del segnale servo;
 - pin trigger ed echo di HC-SR04, se usato;
 - pin I2C o altra interfaccia del BNO085, se usato;
 - pin di led e interruttore, se usati;
 - eventuali pin di debug o heartbeat.
+
+### L298N - mappa fornita dall'utente
+
+| Segnale | Pin Arduino Mega 2560 | Note |
+|---|---:|---|
+| `ENA` | 12 | PWM, canale A |
+| `IN1` | 22 | direzione, canale A |
+| `IN2` | 23 | direzione, canale A |
+| `ENB` | 13 | PWM, canale B |
+| `IN3` | 24 | direzione, canale B |
+| `IN4` | 25 | direzione, canale B |
+
+- Canale A: `ENA` + `IN1`/`IN2`, verso `OUT1`/`OUT2` del L298N.
+- Canale B: `ENB` + `IN3`/`IN4`, verso `OUT3`/`OUT4` del L298N.
+- I pin 12 e 13 sono PWM sul Mega 2560. Il pin 13 ha il LED di bordo: con `ENB` in PWM il LED
+  lampeggia e non va usato come indicatore di stato.
+- La corrispondenza tra canale A/B e lato sinistro/destro resta `TODO` (`motor_side_map`) e va
+  determinata a banco con le ruote sollevate.
+- La mappa e' una decisione, non una misura: verso, freno e limite PWM restano da verificare.
+
+Non ancora definiti: pin del servo, trigger/echo di HC-SR04, I2C del BNO085, LED e
+interruttore.
 
 Nessun cablaggio va modificato prima dell'approvazione esplicita della mappa.
 
