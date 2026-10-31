@@ -56,7 +56,14 @@ finale di `pwm_max` e il timeout del watchdog vanno scelti dopo la misura e regi
 
 ## Test del protocollo senza movimento
 
-Frame da inviare dal Serial Monitor:
+Nel Serial Monitor:
+
+- baud **115200**;
+- line ending **Newline** (oppure **Both NL & CR**): con "No line ending" il firmware non
+  riceve il frame e non risponde;
+- copia i frame esatti, comprese le lettere maiuscole e il checksum.
+
+Frame da inviare:
 
 | Frame | Risposta attesa |
 |---|---|
@@ -76,6 +83,25 @@ A,<sequence>,-1,0,0,0,<status>*HH
 - angoli IMU a `0`: BNO085 non ancora implementato;
 - bit 2 dello status: motori attivi;
 - bit 3: watchdog scattato.
+
+Per un handshake automatico, senza digitare il checksum:
+
+```sh
+cd software
+python3 -m rcj2027 --port /dev/ttyACM0 --run-id prova-001
+```
+
+Il comando aspetta il boot del Mega, invia `V` e poi `H`.
+
+## Errori comuni
+
+| Risposta | Significato |
+|---|---|
+| `E,UNKNOWN_COMMAND` | lettera del tipo minuscola o comando non riconosciuto |
+| `E,BAD_CHECKSUM` | frame o checksum copiato male |
+| `E,BAD_FORMAT` | campi mancanti, ordine sbagliato o newline assente |
+| `E,MOTION_DISABLED` | movimento disabilitato o handshake `V` mancante |
+| nessuna risposta | firmware di test motori ancora caricato, line ending sbagliato o porta occupata |
 
 ## Test B0 con movimento
 
