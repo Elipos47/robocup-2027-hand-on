@@ -1,6 +1,7 @@
 # Protocollo seriale Raspberry Pi ↔ Arduino — proposta v1
 
-**Stato:** proposta tecnica; nessun firmware o cablaggio è stato modificato.
+**Stato:** proposta tecnica; il firmware di test motori e' separato dal protocollo. Nessun
+cablaggio e' stato modificato per il protocollo.
 
 ## Obiettivi
 
@@ -119,6 +120,8 @@ Il testo dell'errore può essere aggiunto solo nei log del Raspberry, non nel pr
 
 ## Stato dell'implementazione
 
-- La specifica è ora documentata.
-- Il parser e il backend finto saranno implementati dopo l'approvazione di questo formato.
-- Il firmware Arduino reale non viene modificato prima della verifica del protocollo con l'utente.
+- La specifica e' documentata.
+- Esiste un primo sketch di banco per i motori (`firmware/test/motor_direction_test/`),
+  separato dal protocollo.
+- Il parser e il backend finto saranno implementati nella fase software.
+- Il firmware del protocollo non viene scritto prima dell'approvazione di questo formato.

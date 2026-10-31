@@ -76,7 +76,9 @@ sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilit
 
 ## Test ancora da creare
 
-- [ ] raccolta dei dati minimi per il software;
+- [x] sketch di banco per le direzioni dei motori (`firmware/test/motor_direction_test/`), prova
+  da eseguire;
+- [ ] raccolta dei dati minimi: lati e verso dei motori;
 - [ ] test freno e direzione motori;
 - [ ] test comunicazione e watchdog;
 - [ ] calibrazione manuale camere;

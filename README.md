@@ -2,18 +2,20 @@
 
 ## Scopo
 
-Repository di contesto e sviluppo hardware-first per **RoboCupJunior Rescue Line 2027**.
+Repository di sviluppo hardware-first per **RoboCupJunior Rescue Line 2027**.
 L'obiettivo e' costruire e validare sul robot reale un sistema Raspberry Pi 5 + Arduino Mega
 capace di seguire la linea, gestire ostacoli e terreni, riconoscere vittime e completare il
 percorso con evidenze raccolte in laboratorio e sul campo.
 
-Il progetto precedente resta intatto e non viene importato qui: niente Webots, niente
-controller, niente log di simulazione e niente codice funzionale gia' sviluppato.
+Il progetto precedente resta intatto e non viene importato qui: niente Webots, niente controller
+del progetto precedente, niente log di simulazione e niente codice funzionale gia' sviluppato.
 
 ## Stato
 
-- Fase corrente: definizione del contratto hardware minimo e raccolta dei pochi dati necessari
-  per iniziare il software.
+- Fase corrente: avvio dello sviluppo codice. Il firmware di banco e il software Raspberry
+  entrano nel repository; il primo sketch misura lati e verso dei motori.
+- Contratto minimo: batteria 11.1 V nota da etichetta; lati e verso dei motori da confermare a
+  banco. La mappa dei pin e' in `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
 - Le quote degli ingombri gia raccolte in `docs/hardware/Misure Robotica.pdf` sono per il CAD e
   non sono trattate come parametri del controller senza conferma.
 - Simulazione: non e' un gate di sviluppo per questa linea di lavoro.
@@ -22,10 +24,13 @@ controller, niente log di simulazione e niente codice funzionale gia' sviluppato
 - Regolamento: RCJ Rescue Line 2026 e' la base provvisoria; la versione 2027 deve sostituirla
   quando pubblicata.
 
-## Mappa dei documenti
+## Mappa del progetto
 
-| Area | Documento |
+| Area | Percorso |
 |---|---|
+| Firmware Arduino | `firmware/`, `firmware/test/` |
+| Software Raspberry Pi | `software/` |
+| Build e test | `scripts/build.sh`, `scripts/test.sh`, `scripts/check_context.sh` |
 | Obiettivi e regole | `docs/objectives/DEVELOPMENT_PLAN.md`, `docs/rules/` |
 | Inventario hardware | `docs/hardware/INVENTORY.md` |
 | Dati minimi per il software | `docs/hardware/MINIMUM_HARDWARE_DATA.md` |
@@ -60,17 +65,15 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Compilare il blocco prioritario di `docs/MEASUREMENT_LOG.md` con i dati minimi per il
-   software, usando `docs/hardware/MINIMUM_HARDWARE_DATA.md` come checklist.
-2. Proporre e approvare la mappa dei pin e la configurazione seriale senza modificare i
-   cablaggi per istinto.
-3. Definire il primo contratto seriale e il logger strutturato mantenendo il movimento
-   disabilitato finche i parametri di sicurezza non sono confermati.
-4. Eseguire il primo test controllato sul campo della linea, senza dichiarare il percorso
-   completo.
+1. Eseguire il test `firmware/test/motor_direction_test/` e riportare lato e verso dei motori.
+2. Aggiornare il contratto minimo con `motor_side_map` e `motor_direction_polarity`.
+3. Scrivere parser del protocollo e logger sul Raspberry, con movimento disabilitato finche i
+   dati di sicurezza non sono confermati.
+4. Collaudare freni, arresto e comunicazione Raspberry-Arduino; poi eseguire il primo test
+   controllato della linea sul campo.
 
-La validazione documentale iniziale si esegue con:
+La validazione e la build si eseguono con:
 
 ```sh
-bash scripts/check_context.sh
+bash scripts/test.sh
 ```

@@ -2,7 +2,8 @@
 
 ## Principio
 
-Il software viene scritto in coordinamento con i progressi hardware e con test sul campo. Un
+Il software viene scritto in coordinamento con i progressi hardware e con test sul campo. La
+fase di codice e' iniziata: firmware di banco e software Raspberry vivono nel repository, ma un
 comportamento non e' considerato pronto perche' esiste un test statico, unita' o una previsione:
 servono evidenze sul robot reale, condizioni di prova e un log associato.
 
@@ -10,8 +11,10 @@ servono evidenze sul robot reale, condizioni di prova e un log associato.
 
 ### H0a — Contratto minimo hardware
 
-- raccogliere solo i dati necessari a scrivere il software: alimentazione, verso motori,
-  limiti PWM, freno, ruota, comunicazione, camera linea e orientamento dei sensori usati;
+- raccogliere solo i tre dati che il software non puo' dedurre: tensione della batteria, asse e
+  verso dei motori;
+- trattare pin, PWM, freno, seriale, camera e sensori come scelte di codice o dati da scoprire
+  durante le prove;
 - usare `docs/hardware/MINIMUM_HARDWARE_DATA.md` come fonte unica dei parametri minimi;
 - mantenere espliciti i TODO e non dedurre valori dal CAD, dalle foto o dai nomi dei moduli;
 - permettere lo scaffolding di protocollo, logger e moduli di percezione anche con dati non
@@ -25,6 +28,13 @@ servono evidenze sul robot reale, condizioni di prova e un log associato.
 - tenere separati fatti, stime e TODO.
 
 H0b non e' un prerequisito per iniziare a scrivere il software.
+
+### D0 — Codice di banco
+
+- layout `firmware/` per Arduino e `software/` per il Raspberry;
+- build riproducibile con `scripts/build.sh`;
+- sketch di test con README, comandi e risultato atteso;
+- nessuna pretesa di missione o di movimento autonomo.
 
 ### B0 — Sicurezza e banco
 

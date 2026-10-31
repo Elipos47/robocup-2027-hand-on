@@ -2,26 +2,29 @@
 
 ## Obiettivo
 
-Progetto documentale hardware-first per RoboCupJunior Rescue Line 2027. Il software viene
-sviluppato in coordinamento con misure, collaudo a banco e prove sul campo; il progetto non
-dipende da un simulatore e non contiene il codice applicativo sviluppato nel progetto precedente.
+Progetto hardware-first per RoboCupJunior Rescue Line 2027. Il software viene sviluppato in
+coordinamento con misure, collaudo a banco e prove sul campo. Il repository contiene il codice
+nuovo del robot (Python sul Raspberry, C++/Arduino sul Mega); non dipende da un simulatore e non
+contiene il codice applicativo del progetto precedente.
 
 ## Stack
 
 - Documentazione Markdown e PDF ufficiali.
-- Raspberry Pi 5 4GB e Arduino Mega 2560 come piattaforma hardware prevista.
-- Python e C++/Arduino come possibili linguaggi futuri, solo dopo le verifiche hardware.
-- OpenCV e sensori fisici per la percezione; nessun simulatore incluso nella baseline.
-- Prove su banco e sul campo; il test sul campo e' il criterio di avanzamento principale.
+- Raspberry Pi 5 4GB e Arduino Mega 2560 come piattaforma hardware.
+- Python sul Raspberry per percezione, stato, logging e UI.
+- C++/Arduino sul Mega per motori, sensori, servo e watchdog.
+- OpenCV e sensori fisici; nessun simulatore.
+- Prove su banco e sul campo: il test sul campo e' il criterio di avanzamento principale.
 
 ## Comandi
 
 ```sh
-# install:  nessuna dipendenza; clonare il repository
+# install:  arduino-cli core install arduino:avr; dipendenze Python in software/
 # validate: bash scripts/check_context.sh
-# test:     bash scripts/check_context.sh
-# build:    echo "documentation-only project"
+# build:    bash scripts/build.sh
+# test:     bash scripts/test.sh
 # lint:     git diff --check
+# upload:   arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega firmware/test/motor_direction_test
 ```
 
 <Esegui questi comandi con cwd in questa cartella.>
@@ -30,17 +33,23 @@ dipende da un simulatore e non contiene il codice applicativo sviluppato nel pro
 
 - Git: repository inizializzato su `main`; i checkpoint sono automatici. Il push e' regolato
   dalla sezione «Remoto e push»; `reset --hard`, rebase e riscritture di storia restano vietati.
+- Layout del codice: `firmware/` per gli sketch Arduino, `software/` per il Python del
+  Raspberry, `firmware/test/<nome>/<nome>.ino` per gli sketch di banco. Ogni sketch di test ha
+  un `README.md` con cablaggio, comandi e risultato atteso.
 - La fonte di verita' hardware e' `docs/hardware/`; ogni misura reale va registrata con data,
   strumento, condizione e incertezza in `docs/MEASUREMENT_LOG.md`.
-- Per iniziare il software si usa il contratto minimo in
+- Per il software si usa il contratto minimo in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`: non richiedere un inventario completo di schede,
   masse, cavi o CAD se non e' necessario al codice richiesto.
 - I parametri non critici possono restare `TODO`; quelli di sicurezza mancanti devono
   disabilitare il movimento reale e non diventare valori di fallback.
-- Il regolamento 2026 e' provvisorio fino a disposizione del regolamento ufficiale 2027.
-- Non modificare hardware, cablaggi, firmware o collegamenti senza approvazione esplicita.
-- Non introdurre simulatori, log di simulazione o codice applicativo copiato dal progetto
-  precedente senza una decisione documentata e una prova hardware che lo giustifichi.
+- Il regolamento 2026 e' provvisorio fino alla disposizione del regolamento ufficiale 2027.
+- Non modificare hardware, cablaggi o collegamenti senza approvazione esplicita. Il firmware
+  si modifica nel repository, si compila con `bash scripts/build.sh` e si carica sul robot solo
+  dopo la compilazione; i test di movimento si eseguono con ruote sollevate e alimentazione
+  controllata.
+- Non introdurre simulatori o log di simulazione. Il codice del progetto precedente non viene
+  importato.
 - I TODO sono parte del contesto: non riempirli con valori inventati o inferenze non verificate.
 - I segreti stanno in `.env`, mai nel repository; non salvare credenziali, token o porte seriali
   reali con password.
@@ -53,10 +62,10 @@ dipende da un simulatore e non contiene il codice applicativo sviluppato nel pro
 - **Deroga dichiarata alla regola globale «mai push senza richiesta esplicita»**: l'autore ha
   chiesto che il remoto resti aggiornato, quindi `git push origin main` fa parte del lavoro
   ordinario di questo progetto. La deroga vale solo qui, non negli altri progetti del workspace.
-- A fine turno, se hai modificato file e il checkpoint automatico e' gia' avvenuto: verifica
-  `bash scripts/check_context.sh` verde, `git status --short` vuoto e nessun segreto
-  (`git grep -nEi 'password|api[_-]?key|secret|token|BEGIN (RSA|OPENSSH)|192\.168\.'`),
-  poi esegui `git push origin main`.
+- A fine turno, se hai modificato file: verifica `bash scripts/test.sh` verde, nessun segreto
+  (`git grep -nEi 'password|api[_-]?key|secret|token|BEGIN (RSA|OPENSSH)|192\.168\.'`) e
+  `git status --short`; se il checkpoint automatico non e' avvenuto, crea un commit
+  descrittivo, poi esegui `git push origin main`.
 - Mai `push --force`, `reset --hard`, rebase o riscritture di storia. Se il remoto e'
   divergente, fermati e chiedi.
 - Se il push fallisce per autenticazione, non inventare token o credenziali: fermati e
@@ -66,18 +75,18 @@ dipende da un simulatore e non contiene il codice applicativo sviluppato nel pro
 
 ## Stato attuale
 
-- Fatto: struttura documentale iniziale, inventario hardware, riferimento CAD, regolamento
-  provvisorio, piano hardware-first, architettura e protocollo seriale come proposta.
-- Fatto: `docs/hardware/Misure Robotica.pdf` raccoglie gli ingombri di molte schede; sono un
-  input per il CAD, non ancora parametri operativi del controller.
-- Fatto: definito `docs/hardware/MINIMUM_HARDWARE_DATA.md` come contratto minimo, ridotto ai
-  tre dati che il software non puo' dedurre: tensione, asse e verso dei motori.
-- Fatto: batteria acquisita il 2026-10-22 (etichetta): 2 pacchi Li-Ion 3S 11.1 V 2.6 Ah
-  28.86 Wh in parallelo, cioe' 11.1 V, 5.2 Ah, 57.72 Wh dichiarati. `battery_nominal_v` e'
-  compilato; il resto dell'etichetta non serve al contratto software.
-- In corso: raccolta dei pochi dati minimi necessari e definizione dei test di banco.
-- Prossimi passi: compilare i campi di Priorita 1 del registro, proporre la mappa dei pin,
-  definire seriale e logger, poi collaudare freni/arresto e comunicazione Raspberry-Arduino.
+- Fatto: struttura documentale, inventario hardware, riferimento CAD, regolamento provvisorio,
+  piano hardware-first, architettura e protocollo seriale come proposta.
+- Fatto: contratto minimo ridotto ai tre dati che il software non puo' dedurre: tensione,
+  asse e verso dei motori. Batteria 11.1 V da etichetta (2 pacchi Li-Ion 3S in parallelo).
+- Fatto: mappa pin L298N (ENA/ENB 12/13, IN1..IN4 22..25), HC-SR04 (TRIG 27, ECHO 26) e
+  BNO085 (SDA 20, SCL 21); breakout Adafruit BNO085 confermato compatibile con I2C a 5 V.
+- Fatto: primo sketch di banco in `firmware/test/motor_direction_test/`, compilato con
+  `bash scripts/build.sh`; la prova a banco per lati e verso e' da eseguire.
+- In corso: fase di sviluppo codice; determinare lati/verso dei motori e poi seriale e logger.
+- Prossimi passi: eseguire il test motori e riportare l'esito, aggiornare il contratto minimo,
+  scrivere parser e logger con movimento disabilitato, poi collaudare freni/arresto e
+  comunicazione Raspberry-Arduino.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, BNO085,

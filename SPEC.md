@@ -1,9 +1,9 @@
 # SPEC — Robocup2027HandOn
 
-**Versione:** 0.2
-**Data:** 25/09/2026
-**Stato:** baseline documentale hardware-first; contratto hardware minimo definito, parametri di
-movimento ancora da confermare
+**Versione:** 0.3
+**Data:** 31/10/2026
+**Stato:** sviluppo attivo; firmware di banco e software in costruzione. Contratto minimo:
+batteria 11.1 V nota, lati e verso dei motori da confermare a banco.
 
 ## 1. Obiettivo
 
@@ -30,7 +30,7 @@ Il risultato finale deve permettere al robot di:
 | HC-SR04 | distanza frontale | presente, range da verificare |
 | BNO085 | IMU | modello/ruolo da confermare |
 | L298N | pilotaggio motori | presente, dropout da considerare |
-| Batterie | alimentazione | tipo, tensione e capacita' da verificare |
+| Batterie | alimentazione | 11.1 V Li-Ion 3S da etichetta, 2 pacchi in parallelo |
 | UPS | continuità alimentazione Raspberry | presente |
 | Servo | meccanismo ausiliario | modello e funzione da verificare |
 | Ruote/cinghie | locomozione | modello e dimensioni mancanti |
@@ -41,12 +41,16 @@ Il risultato finale deve permettere al robot di:
 Il progetto non richiede un inventario hardware completo prima di iniziare a scrivere il
 software. Il contratto minimo e' definito in `docs/hardware/MINIMUM_HARDWARE_DATA.md` e comprende:
 
-- tensione nominale della batteria (11.1 V, acquisita);
+- tensione nominale della batteria (11.1 V da etichetta);
 - asse e verso dei motori.
 
 Le quote degli ingombri raccolte in `docs/hardware/Misure Robotica.pdf` sono risorse per il CAD e
 non sostituiscono questi parametri. I valori mancanti restano `TODO` e bloccano solo la funzione
 che ne dipende.
+
+Il codice vive in `firmware/` (Arduino Mega) e `software/` (Raspberry Pi); gli sketch di banco
+stanno in `firmware/test/<nome>/<nome>.ino` con un `README.md` che descrive cablaggio, comandi e
+risultato atteso.
 
 ## 3. Architettura
 
@@ -69,15 +73,22 @@ che ne dipende.
 7. Il regolamento Rescue Line 2026 e' provvisorio; le differenze 2027 devono essere registrate
    prima di modificarne l'implementazione.
 8. Il progetto non contiene codice o log importati dal precedente repository.
+9. Ogni sketch di banco ha un `README.md` con cablaggio, comandi e risultato atteso.
+10. Il firmware si compila con `scripts/build.sh` prima dell'upload; i test di movimento si
+    eseguono con ruote sollevate e alimentazione controllata.
 
 ## 5. Gate di avanzamento
 
 ### Gate H0 — contratto hardware minimo
 
-I dati minimi per il software sono identificati in
-`docs/hardware/MINIMUM_HARDWARE_DATA.md`; i TODO sono separati dai fatti. L'inventario esteso
-e' utile per CAD, sicurezza e prove, ma non e' un prerequisito per lo scaffolding del
-software.
+I dati minimi sono tensione della batteria, asse e verso dei motori, in
+`docs/hardware/MINIMUM_HARDWARE_DATA.md`. La mappa dei pin e' una decisione di progetto
+registrata nello stesso documento; l'inventario esteso non e' un prerequisito per scrivere il
+codice.
+
+### Gate D0 — codice di banco
+
+Build riproducibile e sketch di test con README. Non abilita ancora il movimento autonomo.
 
 ### Gate B0 — bench safety
 
@@ -111,16 +122,18 @@ Run complete ripetute sul campo, con report, eventi, errori e condizioni di illu
 
 ## 7. Esclusioni
 
-Questa baseline non contiene:
+Il progetto non contiene:
 
 - simulatori o mondi di simulazione;
-- controller, firmware o librerie funzionali;
 - log di prove simulate;
 - copia del codice sviluppato nel progetto precedente;
 - parametri inventati per colmare dati hardware mancanti.
 
 ## 8. Riferimenti
 
+- `firmware/`
+- `software/`
+- `scripts/`
 - `docs/hardware/INVENTORY.md`
 - `docs/hardware/MINIMUM_HARDWARE_DATA.md`
 - `docs/hardware/Misure Robotica.pdf`

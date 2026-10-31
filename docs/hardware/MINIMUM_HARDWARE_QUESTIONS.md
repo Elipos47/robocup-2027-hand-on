@@ -30,8 +30,9 @@ verso_destro   = avanti / indietro / non verificato
 ## Come si misurano
 
 Ruote sollevate, un motore alla volta a PWM basso: si guarda quale gira e in che verso. Cinque
-minuti, nessuno strumento.
+minuti, nessuno strumento. Lo sketch `firmware/test/motor_direction_test/` guida la prova.
 
 ## Mappa dei pin
 
-Non e' una domanda: e' una scelta di progetto da proporre e approvare prima di cablare.
+Non e' una domanda: e' una scelta di progetto. La mappa attuale (L298N, HC-SR04, BNO085) e' in
+`docs/hardware/MINIMUM_HARDWARE_DATA.md`; restano da definire i pin di servo, LED e interruttore.

@@ -5,7 +5,7 @@
 - `docs/hardware/INVENTORY.md` deriva dall'inventario hardware preliminare disponibile nel
   progetto precedente, con rimozione del contesto di simulazione.
 - `docs/hardware/CAD_REFERENCE.md` deriva dall'analisi dell'assieme STEP, mantenendo solo
- geometria, scala, componenti e limiti di verifica.
+  geometria, scala, componenti e limiti di verifica.
 - `docs/architecture/SERIAL_PROTOCOL.md` e' una specifica di protocollo proposta, non un
   firmware implementato.
 - `docs/rules/` contiene i PDF di riferimento 2026 copiati come materiale di studio.
@@ -19,7 +19,12 @@
 - documentazione storica che descriveva il percorso simulato;
 - copie locali del file CAD o di immagini non verificate.
 
+## Codice nuovo
+
+Il firmware in `firmware/` e il software in `software/` sono scritti ex novo in questo
+repository. Non derivano dal progetto precedente e non contengono log o mondi di simulazione.
+
 ## Progetto precedente
 
 Il repository `robocup` resta intatto e separato. Non è una directory padre di questo progetto
-e non viene modificato durante la creazione del nuovo contesto.
+e non viene modificato durante lo sviluppo.

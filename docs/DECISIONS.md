@@ -1,6 +1,6 @@
 # Decisioni aperte e scelte
 
-## Scelte prese per la baseline
+## Scelte prese
 
 1. **Hardware-first:** il software viene coordinato con misure e prove sul campo.
 2. **Nessun simulatore come gate:** il progetto non dipende da Webots o da altri ambienti
@@ -18,6 +18,11 @@
    quindi 11.1 V e 5.2 Ah / 57.72 Wh dichiarati. In parallelo la tensione resta la stessa; i
    pacchi si collegano solo a tensione uguale e con protezioni compatibili. Corrente, BMS e
    cutoff non sono requisiti del contratto software: si osservano sul campo se servono.
+10. **Fase codice (2026-10-31):** il repository non e' piu' documentation-only. Il codice nuovo
+    vive in `firmware/` (Arduino) e `software/` (Python); gli sketch di banco stanno in
+    `firmware/test/<nome>/<nome>.ino` con un README. Restano validi hardware-first, nessun
+    simulatore, nessun codice del progetto precedente e prova reale come criterio di
+    avanzamento.
 
 ## Decisioni da prendere
 

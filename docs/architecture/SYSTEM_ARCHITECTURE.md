@@ -19,7 +19,7 @@ Telecamere + IMU + sonar
 
 ## Raspberry Pi 5
 
-Responsabilita' future:
+Responsabilita':
 
 - acquisizione e calibrazione delle due telecamere;
 - elaborazione linea, marker, stanza e vittime;
@@ -31,7 +31,7 @@ Non deve inviare comandi non validati o perdere il controllo di sicurezza in cas
 
 ## Arduino Mega
 
-Responsabilita' future:
+Responsabilita':
 
 - PWM e direzione dei motori;
 - lettura di HC-SR04 e IMU;
@@ -39,8 +39,17 @@ Responsabilita' future:
 - heartbeat e stop watchdog;
 - risposte e contatori di errore.
 
-Il firmware non verrà implementato in questa fase; il contratto seriale resta una proposta in
-`SERIAL_PROTOCOL.md`.
+Il firmware parte dagli sketch di banco in `firmware/test/`; il contratto seriale resta una
+proposta in `SERIAL_PROTOCOL.md` finche' non viene implementato e provato sul banco.
+
+## Layout del codice
+
+```text
+firmware/
+  test/<nome>/<nome>.ino   sketch di banco con README
+software/                  Python del Raspberry Pi
+scripts/                   build, test e validazione
+```
 
 ## Configurazione hardware minima
 

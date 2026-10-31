@@ -1,18 +1,30 @@
-# Validazione iniziale del progetto
+# Validazione del progetto
 
-**Data:** 24/09/2026
+**Data:** 31/10/2026
 
 ## Controllo
 
 ```sh
 bash scripts/check_context.sh
+bash scripts/build.sh
 ```
 
-Il controllo verifica la presenza di hardware, regole, obiettivi, architettura, protocollo,
-piano test, registro misure e provenienza. Rifiuta la presenza delle directory legacy `src/` e
-`simulation/` e di file applicativi Python/C++/Arduino nella baseline documentale.
+Oppure, per struttura, build e test Python disponibili:
+
+```sh
+bash scripts/test.sh
+```
+
+`check_context.sh` verifica la presenza di documenti, firmware e software; rifiuta le directory
+di simulazione e gli sketch `.ino` fuori da `firmware/`; richiede che la cartella di ogni sketch
+corrisponda al nome del file.
+
+`build.sh` compila tutti gli sketch con `arduino-cli` per `arduino:avr:mega`; il FQBN si puo'
+sovrascrivere con la variabile `FQBN`.
+
+`test.sh` esegue il controllo, la build e, se presenti, i test Python in `software/`.
 
 ## Criterio
 
-La baseline e' pronta per la raccolta delle misure hardware quando il controllo termina con
-`context validation: OK`. Non implica che hardware, firmware o software siano gia' verificati.
+Il progetto e' pronto per il prossimo test di banco quando `scripts/test.sh` termina senza
+errori. Questo non implica che hardware, firmware o software siano gia' verificati sul robot.
