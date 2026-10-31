@@ -35,8 +35,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   (`docs/testing/B1_SENSORS_TEST.md`): sonar ~0,9-1,2 m, BNO085 su I2C `0x4A`, bit 0+1.
   Calibrazione di assi e distanza di riferimento ancora da fare.
 - Fatto: B1-4, suite software di diagnostica (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`):
-  probe camera con metriche, calibrazione checkerboard, analisi sonar/IMU e test IMU in
-  movimento. Camera 0 e IMU passano; il sonar e' valido ma instabile (salto ~695 mm).
+  probe camera USB e CSI via Picamera2, metriche, calibrazione checkerboard, analisi sonar/IMU e
+  test IMU in movimento. USB e IMU passano; CSI acquisisce ma il frame e' sfocato; il sonar e'
+  valido ma instabile (salto ~695 mm).
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -90,8 +91,8 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Ripetere il test sonar con un bersaglio stabile e una distanza di riferimento; calibrare la
-   camera con un checkerboard e verificare la seconda telecamera.
+1. Ripetere il test sonar con un bersaglio stabile e una distanza di riferimento; verificare
+   messa a fuoco/montaggio della CSI e calibrare USB e CSI con un checkerboard.
 2. Completare la calibrazione degli assi IMU rispetto al telaio.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Eseguire il primo test controllato della linea sul campo.

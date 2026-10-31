@@ -14,7 +14,10 @@ La CLI `python3 -m rcj2027.diagnostics` (dalla cartella `software/`) supporta:
 ```sh
 python3 -m rcj2027.diagnostics camera --list
 python3 -m rcj2027.diagnostics camera --device 0 --save /tmp/camera0.jpg
+python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --warmup 2 \
+  --save /tmp/csi0.jpg
 python3 -m rcj2027.diagnostics camera --device 0 --checkerboard 9x6
+python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --checkerboard 9x6
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10 \
   --reference-mm 500 --reference-tolerance 50
 python3 -m rcj2027.diagnostics imu --port /dev/ttyACM0 --duration 10 \
@@ -24,6 +27,7 @@ python3 -m rcj2027.diagnostics camera-calibrate \
 ```
 
 - `camera` misura luminosita', contrasto, nitidezza e, se richiesto, rileva il checkerboard;
+  USB usa OpenCV, CSI usa Picamera2 con autofocus e warm-up;
 - `sonar` confronta la media con una distanza misurata e controlla i salti;
 - `imu` verifica rumore a riposo o movimento sull'asse atteso;
 - `camera-calibrate` calcola matrice intrinseca e distorsione da almeno 3 immagini valide.

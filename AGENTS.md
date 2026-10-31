@@ -110,9 +110,10 @@ contiene il codice applicativo del progetto precedente.
   su I2C `0x4A`, IMU valido 49/51, status bit 0+1. Assi IMU e distanza di riferimento restano
   da calibrare.
 - Fatto: B1-4, suite software di diagnostica per camera, sonar e IMU
-  (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`): probe camera con metriche e calibrazione
-  checkerboard, analisi statistica sonar/IMU, test IMU stazionario e in movimento. Camera 0 e
-  IMU passano; il sonar e' valido ma instabile (salto ~695 mm) e il test fallisce.
+  (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`): probe camera USB (OpenCV) e CSI (Picamera2),
+  metriche e calibrazione checkerboard, analisi statistica sonar/IMU, test IMU stazionario e in
+  movimento. USB e IMU passano; CSI acquisisce ma il frame e' sfocato; il sonar e' valido ma
+  instabile (salto ~695 mm) e il test fallisce.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in
@@ -122,10 +123,11 @@ contiene il codice applicativo del progetto precedente.
   con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms con PWM 150/255 e timeout 1000 ms. A 150 i
   motori ronzavano senza ruotare; a 255 hanno girato (conferma dell'operatore). Firmware
   riportato a movimento disabilitato.
-- In corso: ripetere il sonar con bersaglio stabile e riferimento metrico, calibrare la camera
-  con checkerboard e completare gli assi IMU; chiudere i punti aperti di B0.
-- Prossimi passi: usare `python3 -m rcj2027.diagnostics` per sonar/camera/IMU, verificare la
-  seconda telecamera, poi passare a F0.
+- In corso: ripetere il sonar con bersaglio stabile e riferimento metrico, verificare messa a
+  fuoco/montaggio della CSI e calibrare le camere con checkerboard; completare gli assi IMU e
+  chiudere i punti aperti di B0.
+- Prossimi passi: usare `python3 -m rcj2027.diagnostics` per sonar/camera/IMU, sistemare la
+  messa a fuoco della CSI, poi passare a F0.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

@@ -49,6 +49,8 @@ La CLI `diagnostics` verifica i dati di camera, sonar e IMU senza abilitare il m
 cd software
 python3 -m rcj2027.diagnostics camera --list
 python3 -m rcj2027.diagnostics camera --device 0 --save /tmp/camera0.jpg
+python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --warmup 2 \
+  --save /tmp/csi0.jpg
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10 \
   --reference-mm 500 --reference-tolerance 50
@@ -61,9 +63,10 @@ python3 -m rcj2027.diagnostics camera-calibrate \
 ```
 
 Exit code `0` = test superato, `1` = test fallito, `2` = errore di configurazione o dispositivo.
-I report si salvano con `--json-out`. Il test sonar fallisce se il salto tra campioni supera
-`--max-jump`; il test IMU `motion` richiede che si muova l'asse indicato. La telecamera e'
-esclusiva: non eseguire due probe in parallelo.
+I report si salvano con `--json-out`. `camera --list` mostra sia gli indici OpenCV sia le camere
+libcamera; la CSI IMX708 si prova con `--csi` (Picamera2), non con un indice OpenCV. Il test
+sonar fallisce se il salto tra campioni supera `--max-jump`; il test IMU `motion` richiede che si
+muova l'asse indicato. La telecamera e' esclusiva: non eseguire due probe in parallelo.
 
 Risultati e limiti sono in `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`.
 

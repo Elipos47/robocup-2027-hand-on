@@ -85,6 +85,17 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertEqual(args.command, "camera-calibrate")
         self.assertEqual(args.pattern, "9x6")
 
+    def test_parser_builds_csi_camera_command(self) -> None:
+        parser = build_parser()
+
+        args = parser.parse_args(
+            ["camera", "--csi", "--camera-num", "0", "--warmup", "2"]
+        )
+
+        self.assertTrue(args.csi)
+        self.assertEqual(args.camera_num, 0)
+        self.assertEqual(args.warmup, 2.0)
+
 
 if __name__ == "__main__":
     unittest.main()

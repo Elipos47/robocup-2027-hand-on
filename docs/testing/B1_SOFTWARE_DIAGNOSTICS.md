@@ -6,8 +6,8 @@
 (`BENCH_MOTION_ENABLED=false`, `PWM_MAX=0`, `WATCHDOG_TIMEOUT_MS=0`)
 **Software:** `software/rcj2027/camera_checks.py`, `camera_calibration.py`,
 `sensor_checks.py`, `diagnostics.py`
-**Hardware:** Raspberry Pi 5 Model B + Arduino Mega 2560 + HC-SR04 + BNO085 + una
-telecamera USB 5MP
+**Hardware:** Raspberry Pi 5 Model B + Arduino Mega 2560 + HC-SR04 + BNO085 + telecamera USB
+5MP + telecamera CSI IMX708
 **Condizioni:** robot fermo, movimento disabilitato, nessun comando `D`; rotazione IMU
 eseguita a mano dall'operatore.
 
@@ -27,9 +27,11 @@ I test non usano multimetri, sonde termiche o spazio di frenata.
 ```sh
 cd software
 
-# Telecamera: elenco e probe singolo
+# Telecamera: elenco, probe USB e probe CSI
 python3 -m rcj2027.diagnostics camera --list
 python3 -m rcj2027.diagnostics camera --device 0 --save /tmp/camera0.jpg
+python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --warmup 2 \
+  --save /tmp/csi0.jpg
 
 # Sonar: raccolta e analisi
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10
@@ -61,33 +63,44 @@ I test host non richiedono hardware:
 - calibrazione con viste checkerboard sintetiche;
 - raccolta status con sessione finta.
 
-La suite completa e' a **123 test**, tutti verdi.
+La suite completa e' a **124 test**, tutti verdi.
 
 ## Camera
 
-`v4l2-ctl --list-devices` mostra una sola telecamera fisica:
+Sono presenti due sorgenti distinte:
 
 ```text
-5MP USB Camera: 5MP USB Camera (usb-xhci-hcd.1-1):
-    /dev/video0
-    /dev/video1
+5MP USB Camera (USB):  /dev/video0, /dev/video1
+IMX708 (CSI):          camera libcamera 0, /base/.../imx708@1a
 ```
 
-La probe ha prodotto:
+`v4l2-ctl --list-devices` vede la USB; `rpicam-hello --list-cameras` e Picamera2 vedono la CSI
+IMX708. La CSI non va aperta con un indice OpenCV: si usa `--csi`, che passa da
+Picamera2/libcamera.
+
+La probe USB (OpenCV) ha prodotto:
 
 | Device | Aperto | Frame | Luminosita' | Contrasto | Nitidezza | Esito |
 |---|---:|---|---:|---:|---:|---|
-| 0 | si | 640x480 @30 | 70,9-76,5 | 52,2-54,3 | 67,5-70,0 | PASS |
+| 0 | si | 640x480 @30 | 70,9-80,9 | 52,2-54,3 | 67,5-73,1 | PASS |
 | 1 | no | - | - | - | - | device assente |
 | 2 | si | non leggibile | - | - | - | nodo piattaforma, non camera |
 | 3 | no | - | - | - | - | device assente |
 
-La seconda telecamera prevista non e' collegata o non e' enumerata. Il test la segnala come
-assente e non inventa un device.
+La probe CSI (Picamera2, camera 0, warm-up 2 s) ha prodotto:
+
+| Camera | Modello | Frame | Luminosita' | Contrasto | Nitidezza | Esito |
+|---|---|---|---:|---:|---:|---|
+| libcamera:0 | imx708 | 640x480 | 147,9 | 34,6 | 9,3 | **FAIL** |
+
+La CSI acquisisce correttamente, ma il frame e' fuori fuoco (`sharpness=9,3` contro la soglia
+50). La IMX708 ha autofocus: il test imposta AF continuo e attende 2 s, ma la scena inquadrata
+resta sfocata. Non e' un problema di acquisizione: vanno verificati messa a fuoco e montaggio
+della camera. Il test fallisce correttamente.
 
 La calibrazione intrinseca e' implementata e testata con immagini sintetiche; la CLI
 `camera-calibrate` e' stata eseguita end-to-end su 5 viste sintetiche (RMS 0,045) per verificare
-il percorso, ma non e' una calibrazione della camera reale: serve un checkerboard con numero di
+il percorso, ma non e' una calibrazione delle camere reali: serve un checkerboard con numero di
 corner e lato noti.
 
 ## Sonar
@@ -128,7 +141,8 @@ e' un errore del test.
 
 ## Cosa e' verificato
 
-- camera 0 acquisisce frame validi e passa le soglie di luminosita'/contrasto/nitidezza;
+- USB 0 acquisisce frame validi e passa le soglie di luminosita'/contrasto/nitidezza;
+- CSI IMX708 viene enumerata da libcamera/Picamera2 e acquisisce un frame;
 - sonar e IMU producono status con bit di validita' coerenti;
 - IMU stabile a riposo e sensibile alla rotazione yaw;
 - analisi e calibrazione sono coperte da test host;
@@ -137,14 +151,15 @@ e' un errore del test.
 ## Cosa non e' verificato
 
 - stabilita' del sonar con bersaglio fermo e riferimento metrico;
-- seconda telecamera;
-- calibrazione reale della camera con checkerboard;
+- messa a fuoco e montaggio della CSI: il frame attuale e' sfocato;
+- calibrazione reale di USB e CSI con checkerboard;
 - orientamento degli assi IMU rispetto al telaio;
 - luminosita' in condizioni di gara (luce bassa, riflessi, ombre).
 
 ## Note
 
 - I log completi sono in `/tmp` o `software/logs/` e non vengono versionati.
-- La telecamera e' esclusiva: non eseguire due probe in parallelo.
+- Ogni telecamera e' esclusiva: non eseguire due probe in parallelo sulla stessa sorgente.
+  USB e CSI sono sorgenti distinte, ma Picamera2 elenca anche la USB: non aprirla due volte.
 - Il test sonar fallito e' un dato da correggere, non un motivo per abbassare la soglia senza
   una prova con bersaglio stabile.

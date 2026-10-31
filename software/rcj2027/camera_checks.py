@@ -7,6 +7,7 @@ rapido del frame, non per sostituire una calibrazione con target.
 
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
@@ -20,6 +21,14 @@ except ImportError:  # pragma: no cover - dipende dall'ambiente
     cv2 = None  # type: ignore[assignment]
     np = None  # type: ignore[assignment]
     HAS_CV2 = False
+
+try:
+    from picamera2 import Picamera2
+
+    HAS_PICAMERA2 = True
+except ImportError:  # pragma: no cover - dipende dall'ambiente
+    Picamera2 = None  # type: ignore[assignment]
+    HAS_PICAMERA2 = False
 
 
 class CameraError(RuntimeError):
@@ -51,6 +60,7 @@ class CameraProbe:
     saved_path: str | None
     error: str | None
     passed: bool
+    model: str | None = None
 
 
 def _require_cv2() -> None:
@@ -234,6 +244,108 @@ def probe_camera(
         capture.release()
 
 
+def list_libcamera_cameras() -> list[dict[str, Any]]:
+    """Elenca le camere viste da Picamera2/libcamera (USB e CSI)."""
+    if not HAS_PICAMERA2:
+        raise CameraError("Picamera2 non installato")
+    return [dict(info) for info in Picamera2.global_camera_info()]
+
+
+def probe_libcamera_camera(
+    camera_num: int = 0,
+    *,
+    size: tuple[int, int] = (640, 480),
+    warmup_s: float = 1.0,
+    save_path: str | Path | None = None,
+    checkerboard_size: tuple[int, int] | None = None,
+    **metric_kwargs: float,
+) -> CameraProbe:
+    """Acquisisce un frame da Picamera2 (CSI o USB libcamera) e lo analizza."""
+    if not HAS_PICAMERA2:
+        raise CameraError("Picamera2 non installato")
+    if not HAS_CV2:
+        raise CameraError("OpenCV/numpy non installati")
+    if warmup_s < 0:
+        raise ValueError("warmup_s non puo' essere negativo")
+
+    device = f"libcamera:{camera_num}"
+    try:
+        camera = Picamera2(camera_num=camera_num)
+    except Exception as exc:
+        return CameraProbe(
+            device=device,
+            opened=False,
+            width=None,
+            height=None,
+            fps=None,
+            metrics=None,
+            checkerboard_corners=None,
+            saved_path=None,
+            error=str(exc),
+            passed=False,
+        )
+
+    started = False
+    model: str | None = None
+    try:
+        properties = camera.camera_properties
+        if properties.get("Model"):
+            model = str(properties["Model"])
+
+        config = camera.create_still_configuration(
+            main={"size": size, "format": "RGB888"}
+        )
+        camera.configure(config)
+        camera.start()
+        started = True
+        try:
+            from libcamera import controls
+
+            camera.set_controls(
+                {"AfMode": controls.AfModeEnum.Continuous}
+            )
+        except Exception:
+            pass
+        if warmup_s:
+            time.sleep(warmup_s)
+        frame = camera.capture_array("main")
+        if frame.ndim == 3 and frame.shape[2] == 3:
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+        probed = analyze_frame(
+            frame,
+            device=device,
+            save_path=save_path,
+            checkerboard_size=checkerboard_size,
+            **metric_kwargs,
+        )
+        return replace(probed, model=model)
+    except Exception as exc:
+        return CameraProbe(
+            device=device,
+            opened=True,
+            width=None,
+            height=None,
+            fps=None,
+            metrics=None,
+            checkerboard_corners=None,
+            saved_path=None,
+            error=str(exc),
+            passed=False,
+            model=model,
+        )
+    finally:
+        if started:
+            try:
+                camera.stop()
+            except Exception:
+                pass
+        try:
+            camera.close()
+        except Exception:
+            pass
+
+
 def list_cameras(indices: range = range(0, 4), **kwargs: object) -> list[CameraProbe]:
-    """Prova una serie di indici e restituisce un report per ciascuno."""
+    """Prova una serie di indici OpenCV e restituisce un report per ciascuno."""
     return [probe_camera(index, **kwargs) for index in indices]

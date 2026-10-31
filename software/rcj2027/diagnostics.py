@@ -22,10 +22,13 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .camera_checks import (
+    HAS_PICAMERA2,
     CameraError,
     CameraProbe,
     list_cameras,
+    list_libcamera_cameras,
     probe_camera,
+    probe_libcamera_camera,
 )
 from .camera_calibration import (
     CalibrationError,
@@ -171,24 +174,38 @@ def _camera_report(args: argparse.Namespace) -> int:
     if args.list:
         if args.save:
             raise ValueError("--save non e' compatibile con --list")
-        probes = list_cameras(
+        usb_probes = list_cameras(
             range(0, args.max_index + 1),
             checkerboard_size=None,
             **metric_kwargs,
         )
-        report: dict[str, Any] | list[dict[str, Any]] = [asdict(probe) for probe in probes]
+        libcamera = list_libcamera_cameras() if HAS_PICAMERA2 else []
+        report = {
+            "opencv": [asdict(probe) for probe in usb_probes],
+            "libcamera": libcamera,
+        }
         print(json.dumps(report, indent=2, ensure_ascii=False))
-        _write_json({"cameras": report}, args.json_out)
-        return 0 if any(probe.passed for probe in probes) else 1
+        _write_json(report, args.json_out)
+        return 0 if any(probe.passed for probe in usb_probes) or libcamera else 1
 
-    device: int | str = int(args.device) if args.device.isdigit() else args.device
     checkerboard = _parse_pattern(args.checkerboard) if args.checkerboard else None
-    probe: CameraProbe = probe_camera(
-        device,
-        save_path=args.save,
-        checkerboard_size=checkerboard,
-        **metric_kwargs,
-    )
+    if args.csi:
+        probe: CameraProbe = probe_libcamera_camera(
+            args.camera_num,
+            warmup_s=args.warmup,
+            save_path=args.save,
+            checkerboard_size=checkerboard,
+            **metric_kwargs,
+        )
+    else:
+        device: int | str = int(args.device) if args.device.isdigit() else args.device
+        probe = probe_camera(
+            device,
+            save_path=args.save,
+            checkerboard_size=checkerboard,
+            **metric_kwargs,
+        )
+
     report = asdict(probe)
     print(json.dumps(report, indent=2, ensure_ascii=False))
     _write_json(report, args.json_out)
@@ -266,7 +283,19 @@ def build_parser() -> argparse.ArgumentParser:
     imu.add_argument("--settle-samples", type=int, default=5)
 
     camera = subparsers.add_parser("camera", help="probe di una o piu' telecamere")
-    camera.add_argument("--device", default="0", help="indice o path, es. 0 o /dev/video0")
+    camera.add_argument("--device", default="0", help="indice o path OpenCV, es. 0 o /dev/video0")
+    camera.add_argument(
+        "--csi",
+        action="store_true",
+        help="usa Picamera2/libcamera (camera CSI o USB libcamera)",
+    )
+    camera.add_argument("--camera-num", type=int, default=0, help="indice Picamera2")
+    camera.add_argument(
+        "--warmup",
+        type=float,
+        default=1.0,
+        help="attesa AF/esposizione prima dello scatto libcamera",
+    )
     camera.add_argument("--list", action="store_true", help="prova gli indici 0..max-index")
     camera.add_argument("--max-index", type=int, default=3)
     camera.add_argument("--save", default=None, help="salva il frame analizzato")
