@@ -5,3 +5,5 @@ opencv-python-headless>=4.10
 numpy>=1.24
 # Picamera2/libcamera per la telecamera CSI su Raspberry Pi.
 picamera2>=0.3
+# reportlab per generare il target checkerboard PDF.
+reportlab>=3.6

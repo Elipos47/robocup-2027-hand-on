@@ -96,6 +96,17 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertEqual(args.camera_num, 0)
         self.assertEqual(args.warmup, 2.0)
 
+    def test_parser_builds_checkerboard_command(self) -> None:
+        parser = build_parser()
+
+        args = parser.parse_args(
+            ["checkerboard", "--pattern", "9x6", "--square-mm", "25"]
+        )
+
+        self.assertEqual(args.command, "checkerboard")
+        self.assertEqual(args.pattern, "9x6")
+        self.assertEqual(args.square_mm, 25.0)
+
 
 if __name__ == "__main__":
     unittest.main()

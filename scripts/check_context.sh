@@ -48,6 +48,7 @@ required=(
   software/rcj2027/session.py
   software/rcj2027/camera_checks.py
   software/rcj2027/camera_calibration.py
+  software/rcj2027/checkerboard.py
   software/rcj2027/sensor_checks.py
   software/rcj2027/diagnostics.py
   software/tests/__init__.py
@@ -59,6 +60,7 @@ required=(
   software/tests/test_sensor_checks.py
   software/tests/test_camera_checks.py
   software/tests/test_camera_calibration.py
+  software/tests/test_checkerboard.py
   software/tests/test_diagnostics.py
   software/tests/test_main.py
   scripts/build.sh

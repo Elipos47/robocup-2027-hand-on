@@ -45,6 +45,8 @@ python3 -m rcj2027.diagnostics imu --port /dev/ttyACM0 --duration 10 \
   --imu-mode motion --expected-axis yaw --countdown 5
 
 # Calibrazione camera da immagini checkerboard
+python3 -m rcj2027.diagnostics checkerboard \
+  --pattern 9x6 --square-mm 25 --output checkerboard.pdf
 python3 -m rcj2027.diagnostics camera-calibrate \
   --images "calib/*.jpg" --pattern 9x6 --square-mm 25 --output calib.json
 ```
@@ -63,7 +65,7 @@ I test host non richiedono hardware:
 - calibrazione con viste checkerboard sintetiche;
 - raccolta status con sessione finta.
 
-La suite completa e' a **124 test**, tutti verdi.
+La suite completa e' a **129 test**, tutti verdi.
 
 ## Camera
 
@@ -100,8 +102,10 @@ della camera. Il test fallisce correttamente.
 
 La calibrazione intrinseca e' implementata e testata con immagini sintetiche; la CLI
 `camera-calibrate` e' stata eseguita end-to-end su 5 viste sintetiche (RMS 0,045) per verificare
-il percorso, ma non e' una calibrazione delle camere reali: serve un checkerboard con numero di
-corner e lato noti.
+il percorso, ma non e' una calibrazione delle camere reali. Il target si genera con
+`python3 -m rcj2027.diagnostics checkerboard` (A4 landscape, 9x6 corner, quadrati 25 mm, barra
+da 100 mm) e va stampato al 100% su carta opaca. Servono 12-20 viste reali con il pattern che
+occupa circa il 50-80% del frame.
 
 ## Sonar
 

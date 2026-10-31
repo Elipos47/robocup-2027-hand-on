@@ -35,6 +35,7 @@ from .camera_calibration import (
     calibrate_camera,
     save_calibration,
 )
+from .checkerboard import CheckerboardError, make_checkerboard_pdf
 from .logger import JsonlLogger
 from .protocol import SensorReading
 from .safety import DEFAULT_CONFIG
@@ -232,6 +233,30 @@ def _camera_calibrate_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def _checkerboard_report(args: argparse.Namespace) -> int:
+    pattern = _parse_pattern(args.pattern)
+    output = make_checkerboard_pdf(
+        args.output,
+        pattern_size=pattern,
+        square_size_mm=args.square_mm,
+        landscape_page=not args.portrait,
+        margin_mm=args.margin_mm,
+    )
+    columns = pattern[0] + 1
+    rows = pattern[1] + 1
+    report = {
+        "output": str(output),
+        "pattern_size": list(pattern),
+        "squares": [columns, rows],
+        "square_size_mm": args.square_mm,
+        "board_size_mm": [columns * args.square_mm, rows * args.square_mm],
+        "print": "100% / dimensione reale",
+    }
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+    _write_json(report, args.json_out)
+    return 0
+
+
 def _add_serial_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--port", required=True, help="porta seriale, es. /dev/ttyACM0")
     parser.add_argument("--baud", type=int, default=115200)
@@ -315,6 +340,17 @@ def build_parser() -> argparse.ArgumentParser:
     calibration.add_argument("--output", default="camera_calibration.json")
     calibration.add_argument("--json-out", default=None)
 
+    target = subparsers.add_parser(
+        "checkerboard",
+        help="genera un target checkerboard PDF a dimensione reale",
+    )
+    target.add_argument("--pattern", default="9x6", help="corner interni, es. 9x6")
+    target.add_argument("--square-mm", type=float, default=25.0)
+    target.add_argument("--output", default="checkerboard.pdf")
+    target.add_argument("--portrait", action="store_true")
+    target.add_argument("--margin-mm", type=float, default=15.0)
+    target.add_argument("--json-out", default=None)
+
     return parser
 
 
@@ -329,6 +365,8 @@ def main(argv: list[str] | None = None) -> int:
             return _camera_report(args)
         if args.command == "camera-calibrate":
             return _camera_calibrate_report(args)
+        if args.command == "checkerboard":
+            return _checkerboard_report(args)
     except (CameraError, CalibrationError, RuntimeError, OSError, ValueError) as exc:
         print(f"ERR {exc}", file=sys.stderr)
         return 2

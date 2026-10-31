@@ -111,9 +111,9 @@ contiene il codice applicativo del progetto precedente.
   da calibrare.
 - Fatto: B1-4, suite software di diagnostica per camera, sonar e IMU
   (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`): probe camera USB (OpenCV) e CSI (Picamera2),
-  metriche e calibrazione checkerboard, analisi statistica sonar/IMU, test IMU stazionario e in
-  movimento. USB e IMU passano; CSI acquisisce ma il frame e' sfocato; il sonar e' valido ma
-  instabile (salto ~695 mm) e il test fallisce.
+  metriche, target checkerboard PDF, calibrazione, analisi statistica sonar/IMU, test IMU
+  stazionario e in movimento. USB e IMU passano; CSI acquisisce ma il frame e' sfocato; il sonar
+  e' valido ma instabile (salto ~695 mm) e il test fallisce.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in

@@ -15,6 +15,7 @@ software/
     sensor_checks.py      analisi sonar/IMU
     camera_checks.py      probe e metriche frame
     camera_calibration.py calibrazione checkerboard
+    checkerboard.py       target PDF a dimensione reale
     diagnostics.py        CLI di diagnostica camera/sonar/IMU
     __main__.py    demo, sessione reale e console manuale
   tests/           test host con unittest
@@ -60,13 +61,17 @@ python3 -m rcj2027.diagnostics imu --port /dev/ttyACM0 --duration 10 \
   --imu-mode motion --expected-axis yaw --countdown 5
 python3 -m rcj2027.diagnostics camera-calibrate \
   --images "calib/*.jpg" --pattern 9x6 --square-mm 25 --output calib.json
+python3 -m rcj2027.diagnostics checkerboard \
+  --pattern 9x6 --square-mm 25 --output checkerboard.pdf
 ```
 
 Exit code `0` = test superato, `1` = test fallito, `2` = errore di configurazione o dispositivo.
 I report si salvano con `--json-out`. `camera --list` mostra sia gli indici OpenCV sia le camere
-libcamera; la CSI IMX708 si prova con `--csi` (Picamera2), non con un indice OpenCV. Il test
-sonar fallisce se il salto tra campioni supera `--max-jump`; il test IMU `motion` richiede che si
-muova l'asse indicato. La telecamera e' esclusiva: non eseguire due probe in parallelo.
+libcamera; la CSI IMX708 si prova con `--csi` (Picamera2), non con un indice OpenCV. Il target
+`checkerboard` e' un PDF A4 con quadrati da 25 mm e barra da 100 mm: stampalo al 100% prima di
+calibrare. Il test sonar fallisce se il salto tra campioni supera `--max-jump`; il test IMU
+`motion` richiede che si muova l'asse indicato. Ogni telecamera e' esclusiva: non eseguire due
+probe in parallelo.
 
 Risultati e limiti sono in `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`.
 

@@ -57,9 +57,11 @@
     `IMU_VALID`. Orientamento assi e distanza di riferimento restano da calibrare.
 17. **Diagnostica software B1-4 (2026-10-31):** `sensor_checks.py` analizza sonar e IMU,
     `camera_checks.py` misura frame e rileva checkerboard, `camera_calibration.py` calcola la
-    matrice intrinseca, `diagnostics.py` espone i comandi con exit code 0/1/2. Camera 0 e IMU
-    stazionario/yaw passano; il sonar e' valido ma il salto di ~695 mm fa fallire il test di
-    stabilita'. La soglia non viene abbassata senza una prova con bersaglio stabile.
+    matrice intrinseca, `checkerboard.py` genera il target PDF a dimensione reale e
+    `diagnostics.py` espone i comandi con exit code 0/1/2. Camera USB e IMU stazionario/yaw
+    passano; la CSI acquisisce ma e' sfocata e il sonar e' valido ma il salto di ~695 mm fa
+    fallire il test di stabilita'. Le soglie non vengono abbassate senza una prova con target
+    stabile.
 
 ## Decisioni da prendere
 
