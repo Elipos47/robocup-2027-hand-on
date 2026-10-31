@@ -18,6 +18,8 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   sicurezza; test unittest verdi e demo fake disponibile. Il movimento reale resta disabilitato.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; default con
   movimento disabilitato e watchdog da misurare.
+- Fatto: protocollo verificato sul Mega senza movimento (test P1): handshake, status, stop e
+  gate `MOTION_DISABLED`.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -70,7 +72,7 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Provare il firmware `firmware/rcj2027/` sul banco (V, H, D, X, watchdog e perdita del cavo).
+1. Provare B0 con i motori attivi: watchdog, stop e perdita del cavo (ruote sollevate).
 2. Misurare il tempo reale del watchdog e scegliere `pwm_max`; aggiornare la configurazione.
 3. Integrare Raspberry e Arduino con il trasporto reale e registrare i log.
 4. Misurare diametro ruota e RPM; poi eseguire il primo test controllato della linea.

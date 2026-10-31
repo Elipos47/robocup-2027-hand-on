@@ -3,8 +3,8 @@
 Firmware Arduino Mega 2560 + L298N per il protocollo definito in
 `docs/architecture/SERIAL_PROTOCOL.md`.
 
-**Stato:** compilato; movimento disabilitato di default. Pronto per i test di banco del
-protocollo.
+**Stato:** compilato; protocollo verificato a banco con movimento disabilitato (P1 in
+`docs/testing/PROTOCOL_BENCH_TEST.md`). Il test B0 con motori attivi resta da eseguire.
 
 ## Cablaggio
 

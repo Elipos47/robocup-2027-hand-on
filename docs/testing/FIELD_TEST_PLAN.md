@@ -80,7 +80,9 @@ sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilit
   polarita' e mappa lati verificate;
 - [x] raccolta dei dati minimi: lati e verso dei motori;
 - [ ] test freno e direzione motori;
-- [ ] test comunicazione e watchdog con `firmware/rcj2027/` (pronto, da eseguire);
+- [x] comunicazione V/H/X/D con movimento disabilitato (P1,
+  `docs/testing/PROTOCOL_BENCH_TEST.md`);
+- [ ] watchdog con motori attivi e perdita del cavo;
 - [ ] calibrazione manuale camere;
 - [ ] linea sul campo;
 - [ ] elementi missione;

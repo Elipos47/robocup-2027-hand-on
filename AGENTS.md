@@ -93,7 +93,10 @@ contiene il codice applicativo del progetto precedente.
   payload in minuscolo e calcola il checksum.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
-- In corso: test di banco B0 (heartbeat, stop, watchdog e perdita del cavo).
+- Fatto: protocollo verificato a banco senza movimento (test P1 in
+  `docs/testing/PROTOCOL_BENCH_TEST.md`): V, H, status, X e `D` rifiutato con
+  `MOTION_DISABLED`.
+- In corso: test di banco B0 con motori attivi (watchdog, perdita del cavo).
 - Prossimi passi: eseguire B0 con la configurazione di banco, misurare il tempo reale del
   watchdog, poi integrare Raspberry e Arduino con il trasporto reale.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,

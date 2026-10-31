@@ -1,9 +1,10 @@
 # SPEC — Robocup2027HandOn
 
-**Versione:** 0.5
+**Versione:** 0.6
 **Data:** 31/10/2026
-**Stato:** sviluppo attivo; protocollo v1.1 implementato su Raspberry e Arduino. Test di banco
-B0 (heartbeat, stop, watchdog) da eseguire; movimento reale disabilitato di default.
+**Stato:** sviluppo attivo; protocollo v1.1 implementato su Raspberry e Arduino e verificato a
+banco senza movimento (P1). Test B0 con motori attivi da eseguire; movimento reale disabilitato
+di default.
 
 ## 1. Obiettivo
 
