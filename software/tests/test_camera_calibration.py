@@ -90,9 +90,20 @@ class CameraCalibrationTests(unittest.TestCase):
         self.assertEqual(calibration.pattern_size, (9, 6))
         self.assertEqual(calibration.square_size_mm, 25.0)
         self.assertGreater(calibration.rms, 0)
+        self.assertGreater(calibration.coverage_min, 0.2)
+        self.assertGreater(calibration.coverage_mean, 0.2)
         self.assertEqual(len(calibration.camera_matrix), 3)
         self.assertEqual(len(calibration.camera_matrix[0]), 3)
         self.assertTrue(calibration.distortion)
+
+    def test_small_board_rejected(self) -> None:
+        small = checkerboard(square_px=10, margin=10)
+        frame = np.full((480, 640, 3), 255, np.uint8)
+        height, width = small.shape[:2]
+        frame[190 : 190 + height, 260 : 260 + width] = small
+
+        with self.assertRaises(CalibrationError):
+            calibrate_camera([frame, frame, frame], min_images=3)
 
     def test_too_few_images_raises(self) -> None:
         with self.assertRaises(CalibrationError):

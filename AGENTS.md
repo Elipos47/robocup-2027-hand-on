@@ -119,7 +119,8 @@ contiene il codice applicativo del progetto precedente.
   007 con target spostato a ~600 mm ha mediana 597 mm e 9,2% outlier, FAIL. L'operatore accetta
   il test a 500 mm per ostacoli piu' vicini di 0,5 m.
 - Fatto: target checkerboard A4 pronto in `docs/hardware/checkerboard-a4.pdf` e comando
-  `camera-capture` per acquisire 12-20 frame di calibrazione.
+  `camera-capture` per acquisire 12-20 frame di calibrazione. Le prime 15 foto USB sono state
+  rifiutate: RMS 0,896 px ma copertura media 7,2%, sotto il minimo 20%; rifare piu' vicino.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in

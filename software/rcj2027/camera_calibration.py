@@ -29,6 +29,8 @@ class CameraCalibration:
     square_size_mm: float
     image_size: tuple[int, int]
     rms: float
+    coverage_min: float
+    coverage_mean: float
     camera_matrix: list[list[float]]
     distortion: list[float]
 
@@ -53,10 +55,12 @@ def calibrate_camera(
     pattern_size: tuple[int, int] = (9, 6),
     square_size_mm: float = 25.0,
     min_images: int = 3,
+    min_coverage: float = 0.2,
 ) -> CameraCalibration:
     """Calcola matrice intrinseca e distorsione da immagini checkerboard.
 
     ``pattern_size`` e' il numero di corner interni, non il numero di quadrati.
+    ``min_coverage`` e' la frazione minima media del frame occupata dal pattern.
     """
     if not HAS_CV2:
         raise CalibrationError(
@@ -66,6 +70,8 @@ def calibrate_camera(
         raise ValueError("square_size_mm deve essere positivo")
     if min_images < 1:
         raise ValueError("min_images deve essere positivo")
+    if not 0 < min_coverage <= 1:
+        raise ValueError("min_coverage deve essere tra 0 e 1")
 
     object_template = np.zeros(
         (pattern_size[0] * pattern_size[1], 3),
@@ -76,6 +82,7 @@ def calibrate_camera(
 
     object_points: list[Any] = []
     image_points: list[Any] = []
+    coverages: list[float] = []
     image_size: tuple[int, int] | None = None
     rejected = 0
 
@@ -112,11 +119,25 @@ def calibrate_camera(
         refined = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
         object_points.append(object_template.copy())
         image_points.append(refined)
+        _, _, box_width, box_height = cv2.boundingRect(
+            corners.astype(np.float32)
+        )
+        coverages.append(
+            (box_width * box_height) / (size[0] * size[1])
+        )
 
     if image_size is None or len(object_points) < min_images:
         raise CalibrationError(
             f"checkerboard valido in {len(object_points)} immagini, "
             f"ne servono almeno {min_images} (scartate {rejected})"
+        )
+
+    coverage_min = min(coverages)
+    coverage_mean = sum(coverages) / len(coverages)
+    if coverage_mean < min_coverage:
+        raise CalibrationError(
+            f"pattern troppo piccolo: copertura media {coverage_mean:.1%}, "
+            f"minimo {min_coverage:.0%}; avvicinare la camera o ingrandire il target"
         )
 
     rms, camera_matrix, distortion, _, _ = cv2.calibrateCamera(
@@ -133,6 +154,8 @@ def calibrate_camera(
         square_size_mm=square_size_mm,
         image_size=image_size,
         rms=round(float(rms), 6),
+        coverage_min=round(coverage_min, 4),
+        coverage_mean=round(coverage_mean, 4),
         camera_matrix=[[float(value) for value in row] for row in camera_matrix],
         distortion=[float(value) for value in distortion.reshape(-1)],
     )

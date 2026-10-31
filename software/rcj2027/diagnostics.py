@@ -258,6 +258,7 @@ def _camera_calibrate_report(args: argparse.Namespace) -> int:
         pattern_size=pattern,
         square_size_mm=args.square_mm,
         min_images=args.min_images,
+        min_coverage=args.min_coverage,
     )
     output = save_calibration(calibration, args.output)
     report = calibration.to_dict()
@@ -383,6 +384,12 @@ def build_parser() -> argparse.ArgumentParser:
     calibration.add_argument("--pattern", default="9x6", help="corner interni, es. 9x6")
     calibration.add_argument("--square-mm", type=float, default=25.0)
     calibration.add_argument("--min-images", type=int, default=3)
+    calibration.add_argument(
+        "--min-coverage",
+        type=float,
+        default=0.2,
+        help="frazione minima media del frame occupata dal pattern",
+    )
     calibration.add_argument("--output", default="camera_calibration.json")
     calibration.add_argument("--json-out", default=None)
 
