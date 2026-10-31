@@ -65,7 +65,7 @@ I test host non richiedono hardware:
 - calibrazione con viste checkerboard sintetiche;
 - raccolta status con sessione finta.
 
-La suite completa e' a **129 test**, tutti verdi.
+La suite completa e' a **130 test**, tutti verdi.
 
 ## Camera
 
@@ -109,19 +109,23 @@ occupa circa il 50-80% del frame.
 
 ## Sonar
 
-Due raccolte da 10 s con il firmware sicuro:
+Raccolte da 10 s con il firmware sicuro:
 
-| Run | Campioni | Validi | Distanza min-max | Media | Dev. std | Salto max | Esito |
-|---|---:|---:|---|---:|---:|---:|---|
-| diag-sonar-001 | 100 | 99 | 871-1597 mm | 1000,1 mm | 129,1 mm | 695 mm | FAIL |
-| diag-sonar-002 | 101 | 101 | 867-1595 mm | 1009,5 mm | 147,9 mm | 697 mm | FAIL |
-| sonar-500-001 | 100 | 100 | 400-1202 mm | 597,6 mm | 112,2 mm | 703 mm | FAIL |
+| Run | Campioni | Validi | Distanza min-max | Media | Mediana | Dev. std | Salto max | Esito |
+|---|---:|---:|---|---:|---:|---:|---:|---|
+| diag-sonar-001 | 100 | 99 | 871-1597 mm | 1000,1 mm | 996 mm | 129,1 mm | 695 mm | FAIL |
+| diag-sonar-002 | 101 | 101 | 867-1595 mm | 1009,5 mm | 997 mm | 147,9 mm | 697 mm | FAIL |
+| sonar-500-001 | 100 | 100 | 400-1202 mm | 597,6 mm | 598 mm | 112,2 mm | 703 mm | FAIL |
+| sonar-500-002 | 100 | 100 | 397-1154 mm | 487,5 mm | 404 mm | 138,5 mm | 754 mm | FAIL |
+| sonar-500-003 | 100 | 99 | 382-1095 mm | 483,7 mm | 414 mm | 121,0 mm | 694 mm | FAIL |
 
-Il test a 500 mm ha prodotto un errore medio di **+97,6 mm** rispetto al riferimento e un salto
-massimo di 703 mm. La distribuzione si concentra tra 500 e 700 mm, con picchi a 1200 mm. La
-causa piu' probabile e' che i 500 mm siano stati misurati dal telaio invece che dalla faccia del
-sensore: il sensore e' arretrato di circa 100 mm. In alternativa, il target e' piccolo, inclinato
-o ha oggetti riflettenti dietro. Il test resta FAIL: non va abbassata la tolleranza.
+I test a 500 mm hanno mostrato un problema di riferimento: la media di sonar-500-002 passava
+(487,5 mm) ma la mediana era 404 mm, quindi la media era trascinata dagli outlier a 1100 mm. Il
+test usa ora la **mediana**. Il risultato finale e' 414 mm, cioe' il target appare a circa
+**400 mm**, non 500. La causa piu' probabile e' che i 500 mm siano stati misurati dal telaio
+invece che dalla faccia del sensore: il sensore e' arretrato di circa 100 mm. I picchi a 1095 mm
+indicano anche riflessioni o un oggetto dietro il target. Il test resta FAIL: non va abbassata
+la tolleranza.
 
 Il sensore risponde e il bit `SONAR_VALID` e' coerente, ma la lettura non e' stabile: il salto
 massimo supera la soglia di 500 mm. I valori si distribuiscono intorno a 900, 1000 e 1100 mm,

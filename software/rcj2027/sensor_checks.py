@@ -22,6 +22,7 @@ class NumericStats:
     minimum: float
     maximum: float
     mean: float
+    median: float
     stddev: float
 
     @classmethod
@@ -33,6 +34,7 @@ class NumericStats:
             minimum=float(min(values)),
             maximum=float(max(values)),
             mean=float(statistics.fmean(values)),
+            median=float(statistics.median(values)),
             stddev=float(statistics.pstdev(values)),
         )
 
@@ -60,6 +62,7 @@ class SonarReport:
 class ReferenceCheck:
     expected_mm: int
     measured_mm: float | None
+    mean_mm: float | None
     error_mm: float | None
     tolerance_mm: int
     passed: bool
@@ -194,24 +197,27 @@ def check_sonar_reference(
         return ReferenceCheck(
             expected_mm=expected_mm,
             measured_mm=None,
+            mean_mm=None,
             error_mm=None,
             tolerance_mm=tolerance_mm,
             passed=False,
             notes=("nessuna distanza valida da confrontare",),
         )
 
-    measured = report.distances.mean
+    measured = report.distances.median
     error = measured - expected_mm
     passed = abs(error) <= tolerance_mm
     notes: tuple[str, ...] = ()
     if not passed:
         notes = (
-            f"errore {error:+.1f} mm oltre la tolleranza ±{tolerance_mm} mm",
+            f"mediana {measured:.1f} mm, errore {error:+.1f} mm oltre la tolleranza "
+            f"±{tolerance_mm} mm",
         )
 
     return ReferenceCheck(
         expected_mm=expected_mm,
         measured_mm=round(measured, 2),
+        mean_mm=round(report.distances.mean, 2),
         error_mm=round(error, 2),
         tolerance_mm=tolerance_mm,
         passed=passed,

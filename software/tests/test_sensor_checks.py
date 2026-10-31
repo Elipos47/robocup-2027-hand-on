@@ -46,6 +46,7 @@ class SonarChecksTests(unittest.TestCase):
         self.assertEqual(report.distances.minimum, 1000)
         self.assertEqual(report.distances.maximum, 1020)
         self.assertAlmostEqual(report.distances.mean, 1010.0)
+        self.assertAlmostEqual(report.distances.median, 1010.0)
         self.assertAlmostEqual(report.distances.stddev, 8.165, places=3)
 
     def test_flag_mismatch_fails(self) -> None:
@@ -115,6 +116,21 @@ class SonarChecksTests(unittest.TestCase):
         self.assertFalse(reference.passed)
         self.assertAlmostEqual(reference.error_mm, -100.0)
         self.assertIn("tolleranza", " ".join(reference.notes))
+
+    def test_reference_uses_median_not_mean(self) -> None:
+        readings = [
+            reading(0, distance_mm=400, status=1),
+            reading(1, distance_mm=400, status=1),
+            reading(2, distance_mm=400, status=1),
+            reading(3, distance_mm=1100, status=1),
+        ]
+        report = analyze_sonar(readings)
+
+        reference = check_sonar_reference(report, 500, tolerance_mm=50)
+
+        self.assertFalse(reference.passed)
+        self.assertEqual(reference.measured_mm, 400.0)
+        self.assertGreater(reference.mean_mm, 500.0)
 
     def test_reference_without_data_fails(self) -> None:
         reference = check_sonar_reference(analyze_sonar([]), 500)

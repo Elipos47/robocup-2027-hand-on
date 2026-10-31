@@ -115,8 +115,8 @@ contiene il codice applicativo del progetto precedente.
   stazionario e in movimento. USB e IMU passano; pitch/roll erano scambiati sul montaggio e sono
   stati corretti nel firmware con test pitch/roll PASS; CSI acquisisce ma il frame e' sfocato;
   il sonar e' valido ma instabile (salto ~695 mm) e il test fallisce. Il test a 500 mm ha dato
-  media 597,6 mm (errore +97,6 mm): probabile misura dal telaio invece che dalla faccia del
-  sensore, da ripetere.
+  mediana 414 mm (errore -86 mm): il target appare a ~400 mm, probabile offset di 100 mm dal
+  telaio o riflessioni; da ripetere.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in
