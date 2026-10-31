@@ -120,7 +120,9 @@ contiene il codice applicativo del progetto precedente.
   il test a 500 mm per ostacoli piu' vicini di 0,5 m.
 - Fatto: target checkerboard A4 pronto in `docs/hardware/checkerboard-a4.pdf` e comando
   `camera-capture` per acquisire 12-20 frame di calibrazione. Le prime 15 foto USB sono state
-  rifiutate: RMS 0,896 px ma copertura media 7,2%, sotto il minimo 20%; rifare piu' vicino.
+  rifiutate: RMS 0,896 px ma copertura media 7,2%, sotto il minimo 20%; rifare piu' vicino. Un
+  secondo set ha rilevato 8/15 frame con copertura media 11,0% e solo 3 viste >=20%: distanza
+  incoerente, rifare con target grande e fermo.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in

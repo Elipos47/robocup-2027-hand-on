@@ -106,8 +106,9 @@ il percorso. Il target pronto e' in `docs/hardware/checkerboard-a4.pdf` (A4 land
 corner, quadrati 25 mm, barra da 100 mm); va stampato al 100% su carta opaca. Se la barra misura
 95 mm, usare `--square-mm 23.75`. Il calibratore ora rifiuta una copertura media inferiore al
 20%: le 15 foto USB attuali coprono solo 3,6-9,6% e non sono valide per una calibrazione reale.
-Servono 12-20 viste con il pattern che occupa circa il 50-80% del frame. La sequenza si acquisisce
-con:
+Un secondo set di 15 foto ha rilevato il pattern in 8 immagini, con copertura 3,8-28,8% e media
+11,0%: solo 3 viste superano il 20%. Il problema e' la distanza incoerente tra i frame; servono
+almeno 8-10 viste con il pattern grande e interamente visibile. La sequenza si acquisisce con:
 
 ```sh
 python3 -m rcj2027.diagnostics camera-capture --device 0 \
