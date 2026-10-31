@@ -118,14 +118,15 @@ Raccolte da 10 s con il firmware sicuro:
 | sonar-500-001 | 100 | 100 | 400-1202 mm | 597,6 mm | 598 mm | 112,2 mm | 703 mm | FAIL |
 | sonar-500-002 | 100 | 100 | 397-1154 mm | 487,5 mm | 404 mm | 138,5 mm | 754 mm | FAIL |
 | sonar-500-003 | 100 | 99 | 382-1095 mm | 483,7 mm | 414 mm | 121,0 mm | 694 mm | FAIL |
+| sonar-500-004 | 100 | 99 | 406-1197 mm | 619,5 mm | 598 mm | 142,2 mm | 694 mm | FAIL |
 
 I test a 500 mm hanno mostrato un problema di riferimento: la media di sonar-500-002 passava
 (487,5 mm) ma la mediana era 404 mm, quindi la media era trascinata dagli outlier a 1100 mm. Il
-test usa ora la **mediana**. Il risultato finale e' 414 mm, cioe' il target appare a circa
-**400 mm**, non 500. La causa piu' probabile e' che i 500 mm siano stati misurati dal telaio
-invece che dalla faccia del sensore: il sensore e' arretrato di circa 100 mm. I picchi a 1095 mm
-indicano anche riflessioni o un oggetto dietro il target. Il test resta FAIL: non va abbassata
-la tolleranza.
+test usa ora la **mediana**. Il risultato 003 era 414 mm; dopo lo spostamento del target il 004
+ha dato 598 mm. Il target appare quindi a circa **400 mm** prima e **600 mm** dopo: la distanza
+fisica e' cambiata di circa 200 mm, oppure la misura e' presa dal telaio e il sensore e' arretrato
+di circa 100 mm. I picchi a 1095-1197 mm indicano riflessioni o un oggetto dietro il target. Il
+test resta FAIL: non va abbassata la tolleranza.
 
 Il sensore risponde e il bit `SONAR_VALID` e' coerente, ma la lettura non e' stabile: il salto
 massimo supera la soglia di 500 mm. I valori si distribuiscono intorno a 900, 1000 e 1100 mm,
