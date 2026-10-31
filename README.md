@@ -36,8 +36,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   Calibrazione di assi e distanza di riferimento ancora da fare.
 - Fatto: B1-4, suite software di diagnostica (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`):
   probe camera USB e CSI via Picamera2, metriche, target checkerboard PDF, calibrazione,
-  analisi sonar/IMU e test IMU in movimento. USB e IMU passano; CSI acquisisce ma il frame e'
-  sfocato; il sonar e' valido ma instabile (salto ~695 mm).
+  analisi sonar/IMU e test IMU in movimento. USB e IMU passano; pitch/roll scambiati sul
+  montaggio e corretti nel firmware; CSI acquisisce ma il frame e' sfocato; il sonar e' valido
+  ma instabile (salto ~695 mm).
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.

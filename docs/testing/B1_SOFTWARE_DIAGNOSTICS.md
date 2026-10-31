@@ -129,6 +129,7 @@ distanza misurata con un metro.
 | Run | Campioni | Validi | Yaw std | Pitch std | Roll std | Deriva yaw | Esito |
 |---|---:|---:|---:|---:|---:|---:|---|
 | diag-imu-001 | 100 | 98 | 3,2 mdeg | 59,8 mdeg | 28,2 mdeg | -2 mdeg | PASS |
+| imu-stationary-after-swap | 100 | 100 | 7,1 mdeg | 4,2 mdeg | 10,7 mdeg | 0 mdeg | PASS |
 
 Il test scarta i primi 5 campioni per la convergenza iniziale del game rotation vector.
 
@@ -143,12 +144,28 @@ rilevato yaw con escursione di circa 68,7 gradi e asse dominante yaw. La deriva 
 (-36,4 deg) indica che la posizione finale non coincideva esattamente con quella iniziale; non
 e' un errore del test.
 
+### Pitch e roll: correzione del montaggio
+
+I primi test hanno mostrato che pitch e roll erano **scambiati** rispetto al telaio. Il firmware
+applica ora `IMU_SWAP_PITCH_ROLL=true`; non e' una calibrazione del sensore, ma una correzione di
+montaggio.
+
+| Run | Campioni | Validi | Intervallo | Asse dominante | Asse atteso | Esito |
+|---|---:|---:|---|---|---|---|
+| imu-pitch-after-swap | 151 | 149 | pitch -21,2 .. 8,0 deg | pitch | pitch | PASS |
+| imu-roll-after-swap | 150 | 150 | roll -19,8 .. 25,6 deg | roll | roll | PASS |
+
+Le due run sono state eseguite inclinando il robot a mano attorno all'asse indicato. La
+convenzione dei segni (positivo/negativo) non e' ancora fissata: i test verificano l'asse
+dominante, non il verso.
+
 ## Cosa e' verificato
 
 - USB 0 acquisisce frame validi e passa le soglie di luminosita'/contrasto/nitidezza;
 - CSI IMX708 viene enumerata da libcamera/Picamera2 e acquisisce un frame;
 - sonar e IMU producono status con bit di validita' coerenti;
-- IMU stabile a riposo e sensibile alla rotazione yaw;
+- IMU stabile a riposo e sensibile alle rotazioni yaw, pitch e roll;
+- pitch/roll scambiati sul montaggio corretti nel firmware;
 - analisi e calibrazione sono coperte da test host;
 - il comando di calibrazione camera e' pronto per un target reale.
 
@@ -157,7 +174,7 @@ e' un errore del test.
 - stabilita' del sonar con bersaglio fermo e riferimento metrico;
 - messa a fuoco e montaggio della CSI: il frame attuale e' sfocato;
 - calibrazione reale di USB e CSI con checkerboard;
-- orientamento degli assi IMU rispetto al telaio;
+- convenzione dei segni pitch/roll e comportamento dopo un rimontaggio del BNO085;
 - luminosita' in condizioni di gara (luce bassa, riflessi, ombre).
 
 ## Note

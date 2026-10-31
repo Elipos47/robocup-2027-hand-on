@@ -74,7 +74,9 @@ firmware ritenta l'inizializzazione ogni secondo finche' il bus risponde. Dopo i
 ## Cosa non e' verificato
 
 - distanza del sonar confrontata con un metro campione;
-- orientamento e montaggio degli assi BNO085, calibrazione e deriva yaw;
+- convenzione dei segni e comportamento dopo un rimontaggio del BNO085; pitch/roll sono
+  scambiati sul montaggio e corretti nel firmware;
+- deriva yaw e calibrazione fine dell'IMU;
 - risposta dell'IMU a rotazioni controllate del robot;
 - camere: probe e metriche verificate in B1-4 (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`),
   calibrazione ottica e percezione non ancora eseguite;

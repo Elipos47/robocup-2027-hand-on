@@ -60,6 +60,21 @@ const unsigned long WATCHDOG_TIMEOUT_MS = 1000;
 finale di `pwm_max` e il timeout del watchdog vanno scelti dopo la misura e registrati in
 `docs/MEASUREMENT_LOG.md`.
 
+## Montaggio IMU
+
+Il BNO085 e' montato con gli assi fisici pitch e roll scambiati rispetto al telaio. La
+correzione e' nel firmware, non nel sensore:
+
+```cpp
+const bool IMU_SWAP_PITCH_ROLL = true;
+const bool IMU_INVERT_PITCH = false;
+const bool IMU_INVERT_ROLL = false;
+```
+
+`IMU_SWAP_PITCH_ROLL` scambia i due valori dopo la conversione dal quaternione. Se il modulo
+viene rimontato, questi flag vanno riverificati con i test pitch/roll. Non sono una calibrazione
+di fabbrica del BNO085.
+
 ## Test del protocollo senza movimento
 
 Nel Serial Monitor:
@@ -87,7 +102,8 @@ A,<sequence>,-1,0,0,0,<status>*HH
 
 - `distance_mm = -1`: HC-SR04 senza eco valida; bit 0 `SONAR_VALID` se la distanza e' valida;
 - `yaw_mdeg`, `pitch_mdeg`, `roll_mdeg`: BNO085 game rotation vector in milligradi; bit 1
-  `IMU_VALID` se il campione e' recente. Gli assi non sono ancora calibrati sul montaggio;
+  `IMU_VALID` se il campione e' recente. Pitch/roll sono scambiati sul montaggio e corretti nel
+  firmware; la convenzione dei segni resta da validare;
 - bit 2 dello status: motori attivi;
 - bit 3: watchdog scattato.
 
@@ -138,7 +154,8 @@ Se `D` supera `PWM_MAX`, il firmware risponde `E,BAD_RANGE` e non muove i motori
 ## Note
 
 - Il servo non e' implementato: `Z` risponde `E,SERVO_UNVERIFIED`.
-- HC-SR04 e BNO085 sono letti e riportati nello status; l'orientamento degli assi IMU e la
-  distanza di riferimento del sonar restano da calibrare (`docs/testing/B1_SENSORS_TEST.md`).
+- HC-SR04 e BNO085 sono letti e riportati nello status; pitch/roll sono scambiati sul montaggio
+  e corretti nel firmware. La distanza di riferimento del sonar e la convenzione dei segni IMU
+  restano da calibrare (`docs/testing/B1_SENSORS_TEST.md`).
 - Il firmware non usa `String`: buffer e memoria sono statici.
 - Il watchdog e' attivo solo con `WATCHDOG_TIMEOUT_MS > 0` e motori in movimento.

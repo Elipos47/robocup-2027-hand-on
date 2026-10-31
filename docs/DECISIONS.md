@@ -62,6 +62,10 @@
     passano; la CSI acquisisce ma e' sfocata e il sonar e' valido ma il salto di ~695 mm fa
     fallire il test di stabilita'. Le soglie non vengono abbassate senza una prova con target
     stabile.
+18. **Montaggio IMU (2026-10-31):** pitch e roll del BNO085 sono fisicamente scambiati rispetto
+    al telaio. Il firmware applica `IMU_SWAP_PITCH_ROLL=true`; non e' una calibrazione del
+    sensore. I test pitch e roll passano con l'asse dominante corretto. La convenzione dei segni
+    e il comportamento dopo un rimontaggio restano da verificare.
 
 ## Decisioni da prendere
 

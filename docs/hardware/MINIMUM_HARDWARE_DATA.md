@@ -93,7 +93,9 @@ led e interruttore.
 - I pin 20 e 21 sono l'I2C hardware del Mega 2560: nessun conflitto con motori o sonar.
 - Il modulo e' un breakout Adafruit BNO085 che accetta 5 V diretti, confermato dall'utente
   (2026-10-31). L'indirizzo I2C `0x4A` e' stato verificato con lo scanner di banco (B1-3).
-- Orientamento degli assi, calibrazione e ruolo definitivo restano `TODO`.
+- Pitch e roll sono scambiati sul montaggio e vengono corretti nel firmware
+  (`IMU_SWAP_PITCH_ROLL=true`, 2026-10-31); yaw resta invariato. La convenzione dei segni e il
+  ruolo definitivo restano `TODO`.
 
 Non ancora definiti: pin del servo, LED e interruttore.
 

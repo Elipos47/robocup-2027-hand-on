@@ -32,6 +32,9 @@ della camera, IMU, sonar. Il registro non e' un inventario da completare.
 | 2026-10-31 | HC-SR04 | stabilita' su 10 s | 99/100 e 101/101 validi; salto max 695-697 mm | telemetria + analisi software | robot fermo, ambiente con riflessi | non calibrata | B1-4: FAIL stabilita', da ripetere con bersaglio stabile |
 | 2026-10-31 | BNO085 | rumore a riposo | 98/100 validi; yaw std 3.2 mdeg, pitch 59.8 mdeg, roll 28.2 mdeg | telemetria + analisi software | robot fermo, 10 s | pochi mdeg | B1-4: PASS |
 | 2026-10-31 | BNO085 | rotazione yaw manuale | 178/180 validi; yaw -6.7..62.0 deg; asse dominante yaw | telemetria + analisi software | rotazione a mano ~90 deg | movimento manuale | B1-4: PASS |
+| 2026-10-31 | BNO085 | stazionario dopo correzione assi | 100/100 validi; pitch std 4.2 mdeg, roll 10.7 mdeg, yaw 7.1 mdeg | telemetria + analisi software | robot fermo, 10 s | pochi mdeg | pitch/roll scambiati corretti; PASS |
+| 2026-10-31 | BNO085 | rotazione pitch manuale | 149/151 validi; pitch -21.2..8.0 deg; asse dominante pitch | telemetria + analisi software | muso su/giu' a mano | movimento manuale | B1-4: PASS dopo swap |
+| 2026-10-31 | BNO085 | rotazione roll manuale | 150/150 validi; roll -19.8..25.6 deg; asse dominante roll | telemetria + analisi software | inclinazione destra/sinistra a mano | movimento manuale | B1-4: PASS dopo swap |
 | 2026-10-31 | Motori | PWM di banco che muove | 150: solo ronzio; 255: rotazione confermata dall'operatore | osservazione visiva + telemetria | ruote sollevate | - | 255 non e' il pwm_max definitivo |
 | TBD | Ruota | diametro effettivo | TODO | calibro | ruota montata | - | per la velocita' lineare |
 | TBD | Motori | RPM a PWM noto | TODO | conteggio giri in 10 s | ruote sollevate, PWM 255 | - | opzionale |

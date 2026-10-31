@@ -31,7 +31,7 @@ Schermo ──────────────────► Raspberry Pi
 | L298N | driver motori | presente |
 | HC-SR04 | distanza frontale | presente, letto in B1-3 |
 | Schermo | diagnostica | presente |
-| BNO085 | IMU | presente; breakout Adafruit su I2C `0x4A`, assi da calibrare |
+| BNO085 | IMU | presente; breakout Adafruit su I2C `0x4A`, pitch/roll scambiati e corretti nel firmware |
 | Batterie | alimentazione | 2 pacchi Li-Ion 3S 11.1 V 2.6 Ah 28.86 Wh in parallelo: 11.1 V, 5.2 Ah, 57.72 Wh dichiarati; corrente, BMS e fusibili da verificare |
 | Motori | RS PRO 834-7631, 4.5-15 V DC, riduttore 100:1 | presenti; 60 rpm a 12 V, 900 mA, 59 Ncm da datasheet; corrente di stallo da verificare |
 | Servo | meccanismo ausiliario | funzione e modello da verificare |

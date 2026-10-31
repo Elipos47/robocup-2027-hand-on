@@ -60,6 +60,9 @@ Il BNO085 riporta tre rotazioni rispetto ai propri assi:
 - **pitch**: rotazione attorno all'asse trasversale, cioe' muso su/giu';
 - **roll**: rotazione attorno all'asse longitudinale, cioe' inclinazione destro/sinistro.
 
+Sul montaggio attuale pitch e roll sono scambiati rispetto al telaio: il firmware li scambia con
+`IMU_SWAP_PITCH_ROLL=true`. Dopo un rimontaggio del BNO085 riesegui i tre test.
+
 Per verificare l'allineamento al telaio, esegui un test per asse:
 
 ```sh

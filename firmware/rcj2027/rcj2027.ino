@@ -54,6 +54,12 @@ const unsigned long IMU_REPORT_INTERVAL_US = 50000;
 const unsigned long IMU_STALE_MS = 500;
 const float RAD_TO_MDEG = 57295.7795f;
 
+// Montaggio IMU: gli assi fisici pitch/roll sono scambiati sul telaio.
+// Lo scambio e' una correzione di montaggio, non una calibrazione del sensore.
+const bool IMU_SWAP_PITCH_ROLL = true;
+const bool IMU_INVERT_PITCH = false;
+const bool IMU_INVERT_ROLL = false;
+
 const uint16_t STATUS_SONAR_VALID = 1u << 0;
 const uint16_t STATUS_IMU_VALID = 1u << 1;
 const uint16_t STATUS_MOTORS_ACTIVE = 1u << 2;
@@ -534,8 +540,23 @@ void updateImuEuler(float qi, float qj, float qk, float qr) {
   const float cosYaw = 1.0f - 2.0f * (qj * qj + qk * qk);
   const float yaw = atan2(sinYaw, cosYaw);
 
-  imuRollMdeg = lround(roll * RAD_TO_MDEG);
-  imuPitchMdeg = lround(pitch * RAD_TO_MDEG);
+  long pitchMdeg = lround(pitch * RAD_TO_MDEG);
+  long rollMdeg = lround(roll * RAD_TO_MDEG);
+
+  if (IMU_SWAP_PITCH_ROLL) {
+    const long temporary = pitchMdeg;
+    pitchMdeg = rollMdeg;
+    rollMdeg = temporary;
+  }
+  if (IMU_INVERT_PITCH) {
+    pitchMdeg = -pitchMdeg;
+  }
+  if (IMU_INVERT_ROLL) {
+    rollMdeg = -rollMdeg;
+  }
+
+  imuPitchMdeg = pitchMdeg;
+  imuRollMdeg = rollMdeg;
   imuYawMdeg = lround(yaw * RAD_TO_MDEG);
 }
 

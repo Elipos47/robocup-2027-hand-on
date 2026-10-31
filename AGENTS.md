@@ -112,8 +112,9 @@ contiene il codice applicativo del progetto precedente.
 - Fatto: B1-4, suite software di diagnostica per camera, sonar e IMU
   (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`): probe camera USB (OpenCV) e CSI (Picamera2),
   metriche, target checkerboard PDF, calibrazione, analisi statistica sonar/IMU, test IMU
-  stazionario e in movimento. USB e IMU passano; CSI acquisisce ma il frame e' sfocato; il sonar
-  e' valido ma instabile (salto ~695 mm) e il test fallisce.
+  stazionario e in movimento. USB e IMU passano; pitch/roll erano scambiati sul montaggio e sono
+  stati corretti nel firmware con test pitch/roll PASS; CSI acquisisce ma il frame e' sfocato;
+  il sonar e' valido ma instabile (salto ~695 mm) e il test fallisce.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in
@@ -124,10 +125,10 @@ contiene il codice applicativo del progetto precedente.
   motori ronzavano senza ruotare; a 255 hanno girato (conferma dell'operatore). Firmware
   riportato a movimento disabilitato.
 - In corso: ripetere il sonar con bersaglio stabile e riferimento metrico, verificare messa a
-  fuoco/montaggio della CSI e calibrare le camere con checkerboard; completare gli assi IMU e
+  fuoco/montaggio della CSI e calibrare le camere con checkerboard; validare i segni IMU e
   chiudere i punti aperti di B0.
-- Prossimi passi: usare `python3 -m rcj2027.diagnostics` per sonar/camera/IMU, sistemare la
-  messa a fuoco della CSI, poi passare a F0.
+- Prossimi passi: usare `python3 -m rcj2027.diagnostics` per sonar/camera/IMU, definire la
+  convenzione dei segni pitch/roll, sistemare la messa a fuoco della CSI, poi passare a F0.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione
