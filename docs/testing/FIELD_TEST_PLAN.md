@@ -67,12 +67,9 @@ condizioni, test, esito, evento, azione, video/foto, note
 
 Prima di eseguire qualsiasi comando con i motori collegati, devono essere confermati almeno:
 
-- tensione nominale della batteria;
+- tensione nominale della batteria (acquisita: 11.1 V);
 - asse e verso dei due motori;
-- PWM massimo e comportamento di freno/arresto;
-- diametro effettivo della ruota;
-- collegamento e configurazione seriale Arduino-Pi;
-- altezza e inclinazione della camera linea, se viene usata.
+- limite PWM prudente impostato nel codice e stop verificato a banco.
 
 I campi sono definiti in `docs/hardware/MINIMUM_HARDWARE_DATA.md`. Un campo `TODO` non viene
 sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilitato.

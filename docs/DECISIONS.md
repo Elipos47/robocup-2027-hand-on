@@ -11,16 +11,18 @@
 6. **Prove ripetibili:** ogni funzione richiede una prova, un test, un log e una spiegazione
    per l'operatore.
 7. **Sicurezza prima della missione:** stop e watchdog hanno precedenza sul percorso.
-8. **Contratto hardware minimo:** per iniziare il software si raccolgono solo alimentazione,
-   verso e limiti dei motori, ruota, comunicazione, camera linea e orientamento dei sensori
-   usati. L'inventario esteso resta differito; i parametri di sicurezza mancanti disabilitano il
-   movimento reale.
+8. **Contratto hardware minimo:** restano solo i dati che il software non puo' dedurre:
+   tensione della batteria, asse e verso dei motori. PWM, freno, seriale, camera e sensori sono
+   scelte di codice o si scoprono provando; l'inventario esteso resta differito.
+9. **Batterie in parallelo:** due pacchi Li-Ion 3S da 11.1 V 2.6 Ah 28.86 Wh in parallelo,
+   quindi 11.1 V e 5.2 Ah / 57.72 Wh dichiarati. In parallelo la tensione resta la stessa; i
+   pacchi si collegano solo a tensione uguale e con protezioni compatibili. Corrente, BMS e
+   cutoff non sono requisiti del contratto software: si osservano sul campo se servono.
 
 ## Decisioni da prendere
 
 - [ ] regolamento ufficiale 2027;
 - [ ] ruote, cinghie e rapporto di trasmissione;
-- [ ] batterie e distribuzione di alimentazione;
 - [ ] massa e centro di massa;
 - [ ] modello BNO085 e calibrazione IMU;
 - [ ] ruolo del servo;

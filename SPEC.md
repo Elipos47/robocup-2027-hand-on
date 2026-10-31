@@ -41,16 +41,12 @@ Il risultato finale deve permettere al robot di:
 Il progetto non richiede un inventario hardware completo prima di iniziare a scrivere il
 software. Il contratto minimo e' definito in `docs/hardware/MINIMUM_HARDWARE_DATA.md` e comprende:
 
-- tensione nominale della batteria;
-- asse e verso dei motori, PWM massimo e comportamento di freno/arresto;
-- diametro effettivo della ruota;
-- tipo di collegamento Arduino-Pi e parametri seriali;
-- altezza e inclinazione della camera linea;
-- orientamento del BNO085 e montaggio di HC-SR04, se usati.
+- tensione nominale della batteria (11.1 V, acquisita);
+- asse e verso dei motori.
 
 Le quote degli ingombri raccolte in `docs/hardware/Misure Robotica.pdf` sono risorse per il CAD e
-non sostituiscono questi parametri. I valori mancanti restano `TODO`; quelli di sicurezza devono
-impedire il movimento reale.
+non sostituiscono questi parametri. I valori mancanti restano `TODO` e bloccano solo la funzione
+che ne dipende.
 
 ## 3. Architettura
 
