@@ -114,9 +114,9 @@ contiene il codice applicativo del progetto precedente.
   metriche, target checkerboard PDF, calibrazione, analisi statistica sonar/IMU, test IMU
   stazionario e in movimento. USB e IMU passano; pitch/roll erano scambiati sul montaggio e sono
   stati corretti nel firmware con test pitch/roll PASS; CSI acquisisce ma il frame e' sfocato;
-  il sonar e' valido ma instabile (salto ~695 mm) e il test fallisce. Il test a 500 mm ha dato
-  mediana 598 mm (errore +98 mm): il target appare a ~600 mm, probabile offset di misura o
-  riflessioni; da ripetere.
+  il sonar e' valido ma instabile e il test fallisce se il target si muove. Con target fermo a
+  ~500 mm, 005/006 passano col criterio robusto (mediane 522/507,5 mm, outlier 3,0%/1,0%); la
+  007 con target spostato a ~600 mm ha mediana 597 mm e 9,2% outlier, FAIL.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in

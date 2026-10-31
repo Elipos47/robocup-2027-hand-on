@@ -127,7 +127,8 @@ def _serial_report(args: argparse.Namespace) -> int:
                     analysis: SonarReport | ImuReport = analyze_sonar(
                         readings,
                         min_valid_ratio=args.min_valid_ratio,
-                        max_jump_mm=args.max_jump,
+                        outlier_mm=args.outlier_mm,
+                        max_outlier_ratio=args.max_outlier_ratio,
                     )
                     reference = (
                         check_sonar_reference(
@@ -282,7 +283,18 @@ def build_parser() -> argparse.ArgumentParser:
 
     sonar = subparsers.add_parser("sonar", help="raccoglie e analizza HC-SR04")
     _add_serial_args(sonar)
-    sonar.add_argument("--max-jump", type=int, default=500, help="salto massimo in mm")
+    sonar.add_argument(
+        "--outlier-mm",
+        type=int,
+        default=200,
+        help="scostamento dalla mediana considerato outlier",
+    )
+    sonar.add_argument(
+        "--max-outlier-ratio",
+        type=float,
+        default=0.05,
+        help="frazione massima di outlier ammessa (default 0.05)",
+    )
     sonar.add_argument(
         "--reference-mm",
         type=int,

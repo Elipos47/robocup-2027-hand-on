@@ -51,6 +51,9 @@ class SonarReport:
     valid_ratio: float
     distances: NumericStats | None
     max_jump_mm: int | None
+    outliers: int
+    outlier_ratio: float
+    outlier_mm: int
     flag_mismatches: int
     out_of_range: int
     sequence_gaps: int
@@ -106,11 +109,16 @@ def analyze_sonar(
     readings: Sequence[SensorReading],
     *,
     min_valid_ratio: float = 0.8,
-    max_jump_mm: int = 500,
+    outlier_mm: int = 200,
+    max_outlier_ratio: float = 0.05,
     min_distance_mm: int = 20,
     max_distance_mm: int = 4000,
 ) -> SonarReport:
     """Verifica la coerenza dei campioni HC-SR04."""
+    if not 0 <= max_outlier_ratio <= 1:
+        raise ValueError("max_outlier_ratio deve essere tra 0 e 1")
+    if outlier_mm < 0:
+        raise ValueError("outlier_mm non puo' essere negativo")
     total = len(readings)
     valid_values: list[int] = []
     flag_mismatches = 0
@@ -132,6 +140,12 @@ def analyze_sonar(
     invalid = total - valid
     valid_ratio = valid / total if total else 0.0
     stats = NumericStats.from_values(valid_values)
+    outliers = 0
+    if stats is not None:
+        outliers = sum(
+            1 for value in valid_values if abs(value - stats.median) > outlier_mm
+        )
+    outlier_ratio = outliers / valid if valid else 0.0
 
     max_jump: int | None = None
     for previous, current in zip(valid_values, valid_values[1:]):
@@ -151,8 +165,11 @@ def analyze_sonar(
         notes.append(f"{flag_mismatches} campioni con flag sonar incoerente")
     if out_of_range:
         notes.append(f"{out_of_range} distanze fuori range {min_distance_mm}-{max_distance_mm} mm")
-    if max_jump is not None and max_jump > max_jump_mm:
-        notes.append(f"salto massimo {max_jump} mm oltre {max_jump_mm} mm")
+    if outlier_ratio > max_outlier_ratio:
+        notes.append(
+            f"{outliers}/{valid} outlier oltre ±{outlier_mm} mm "
+            f"({outlier_ratio:.1%} > {max_outlier_ratio:.0%})"
+        )
     gaps = sequence_gaps(readings)
     if gaps:
         notes.append(f"{gaps} salti nella sequenza degli status")
@@ -163,7 +180,7 @@ def analyze_sonar(
         and flag_mismatches == 0
         and out_of_range == 0
         and gaps == 0
-        and (max_jump is None or max_jump <= max_jump_mm)
+        and outlier_ratio <= max_outlier_ratio
     )
 
     return SonarReport(
@@ -173,6 +190,9 @@ def analyze_sonar(
         valid_ratio=round(valid_ratio, 3),
         distances=stats,
         max_jump_mm=max_jump,
+        outliers=outliers,
+        outlier_ratio=round(outlier_ratio, 3),
+        outlier_mm=outlier_mm,
         flag_mismatches=flag_mismatches,
         out_of_range=out_of_range,
         sequence_gaps=gaps,

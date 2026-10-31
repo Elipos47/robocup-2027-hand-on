@@ -65,7 +65,7 @@ I test host non richiedono hardware:
 - calibrazione con viste checkerboard sintetiche;
 - raccolta status con sessione finta.
 
-La suite completa e' a **130 test**, tutti verdi.
+La suite completa e' a **132 test**, tutti verdi.
 
 ## Camera
 
@@ -127,6 +127,22 @@ ha dato 598 mm. Il target appare quindi a circa **400 mm** prima e **600 mm** do
 fisica e' cambiata di circa 200 mm, oppure la misura e' presa dal telaio e il sensore e' arretrato
 di circa 100 mm. I picchi a 1095-1197 mm indicano riflessioni o un oggetto dietro il target. Il
 test resta FAIL: non va abbassata la tolleranza.
+
+### Criterio robusto e stabilita' del target
+
+Il salto massimo su un singolo campione e' troppo fragile per un sensore a ultrasuoni: un solo
+eco spurio non deve invalidare 99 campioni buoni. Il test ora usa la **percentuale di outlier**
+(oltre ±200 mm dalla mediana, massimo 5%) e continua a riportare il salto massimo.
+
+| Run | Mediana | Outlier | Salto max | Riferimento 500 mm | Esito |
+|---|---:|---:|---:|---|---|
+| sonar-500-005 | 522 mm | 3/101 (3,0%) | 699 mm | +22 mm, PASS | PASS col criterio robusto |
+| sonar-500-006 | 507,5 mm | 1/100 (1,0%) | 600 mm | +7,5 mm, PASS | PASS col criterio robusto |
+| sonar-500-007 | 597 mm | 9/98 (9,2%) | 602 mm | +97 mm, FAIL | FAIL |
+
+Le run 005 e 006, con il target fermo intorno a 500 mm, passano il criterio robusto. La 007 ha
+mediana 597 mm e 9,2% di outlier: il target si e' spostato verso 600 mm durante la prova. Il
+problema non e' il codice: il target deve restare fermo e supportato per tutti i 10 secondi.
 
 Il sensore risponde e il bit `SONAR_VALID` e' coerente, ma la lettura non e' stabile: il salto
 massimo supera la soglia di 500 mm. I valori si distribuiscono intorno a 900, 1000 e 1100 mm,

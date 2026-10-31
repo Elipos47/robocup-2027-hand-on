@@ -71,7 +71,35 @@ class SonarChecksTests(unittest.TestCase):
 
         self.assertFalse(report.passed)
         self.assertEqual(report.max_jump_mm, 1000)
-        self.assertIn("salto massimo", " ".join(report.notes))
+        self.assertEqual(report.outlier_ratio, 1.0)
+        self.assertIn("outlier", " ".join(report.notes))
+
+    def test_single_isolated_outlier_passes(self) -> None:
+        readings = [
+            reading(index, distance_mm=500, status=1)
+            for index in range(99)
+        ] + [reading(99, distance_mm=1100, status=1)]
+
+        report = analyze_sonar(readings)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(report.outliers, 1)
+        self.assertEqual(report.outlier_ratio, 0.01)
+        self.assertEqual(report.max_jump_mm, 600)
+
+    def test_many_outliers_fail(self) -> None:
+        readings = [
+            reading(index, distance_mm=500, status=1)
+            for index in range(90)
+        ] + [
+            reading(90 + index, distance_mm=1100, status=1)
+            for index in range(10)
+        ]
+
+        report = analyze_sonar(readings)
+
+        self.assertFalse(report.passed)
+        self.assertGreater(report.outlier_ratio, 0.05)
 
     def test_out_of_range_fails(self) -> None:
         report = analyze_sonar([reading(0, distance_mm=5000, status=1)])
