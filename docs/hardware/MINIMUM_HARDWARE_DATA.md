@@ -83,10 +83,9 @@ led e interruttore.
 | `SCL` | 21 | I2C hardware |
 
 - I pin 20 e 21 sono l'I2C hardware del Mega 2560: nessun conflitto con motori o sonar.
-- Il Mega lavora con livelli a 5 V sull'I2C. Prima di usare il BNO085 va verificato che il
-  modulo specifico sia 5 V tolerant oppure abbia un level shifter: molti breakout BNO085 sono
-  a 3,3 V. Non modificare il cablaggio senza questa verifica.
-- Modello del modulo e orientamento degli assi restano `TODO`.
+- Il modulo e' un breakout Adafruit che accetta 5 V diretti, confermato dall'utente
+  (2026-10-31): il collegamento all'I2C a 5 V del Mega e' ammesso.
+- Modello esatto del modulo e orientamento degli assi restano `TODO`.
 
 Non ancora definiti: pin del servo, LED e interruttore.
 
