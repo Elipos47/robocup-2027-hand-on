@@ -74,33 +74,36 @@ void applyPwm() {
 void startMove(char command) {
   stopMotors();
 
+  // Polarita' verificata il 2026-10-31: con il cablaggio attuale entrambi i
+  // canali girano al contrario rispetto a IN alto. La correzione e' nel
+  // software; il cablaggio non viene toccato.
   switch (command) {
     case '1':
-      digitalWrite(PIN_IN1, HIGH);
-      digitalWrite(PIN_IN2, LOW);
-      analogWrite(PIN_ENA, testPwm);
-      Serial.print(F("Canale A avanti (IN1=H, IN2=L), ENA="));
-      break;
-
-    case '2':
       digitalWrite(PIN_IN1, LOW);
       digitalWrite(PIN_IN2, HIGH);
       analogWrite(PIN_ENA, testPwm);
-      Serial.print(F("Canale A indietro (IN1=L, IN2=H), ENA="));
+      Serial.print(F("Canale A avanti (IN1=L, IN2=H), ENA="));
+      break;
+
+    case '2':
+      digitalWrite(PIN_IN1, HIGH);
+      digitalWrite(PIN_IN2, LOW);
+      analogWrite(PIN_ENA, testPwm);
+      Serial.print(F("Canale A indietro (IN1=H, IN2=L), ENA="));
       break;
 
     case '3':
-      digitalWrite(PIN_IN3, HIGH);
-      digitalWrite(PIN_IN4, LOW);
-      analogWrite(PIN_ENB, testPwm);
-      Serial.print(F("Canale B avanti (IN3=H, IN4=L), ENB="));
-      break;
-
-    case '4':
       digitalWrite(PIN_IN3, LOW);
       digitalWrite(PIN_IN4, HIGH);
       analogWrite(PIN_ENB, testPwm);
-      Serial.print(F("Canale B indietro (IN3=L, IN4=H), ENB="));
+      Serial.print(F("Canale B avanti (IN3=L, IN4=H), ENB="));
+      break;
+
+    case '4':
+      digitalWrite(PIN_IN3, HIGH);
+      digitalWrite(PIN_IN4, LOW);
+      analogWrite(PIN_ENB, testPwm);
+      Serial.print(F("Canale B indietro (IN3=H, IN4=L), ENB="));
       break;
 
     default:
