@@ -3,7 +3,7 @@
 Sketch di banco per Arduino Mega 2560 + L298N. Serve a verificare lato e verso dei due
 motori prima di scrivere il controller.
 
-**Stato:** compilato; prova a banco da eseguire.
+**Stato:** compilato; prova a banco in corso.
 
 ## Cablaggio usato
 
@@ -44,12 +44,14 @@ La porta puo' cambiare: verificala con `arduino-cli board list`.
 | `2` | canale A indietro (`IN1` basso, `IN2` alto) |
 | `3` | canale B avanti (`IN3` alto, `IN4` basso) |
 | `4` | canale B indietro (`IN3` basso, `IN4` alto) |
-| `0` | stop |
+| `0` / `s` | stop entrambi i canali |
 | `+` / `-` | PWM di test +/- 10 (parte da 80, limite 120) |
 | `?` | aiuto |
 
-Ogni comando dura 3 secondi e poi si ferma da solo. Se la ruota non si muove, premi `+` e
-riprova; se arriva a 120 senza muoversi, fermati e riporta il comportamento.
+Ogni comando resta attivo fino a stop manuale (`0` o `s`); non c'e' stop automatico. Un nuovo
+comando `1`-`4` sostituisce quello attivo. Tieni le ruote sollevate e l'alimentazione a portata
+di mano. Se la ruota non si muove, premi `+` e riprova; se arriva a 120 senza muoversi, fermati
+e riporta il comportamento.
 
 ## Risultato da riportare
 

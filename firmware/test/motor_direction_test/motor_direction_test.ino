@@ -11,12 +11,15 @@
     2 = canale A indietro
     3 = canale B avanti
     4 = canale B indietro
-    0 = stop
+    0 = stop entrambi i canali
+    s = stop entrambi i canali
     + = aumenta il PWM di test di 10
     - = diminuisce il PWM di test di 10
     ? = aiuto
 
-  Ogni comando muove un solo canale per RUN_MS e poi si ferma da solo.
+  Ogni comando muove un solo canale e resta attivo fino allo stop manuale
+  (0 oppure s). Non c'e' stop automatico: tieni le ruote sollevate e
+  l'alimentazione a portata di mano.
   Le ruote devono essere sollevate e l'alimentazione dei motori separata
   dall'Arduino, con GND comune.
 
@@ -34,12 +37,10 @@ const uint8_t PIN_IN4 = 25;
 const uint8_t PWM_START = 80;
 const uint8_t PWM_LIMIT = 120;
 const uint8_t PWM_STEP = 10;
-const unsigned long RUN_MS = 3000;
 
 uint8_t testPwm = PWM_START;
 bool moving = false;
 char activeCommand = '0';
-unsigned long moveStartedAt = 0;
 
 void stopMotors() {
   analogWrite(PIN_ENA, 0);
@@ -102,13 +103,10 @@ void startMove(char command) {
   }
 
   Serial.print(testPwm);
-  Serial.print(F("/255 per "));
-  Serial.print(RUN_MS);
-  Serial.println(F(" ms, poi stop automatico."));
+  Serial.println(F("/255, fino a stop manuale (0/s)."));
 
   moving = true;
   activeCommand = command;
-  moveStartedAt = millis();
 }
 
 void printHelp() {
@@ -121,7 +119,8 @@ void printHelp() {
   Serial.print(PWM_LIMIT);
   Serial.println(F(")"));
   Serial.println(F("1=A avanti  2=A indietro  3=B avanti  4=B indietro"));
-  Serial.println(F("0=stop  +=PWM  -=PWM  ?=aiuto"));
+  Serial.println(F("0/s=stop  +=PWM  -=PWM  ?=aiuto"));
+  Serial.println(F("Il motore resta acceso fino a stop manuale."));
   Serial.println(F("Ruote sollevate. Un canale alla volta."));
   Serial.println();
 }
@@ -142,11 +141,6 @@ void setup() {
 }
 
 void loop() {
-  if (moving && (millis() - moveStartedAt >= RUN_MS)) {
-    stopMotors();
-    Serial.println(F("Stop automatico."));
-  }
-
   if (!Serial.available()) {
     return;
   }
@@ -168,6 +162,8 @@ void loop() {
     case '0':
     case 'x':
     case 'X':
+    case 's':
+    case 'S':
       stopMotors();
       Serial.println(F("Stop."));
       break;
