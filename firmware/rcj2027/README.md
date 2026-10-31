@@ -93,6 +93,16 @@ python3 -m rcj2027 --port /dev/ttyACM0 --run-id prova-001
 
 Il comando aspetta il boot del Mega, invia `V` e poi `H`.
 
+Se la tastiera non produce maiuscole, usa la console interattiva: accetta i payload in
+minuscolo e aggiunge il checksum da solo.
+
+```sh
+cd software
+python3 -m rcj2027 --port /dev/ttyACM0 --interactive --run-id prova-001
+```
+
+Esempi: `v,1`, `h,1`, `x,2`, `d,1,100,100`. Scrivi `quit` per uscire.
+
 ## Errori comuni
 
 | Risposta | Significato |

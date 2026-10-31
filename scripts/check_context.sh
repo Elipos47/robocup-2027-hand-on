@@ -43,6 +43,7 @@ required=(
   software/tests/test_logger.py
   software/tests/test_safety.py
   software/tests/test_transport.py
+  software/tests/test_main.py
   scripts/build.sh
   scripts/test.sh
 )

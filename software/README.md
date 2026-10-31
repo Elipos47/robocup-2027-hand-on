@@ -24,6 +24,16 @@ python3 -m rcj2027 --run-id demo-001
 python3 -m unittest discover -s tests -t . -v
 ```
 
+Per una console manuale sulla porta reale, che accetta comandi in minuscolo e calcola il
+checksum:
+
+```sh
+cd software
+python3 -m rcj2027 --port /dev/ttyACM0 --interactive --run-id prova-001
+```
+
+Esempi di payload: `v,1`, `h,1`, `x,2`, `d,1,100,100`. Scrivi `quit` per uscire.
+
 La demo usa il trasporto finto: non apre la porta seriale e non muove il robot. I log finiscono
 in `logs/` (ignorata da git) oppure nella directory indicata con `--log-dir`.
 

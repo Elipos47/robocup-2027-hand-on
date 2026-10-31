@@ -89,6 +89,8 @@ contiene il codice applicativo del progetto precedente.
   sinistra.
 - Fatto: package `software/rcj2027/` con protocollo v1.1, trasporto finto, logger, gate di
   sicurezza e test unittest; la demo fake funziona e il movimento resta disabilitato.
+- Fatto: console interattiva `python3 -m rcj2027 --port ... --interactive`, che accetta
+  payload in minuscolo e calcola il checksum.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - In corso: test di banco B0 (heartbeat, stop, watchdog e perdita del cavo).
