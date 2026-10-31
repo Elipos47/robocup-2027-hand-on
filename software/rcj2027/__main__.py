@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 import threading
 import time
 from dataclasses import asdict
@@ -12,6 +13,7 @@ from pathlib import Path
 from . import protocol
 from .logger import JsonlLogger
 from .safety import DEFAULT_CONFIG, SafetyError
+from .session import RobotSession, SessionError
 from .transport import FakeTransport, SerialTransport
 
 
@@ -89,8 +91,10 @@ def run_fake(logger: JsonlLogger) -> None:
     transport.close()
 
 
-def run_real(logger: JsonlLogger, port: str, baud: int) -> None:
+def run_real(logger: JsonlLogger, port: str, baud: int, duration_s: float) -> None:
+    """Apre il link reale, verifica handshake, heartbeat e status per un intervallo."""
     transport = SerialTransport(port=port, baudrate=baud)
+    session = RobotSession(transport, logger)
     logger.log(
         "session_start",
         mode="real",
@@ -101,14 +105,23 @@ def run_real(logger: JsonlLogger, port: str, baud: int) -> None:
     )
     try:
         # L'apertura della porta resetta il Mega: lascia finire il bootloader.
-        time.sleep(2.0)
-        transport.write(protocol.version_request())
-        _log_version(logger, _read_reply(transport, timeout=2.0))
-        transport.write(protocol.heartbeat(1))
-        logger.log("heartbeat", sequence=1)
-        print(f"handshake con {port} completato; log: {logger.path}")
+        info = session.handshake(boot_delay_s=2.0)
+        print(
+            f"handshake con {port}: protocollo {info.protocol}, "
+            f"scheda {info.board}, firmware {info.firmware}"
+        )
+        print(
+            f"sessione {duration_s:g} s, heartbeat ogni "
+            f"{session.heartbeat_interval_s:g} s"
+        )
+        session.run(duration_s)
     finally:
-        transport.close()
+        session.close(reason="real_session_end")
+    print(
+        f"status {session.status_count}, heartbeat {session.heartbeat_count}, "
+        f"errori {session.error_count}, frame invalidi {session.invalid_count}"
+    )
+    print(f"log: {logger.path}")
 
 
 def run_interactive(logger: JsonlLogger, port: str, baud: int) -> None:
@@ -196,6 +209,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--log-dir", type=Path, default=Path("logs"))
     parser.add_argument(
+        "--duration",
+        type=float,
+        default=5.0,
+        help="durata della sessione reale in secondi (default: 5)",
+    )
+    parser.add_argument(
         "--interactive",
         action="store_true",
         help="console manuale sulla porta seriale; richiede --port",
@@ -204,17 +223,26 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.interactive and not args.port:
         parser.error("--interactive richiede --port")
+    if args.duration <= 0:
+        parser.error("--duration deve essere positivo")
 
     run_id = args.run_id or _default_run_id()
     log_path = args.log_dir / f"{run_id}.jsonl"
 
-    with JsonlLogger(log_path, run_id) as logger:
-        if args.interactive:
-            run_interactive(logger, args.port, args.baud)
-        elif args.port:
-            run_real(logger, args.port, args.baud)
-        else:
-            run_fake(logger)
+    try:
+        with JsonlLogger(log_path, run_id) as logger:
+            if args.interactive:
+                run_interactive(logger, args.port, args.baud)
+            elif args.port:
+                run_real(logger, args.port, args.baud, args.duration)
+            else:
+                run_fake(logger)
+    except KeyboardInterrupt:
+        print("\ninterrotto")
+        return 130
+    except (SessionError, RuntimeError, OSError) as exc:
+        print(f"ERR {exc}", file=sys.stderr)
+        return 1
 
     return 0
 

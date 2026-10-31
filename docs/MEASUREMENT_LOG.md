@@ -19,6 +19,9 @@ della camera, IMU, sonar. Il registro non e' un inventario da completare.
 |---|---|---|---|---|---|---|---|
 | 2026-10-31 | Arduino/L298N | tempo di arresto del watchdog | 1004.9-1008.3 ms dall'ultimo H | timestamp seriale | PWM 150/255, ruote sollevate, timeout 1000 ms | pochi ms (seriale) | verificato su piu' prove |
 | 2026-10-31 | Arduino/L298N | latenza ack stop X | 3.7-3.9 ms | timestamp seriale | PWM 150/255, motori attivi | pochi ms (seriale) | verificato; status fermo a 98-99 ms |
+| 2026-10-31 | Link seriale Raspberry-Mega | latenza handshake `V` -> risposta | 3.7-6.9 ms | timestamp JSONL | USB 115200, firmware sicuro, 3 run da 5 s | pochi ms (seriale) | B1-1 verificato |
+| 2026-10-31 | Link seriale Raspberry-Mega | periodo status `A` | 100.1-100.2 ms medio, 98-103 ms min-max | timestamp JSONL | 51 frame per run, 3 run da 5 s | pochi ms (seriale) | B1-1 verificato |
+| 2026-10-31 | Link seriale Raspberry-Mega | latenza ack stop `X` | 3-5 ms | timestamp JSONL | chiusura sessione, firmware sicuro, 3 run | pochi ms (seriale) | B1-1 verificato |
 | 2026-10-31 | Motori | PWM di banco che muove | 150: solo ronzio; 255: rotazione confermata dall'operatore | osservazione visiva + telemetria | ruote sollevate | - | 255 non e' il pwm_max definitivo |
 | TBD | Ruota | diametro effettivo | TODO | calibro | ruota montata | - | per la velocita' lineare |
 | TBD | Motori | RPM a PWM noto | TODO | conteggio giri in 10 s | ruote sollevate, PWM 255 | - | opzionale |

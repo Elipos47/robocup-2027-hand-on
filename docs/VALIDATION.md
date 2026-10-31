@@ -22,7 +22,9 @@ corrisponda al nome del file.
 `build.sh` compila tutti gli sketch con `arduino-cli` per `arduino:avr:mega`; il FQBN si puo'
 sovrascrivere con la variabile `FQBN`.
 
-`test.sh` esegue il controllo, la build e i test Python (`unittest`) in `software/tests/`.
+`test.sh` esegue il controllo, la build e i test Python (`unittest`) in `software/tests/`. La
+suite copre protocollo, logger, safety, trasporto finto e reale bufferizzato, sessione
+(handshake, heartbeat, status, stop, link) e normalizzazione della console.
 
 ## Criterio
 

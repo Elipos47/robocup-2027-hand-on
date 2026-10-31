@@ -23,6 +23,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 - Fatto: B0 parziale: stop X con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms; a 150 i motori
   ronzavano senza ruotare, a 255 hanno girato (conferma dell'operatore). Freno/coast ancora
   aperti.
+- Fatto: B1-1, sessione reale Raspberry Pi 5 - Arduino Mega con firmware sicuro: handshake,
+  heartbeat 200 ms, status a circa 100 ms, log JSONL e stop X con ack 3-5 ms, senza movimento
+  (`docs/testing/B1_INTEGRATION_TEST.md`).
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -50,7 +53,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
 | Protocollo seriale v1.1 | `docs/architecture/SERIAL_PROTOCOL.md` |
-| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md` |
+| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
 | Decisioni aperte | `docs/DECISIONS.md` |
 | Provenienza e scelte di importazione | `docs/SOURCE_MAP.md` |
@@ -76,8 +79,9 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Completare B0: conferma visiva, freno/coast e ripetizione del test.
-2. Integrare Raspberry e Arduino con il trasporto reale e registrare i log (B1).
+1. Completare B1: comandi motori e lettura sensori ripetibili, ripetendo la sessione reale con
+   i sensori collegati.
+2. Chiudere B0: freno/coast, ripetizione, corrente e temperatura del L298N.
 3. Scegliere `pwm_max` e timeout watchdog definitivi; misurare diametro ruota e RPM.
 4. Eseguire il primo test controllato della linea sul campo.
 

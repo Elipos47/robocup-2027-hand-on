@@ -51,6 +51,10 @@ H0b non e' un prerequisito per iniziare a scrivere il software.
 - lettura dei sensori e diagnostica;
 - calibrazione manuale delle telecamere.
 
+Stato 2026-10-31: B1-1 verificata sul link reale Raspberry Pi 5 - Mega con firmware sicuro
+(handshake, heartbeat, status, logger JSONL, stop `X`); comandi motori e sensori ripetibili
+restano da completare.
+
 ### F0 — Linea
 
 - test su linee reali, curvature, gap, disturbi e illuminazione;

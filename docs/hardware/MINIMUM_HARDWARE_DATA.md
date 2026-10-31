@@ -33,7 +33,7 @@ in parallelo, cioe' 11.1 V, 5.2 Ah e 57.72 Wh dichiarati. In parallelo la tensio
   scelto, non misurato. Prova di banco 2026-10-31: a 150 i motori ronzavano senza ruotare; a
   255 i motori hanno girato (conferma dell'operatore).
 - freno, coast e stop: comportamento deciso nel codice.
-- baud e porta seriale: impostati e verificati quando si collega l'Arduino.
+- baud e porta seriale: 115200 8N1 su `/dev/ttyACM0`, verificati in B1-1.
 - velocita' in mm/s, odometria e RPM: servono solo quando si passa dal PWM grezzo alla velocita'
   controllata.
 

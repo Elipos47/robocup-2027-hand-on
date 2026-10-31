@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from collections import deque
 from typing import Protocol, runtime_checkable
 
@@ -85,6 +86,7 @@ class SerialTransport:
             ) from exc
 
         self._serial = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
+        self._rx_buffer = bytearray()
 
     def write(self, data: bytes) -> None:
         if not isinstance(data, (bytes, bytearray)):
@@ -93,14 +95,44 @@ class SerialTransport:
         self._serial.flush()
 
     def read_line(self, timeout: float | None = None) -> bytes | None:
+        """Legge una riga completa, accumulando i pezzi tra una chiamata e l'altra.
+
+        ``serial.readline`` puo' restituire una riga parziale allo scadere del
+        timeout; il buffer evita di passare al parser frame troncati.
+        """
+        effective_timeout = self._serial.timeout if timeout is None else timeout
+        if effective_timeout is not None and effective_timeout < 0:
+            raise ValueError("timeout non puo' essere negativo")
+
+        deadline = (
+            None
+            if effective_timeout is None
+            else time.monotonic() + effective_timeout
+        )
         previous_timeout = self._serial.timeout
-        if timeout is not None:
-            self._serial.timeout = timeout
+
         try:
-            line = self._serial.readline()
+            while True:
+                newline = self._rx_buffer.find(b"\n")
+                if newline >= 0:
+                    line = bytes(self._rx_buffer[: newline + 1])
+                    del self._rx_buffer[: newline + 1]
+                    return line
+
+                if deadline is None:
+                    self._serial.timeout = 0.05
+                else:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        return None
+                    self._serial.timeout = min(remaining, 0.05)
+
+                waiting = self._serial.in_waiting
+                chunk = self._serial.read(waiting if waiting > 0 else 1)
+                if chunk:
+                    self._rx_buffer.extend(chunk)
         finally:
             self._serial.timeout = previous_timeout
-        return line or None
 
     def close(self) -> None:
         self._serial.close()

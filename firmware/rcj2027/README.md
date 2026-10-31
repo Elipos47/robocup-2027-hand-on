@@ -6,7 +6,8 @@ Firmware Arduino Mega 2560 + L298N per il protocollo definito in
 **Stato:** compilato; protocollo verificato a banco (P1). B0 parziale: rotazione a 255, stop X
 con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms con PWM 150/255 e timeout 1000 ms; a 150 i
 motori ronzavano senza ruotare. Freno/coast e ripetizione da completare. Firmware riportato a
-movimento disabilitato.
+movimento disabilitato. B1-1: handshake, heartbeat, status, log JSONL e stop X verificati su
+Raspberry Pi 5 con il firmware sicuro (`docs/testing/B1_INTEGRATION_TEST.md`).
 
 ## Cablaggio
 
@@ -90,10 +91,11 @@ Per un handshake automatico, senza digitare il checksum:
 
 ```sh
 cd software
-python3 -m rcj2027 --port /dev/ttyACM0 --run-id prova-001
+python3 -m rcj2027 --port /dev/ttyACM0 --duration 5 --run-id prova-001
 ```
 
-Il comando aspetta il boot del Mega, invia `V` e poi `H`.
+Il comando aspetta il boot del Mega, invia `V`, mantiene `H` ogni 200 ms, registra gli status e
+chiude con `X`. Senza `--duration` la sessione dura 5 s. Non invia `D`.
 
 Se la tastiera non produce maiuscole, usa la console interattiva: accetta i payload in
 minuscolo e aggiunge il checksum da solo.

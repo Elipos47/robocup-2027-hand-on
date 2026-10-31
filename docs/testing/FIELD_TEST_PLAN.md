@@ -82,8 +82,11 @@ sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilit
 - [x] comunicazione V/H/X/D con movimento disabilitato (P1,
   `docs/testing/PROTOCOL_BENCH_TEST.md`);
 - [x] stop X con ponte abilitato (B0, `docs/testing/B0_BENCH_TEST.md`);
-- [x] watchdog con ponte abilitato e perdita del cavo (B0, 1007-1008 ms);
+- [x] watchdog con ponte abilitato e perdita di heartbeat (B0, 1007-1008 ms);
 - [x] rotazione visiva a 255 (confermata dall'operatore);
+- [x] sessione seriale reale Raspberry-Mega con handshake, heartbeat, status a 10 Hz, logger
+  JSONL e stop `X` (B1-1, `docs/testing/B1_INTEGRATION_TEST.md`);
+- [ ] perdita fisica del cavo USB durante una sessione reale;
 - [ ] freno/coast e arresto fisico misurato;
 - [ ] ripetizione B0 su piu' run;
 - [ ] calibrazione manuale camere;

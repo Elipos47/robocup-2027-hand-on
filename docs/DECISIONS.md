@@ -33,6 +33,12 @@
     a 255, stop e watchdog con ponte abilitato; a 150 i motori ronzavano senza ruotare.
     Freno/coast e ripetizione restano aperti. Per il test B0 si usano valori di banco espliciti
     (PWM 150/255, watchdog 1000 ms), non definitivi.
+13. **Sessione seriale e logger (2026-10-31):** `software/rcj2027/session.py` gestisce
+    handshake, heartbeat, status, errori, stop e log JSONL. L'handshake drena gli status gia'
+    in coda prima della risposta `V` e scarta i frame pre-handshake; il trasporto seriale
+    bufferizza le righe parziali. B1-1 ha verificato la catena reale Raspberry Pi 5 - Mega con
+    firmware sicuro, senza movimento (`docs/testing/B1_INTEGRATION_TEST.md`). La perdita fisica
+    del cavo e i comandi motori restano fuori da B1-1.
 
 ## Decisioni da prendere
 

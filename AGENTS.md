@@ -91,6 +91,10 @@ contiene il codice applicativo del progetto precedente.
   sicurezza e test unittest; la demo fake funziona e il movimento resta disabilitato.
 - Fatto: console interattiva `python3 -m rcj2027 --port ... --interactive`, che accetta
   payload in minuscolo e calcola il checksum.
+- Fatto: B1-1, sessione reale Raspberry Pi 5 - Arduino Mega con firmware sicuro
+  (`docs/testing/B1_INTEGRATION_TEST.md`): handshake, heartbeat 200 ms, status a circa 100 ms,
+  log JSONL, stop `X` con ack 3-5 ms, 0 errori e 0 frame invalidi su tre run da 5 s. Nessun
+  comando `D` e nessun movimento.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in
@@ -100,9 +104,11 @@ contiene il codice applicativo del progetto precedente.
   con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms con PWM 150/255 e timeout 1000 ms. A 150 i
   motori ronzavano senza ruotare; a 255 hanno girato (conferma dell'operatore). Firmware
   riportato a movimento disabilitato.
-- In corso: completare B0 con freno/coast e ripetizione; poi B1.
-- Prossimi passi: chiudere B0, integrare Raspberry e Arduino con il trasporto reale e il
-  logger, poi scegliere i valori definitivi di `pwm_max` e watchdog.
+- In corso: completare B1 con motori e sensori ripetibili; chiudere i punti aperti di B0
+  (freno/coast, ripetizione, corrente e temperatura).
+- Prossimi passi: usare la sessione reale come base per i comandi motori e la lettura sensori;
+  scegliere i valori definitivi di `pwm_max` e watchdog dopo le misure; ripetere B1-1 sul
+  robot con i sensori collegati.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, BNO085,

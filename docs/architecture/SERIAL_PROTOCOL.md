@@ -1,8 +1,9 @@
 # Protocollo seriale Raspberry Pi ↔ Arduino — v1.1
 
-**Stato:** specifica approvata per l'implementazione. Il firmware di test motori e' separato dal
-protocollo; il firmware del protocollo non e' ancora stato scritto. Nessun cablaggio e' stato
-modificato per il protocollo.
+**Stato:** specifica approvata e implementata su Raspberry Pi 5 e Arduino Mega 2560. Il
+protocollo e' verificato a banco senza movimento (P1) e con motori (B0 parziale); la sessione
+seriale con handshake, heartbeat, status e logger e' verificata in B1-1. Nessun cablaggio e'
+stato modificato per il protocollo.
 
 ## Obiettivi
 
@@ -201,8 +202,13 @@ E,BAD_RANGE*2E\n
 ## Stato dell'implementazione
 
 - La specifica v1.1 e' documentata.
-- Il package Python `software/rcj2027/` contiene parser, trasporto finto, logger, gate di
-  sicurezza e test host.
+- Il package Python `software/rcj2027/` contiene parser, trasporto finto e reale, logger, gate
+  di sicurezza, sessione e test host.
 - Il firmware Arduino e' in `firmware/rcj2027/`: implementa checksum, ack, status, stop e
   watchdog, con movimento disabilitato di default.
-- Restano da provare sul banco heartbeat, stop, watchdog e perdita del cavo (gate B0).
+- P1 ha verificato handshake, status, heartbeat, stop e rifiuto di `D` senza movimento.
+- B0 ha verificato stop, watchdog e rotazione a 255 con ponte abilitato; freno/coast e
+  ripetizione restano aperti.
+- B1-1 ha verificato su Raspberry Pi 5 il trasporto reale, l'handshake, il heartbeat a 200 ms,
+  gli status a circa 100 ms, il log JSONL e lo stop `X` con ack
+  (`docs/testing/B1_INTEGRATION_TEST.md`). La perdita fisica del cavo non e' ancora provata.
