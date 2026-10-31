@@ -22,6 +22,9 @@ della camera, IMU, sonar. Il registro non e' un inventario da completare.
 | 2026-10-31 | Link seriale Raspberry-Mega | latenza handshake `V` -> risposta | 3.7-6.9 ms | timestamp JSONL | USB 115200, firmware sicuro, 3 run da 5 s | pochi ms (seriale) | B1-1 verificato |
 | 2026-10-31 | Link seriale Raspberry-Mega | periodo status `A` | 100.1-100.2 ms medio, 98-103 ms min-max | timestamp JSONL | 51 frame per run, 3 run da 5 s | pochi ms (seriale) | B1-1 verificato |
 | 2026-10-31 | Link seriale Raspberry-Mega | latenza ack stop `X` | 3-5 ms | timestamp JSONL | chiusura sessione, firmware sicuro, 3 run | pochi ms (seriale) | B1-1 verificato |
+| 2026-10-31 | Link seriale Raspberry-Mega | latenza ack comando `D` | 5-7 ms | timestamp JSONL | firmware di banco, PWM 255, 3 comandi | pochi ms (seriale) | B1-2 verificato |
+| 2026-10-31 | Link seriale Raspberry-Mega | latenza ack stop `X` con motori attivi | 2-6 ms | timestamp JSONL | firmware di banco, PWM 255, 3 stop | pochi ms (seriale) | B1-2 verificato |
+| 2026-10-31 | Motori/L298N | rotazione a PWM 255 con gate software | entrambe le ruote e canali separati ruotano | osservazione visiva + log | ruote sollevate, alimentazione inserita, firmware di banco | - | B1-2 verificato; 255 non e' il pwm_max definitivo |
 | 2026-10-31 | Motori | PWM di banco che muove | 150: solo ronzio; 255: rotazione confermata dall'operatore | osservazione visiva + telemetria | ruote sollevate | - | 255 non e' il pwm_max definitivo |
 | TBD | Ruota | diametro effettivo | TODO | calibro | ruota montata | - | per la velocita' lineare |
 | TBD | Motori | RPM a PWM noto | TODO | conteggio giri in 10 s | ruote sollevate, PWM 255 | - | opzionale |

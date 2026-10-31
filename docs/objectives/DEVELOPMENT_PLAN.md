@@ -52,9 +52,10 @@ H0b non e' un prerequisito per iniziare a scrivere il software.
 - calibrazione manuale delle telecamere.
 
 Stato 2026-10-31: B1-1 verificata sul link reale Raspberry Pi 5 - Mega con firmware sicuro
-(handshake, heartbeat, status, logger JSONL, stop `X`). Il gate software per i comandi motori
-(`RobotSession.drive`) e' pronto e testato con trasporto finto; la prova B1-2 sul robot richiede
-ruote sollevate. Lettura sensori e comandi motori reali restano da completare.
+(handshake, heartbeat, status, logger JSONL, stop `X`). B1-2 verificata con ruote sollevate e
+conferma dell'operatore: comandi a 255 su entrambe le ruote e sui canali separati, ack, stop e
+rotazione osservata; firmware sicuro ripristinato. Lettura sensori e calibrazione restano da
+completare.
 
 ### F0 — Linea
 

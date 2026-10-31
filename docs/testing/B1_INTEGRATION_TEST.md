@@ -1,28 +1,27 @@
-# Test B1-1 - integrazione seriale e logger
+# Test B1-1/B1-2 - sessione seriale, logger e comandi motori
 
-**ID:** B1-1
+**ID:** B1-1 (link e logger), B1-2 (comandi motori)
 **Data:** 2026-10-31
-**Firmware:** `firmware/rcj2027/rcj2027.ino` con configurazione sicura:
-`BENCH_MOTION_ENABLED=false`, `PWM_MAX=0`, `WATCHDOG_TIMEOUT_MS=0`
+**Firmware:** B1-1 con configurazione sicura (`BENCH_MOTION_ENABLED=false`, `PWM_MAX=0`,
+`WATCHDOG_TIMEOUT_MS=0`). B1-2 con configurazione di banco (`true`, `PWM_MAX=255`,
+`WATCHDOG_TIMEOUT_MS=1000`), poi ripristinata la configurazione sicura.
 **Software:** `software/rcj2027/session.py`, `transport.py`, `logger.py`, `__main__.py`
 **Hardware:** Raspberry Pi 5 Model B + Arduino Mega 2560 + L298N, USB `/dev/ttyACM0`,
 115200 8N1
 **Ambiente:** Raspberry Pi OS, Linux 6.12 aarch64, Python 3.11.2, pyserial 3.5
-**Condizioni:** robot fermo, movimento disabilitato, nessun comando `D` inviato, nessuna
-modifica a hardware o cablaggi.
+**Condizioni:** B1-1 con robot fermo e movimento disabilitato, nessun comando `D`. B1-2 con
+ruote sollevate confermate dall'operatore, alimentazione motori inserita e operatore presente.
 
 ## Obiettivo
 
-Verificare sul link reale, senza movimento:
+Verificare sul link reale:
 
-- apertura del trasporto seriale e handshake `V`;
-- heartbeat `H` periodico;
-- ricezione degli status `A` con bitmask;
-- stop `X` alla chiusura con ack;
-- log JSONL associato a una run;
-- comportamento ripetibile su piu' sessioni.
+- B1-1, senza movimento: trasporto seriale, handshake `V`, heartbeat `H`, status `A`,
+  stop `X`, log JSONL e ripetibilita';
+- B1-2, con ruote sollevate: comandi motori `D`, ack, status `MOTORS_ACTIVE`, stop `X` e
+  rotazione fisica.
 
-## Comando
+## B1-1 - comando
 
 ```sh
 cd software
@@ -33,7 +32,7 @@ Il comando apre la porta, attende 2 s il boot del Mega, invia `V,1`, mantiene un
 200 ms, legge gli status e alla chiusura invia `X`. Il movimento resta disabilitato dal firmware
 e dal gate in `safety.py`.
 
-## Risultati
+## B1-1 - risultati
 
 Tre sessioni consecutive da 5 s con lo stesso firmware sicuro:
 
@@ -94,7 +93,7 @@ Estratto con campi non essenziali omessi; i valori citati sono quelli del log re
 I log completi restano in `software/logs/` (directory ignorata da git) o nella directory indicata
 con `--log-dir`; non vengono versionati.
 
-## Cosa e' verificato
+## B1-1 - cosa e' verificato
 
 - trasporto seriale reale su Raspberry Pi 5 e Arduino Mega 2560;
 - handshake e versione del firmware;
@@ -105,78 +104,91 @@ con `--log-dir`; non vengono versionati.
 - ripetibilita' su tre sessioni consecutive;
 - nessun movimento e nessun comando `D` durante la prova.
 
-## Cosa non e' ancora verificato
+## Limiti dopo B1-1/B1-2
 
 - perdita fisica del cavo USB durante la sessione: il caso e' coperto solo dal test host con
   trasporto finto, non da una prova con il cavo scollegato;
 - valori reali di HC-SR04 e BNO085: il firmware invia ancora `distance_mm = -1` e angoli a zero;
-- comandi motori e risposta `D`: non inviati in B1, restano coperti da B0/P1; il gate software
-  `RobotSession.drive()` e' pronto e testato con trasporto finto, ma la prova B1-2 sul robot
-  non e' stata eseguita;
-- watchdog con timeout maggiore di zero e firmware di banco: la configurazione attuale ha
-  `WATCHDOG_TIMEOUT_MS = 0`;
+- verso di rotazione in B1-2: la rotazione e' stata confermata, non il verso avanti/indietro
+  (gia' verificato in B0);
+- watchdog e spazio di arresto durante il movimento: B0 ha verificato lo stop a 1000 ms, ma
+  B1-2 non ha misurato lo spazio fisico di arresto;
+- corrente e temperatura del L298N sotto carico;
 - sessioni lunghe, riconnessione USB e stabilita' su piu' ore;
 - integrazione con la percezione e la UI.
 
-Il gate B1 non e' chiuso: comunicazione e logger sono verificati, mentre motori e sensori
-ripetibili restano da completare.
+Il gate B1 resta aperto per sensori, calibrazione e misure. Comunicazione, logger e comandi
+motori sono verificati.
 
-## Prossimo test B1-2 - comandi motori (non eseguito)
+## Test B1-2 - comandi motori
 
-**Stato:** pianificato. `RobotSession.drive(left, right)` applica il gate di `safety.py`, limita
-i valori a `pwm_max`, invia `D` e attende l'ack continuando gli heartbeat. La funzione e'
-coperta dai test host, ma nessun comando `D` e' stato inviato al robot.
+**Stato:** eseguito il 2026-10-31 con ruote sollevate e conferma visiva dell'operatore.
 
-Prerequisiti obbligatori:
+### Configurazione di banco
 
-- ruote sollevate, confermate dall'operatore prima di iniziare;
-- firmware di banco con `BENCH_MOTION_ENABLED=true`, `PWM_MAX` e `WATCHDOG_TIMEOUT_MS=1000`;
-- configurazione Pi allineata allo stesso `pwm_max` e allo stesso timeout;
-- operatore presente con alimentazione motori controllabile;
-- valori di banco espliciti, non definitivi.
+| Parametro | Valore |
+|---|---|
+| Firmware | `BENCH_MOTION_ENABLED=true`, `PWM_MAX=255`, `WATCHDOG_TIMEOUT_MS=1000` |
+| Configurazione Pi | `pwm_max=255`, `watchdog_timeout_s=1.0` |
+| Ruote | sollevate, confermate dall'operatore |
+| Alimentazione motori | inserita, operatore presente |
+| Valori | di banco, non definitivi |
 
-Sequenza prevista:
+Al termine la configurazione sicura e' stata ricaricata e verificata: `drive(100, 100)` ha
+risposto `E,MOTION_DISABLED`, status `0`, nessun movimento.
 
-1. handshake e status con motori fermi;
-2. `drive(100, 100)` e attesa `K`;
-3. `run(1.0)` per mantenere heartbeat e status con bit 2 attivo;
-4. `stop()` e verifica `K` e bit 2 a zero;
-5. ripetizione con canali separati e verso opposto;
-6. registrazione di latenze, corrente e temperatura.
+### Sequenza e risultati
 
-Esempio di sessione, da usare solo con ruote sollevate:
+La prima sequenza (run b1-2) ha inviato quattro comandi: `100,100` per 0,5 s, `255,255` per
+1 s, `255,0` e `0,255` per 0,5 s. Tutti gli ack `D` sono arrivati in 6-7 ms, gli stop in 3-6 ms
+e lo status e' passato da `4` (`MOTORS_ACTIVE`) a `0` dopo ogni stop; 0 errori e 0 frame
+invalidi. L'operatore non ha pero' osservato la rotazione, quindi la run non e' stata accettata
+come verifica visiva: il bit 2 indica il ponte abilitato, non il movimento fisico.
 
-```python
-from rcj2027.logger import JsonlLogger
-from rcj2027.safety import HardwareConfig
-from rcj2027.session import RobotSession
-from rcj2027.transport import SerialTransport
+La seconda sequenza (run b1-2b) ha inserito un countdown di 3 s prima del comando. Gli status
+accumulati hanno riempito la coda e il vecchio loop di attesa ack, fermo a dieci righe, ha
+prodotto `ACK_TIMEOUT`; anche gli stop hanno inviato `X` ma non hanno letto l'ack
+(`stop_ack_timeout`). I comandi `X` sono stati inviati e il firmware li applica subito, ma
+l'ack non e' stato letto; la run e' un test fallito ed e' registrata come tale. La correzione ha
+reso `_wait_for_ack` e `stop` dei cicli che drenano fino alla deadline, con test di regressione
+su 20 status in coda.
 
-config = HardwareConfig(
-    battery_nominal_v=11.1,
-    motor_side_map={"A": "right", "B": "left"},
-    motor_direction_polarity={"A": "inverted", "B": "inverted"},
-    pwm_max=150,
-    watchdog_timeout_s=1.0,
-)
+La terza sequenza (run b1-2c) e' quella valida:
 
-with JsonlLogger("logs/b1-2.jsonl", "b1-2") as logger:
-    with SerialTransport("/dev/ttyACM0", 115200) as transport:
-        with RobotSession(transport, logger, config=config) as session:
-            session.handshake(boot_delay_s=2.0)
-            session.drive(100, 100)
-            session.run(1.0)
-            session.stop()
-```
+| Fase | Comando | Durata | Ack `D` | Status durante | Stop ack | Status dopo |
+|---|---|---:|---:|---:|---:|---:|
+| Entrambe | `D,255,255` | 2 s | 6 ms | 4 | 5 ms | 0 |
+| Solo sinistra | `D,255,0` | 1 s | 5 ms | 4 | 2 ms | 0 |
+| Solo destra | `D,0,255` | 1 s | 6 ms | 4 | 2 ms | 0 |
 
-I valori `pwm_max=150` e `watchdog=1.0 s` sono di banco. Il test va eseguito solo dopo la
-conferma delle ruote sollevate; l'esito e le misure andranno aggiunti a questo documento e a
-`docs/MEASUREMENT_LOG.md`. Non eseguire la sessione con il robot a terra.
+- 0 errori e 0 frame invalidi;
+- 32 heartbeat e 133 status nella sessione (i countdown hanno accumulato telemetria, poi drenata);
+- stop finale di chiusura con ack in 4 ms;
+- **rotazione osservata dall'operatore a 255 su entrambe le ruote e sui due canali separati.**
+
+### Cosa e' verificato in B1-2
+
+- `RobotSession.drive()` invia `D` reali solo con gate completo e valori entro `pwm_max`;
+- ack `D` e stop `X` con latenze di pochi ms;
+- status `MOTORS_ACTIVE` coerente prima e dopo ogni comando;
+- rotazione fisica a 255 su entrambe le ruote e sui canali separati;
+- stop di sicurezza su rifiuto/timeout e ripristino del firmware sicuro;
+- `D` torna `MOTION_DISABLED` con la configurazione sicura.
+
+### Cosa non e' verificato in B1-2
+
+- verso avanti/indietro: B1-2 ha confermato la rotazione, non il verso; la verifica del verso
+  resta quella di B0;
+- corrente, temperatura e spazio di arresto sotto carico;
+- `pwm_max` e timeout watchdog definitivi;
+- comportamento del watchdog durante il movimento in questa sessione: B0 lo copre con valori di
+  banco;
+- ripetizione su batteria piu' scarica e su piu' run.
 
 ## Note
 
-- La prova e' stata eseguita con il firmware sicuro gia' caricato; non e' stato necessario
-  riprogrammare il Mega.
+- B1-1 e' stata eseguita con il firmware sicuro gia' caricato; B1-2 ha richiesto tre cicli di
+  upload di banco e altrettanti ripristini della configurazione sicura.
 - `D` resta rifiutato con `E,MOTION_DISABLED` finche' `pwm_max` e timeout watchdog non sono
   scelti e il gate di `safety.py` non viene completato.
-- Nessuna misura di corrente, temperatura o movimento e' stata eseguita in B1.
+- Nessuna misura di corrente o temperatura e' stata eseguita in B1.

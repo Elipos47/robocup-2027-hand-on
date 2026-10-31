@@ -213,5 +213,6 @@ E,BAD_RANGE*2E\n
   gli status a circa 100 ms, il log JSONL e lo stop `X` con ack
   (`docs/testing/B1_INTEGRATION_TEST.md`). La perdita fisica del cavo non e' ancora provata.
 - Il gate software per `D` (`RobotSession.drive`) limita i valori a `pwm_max`, attende l'ack e
-  invia `X` su rifiuto/timeout; e' coperto da test host. La prova B1-2 sul robot richiede ruote
-  sollevate e non e' ancora stata eseguita.
+  invia `X` su rifiuto/timeout; e' coperto da test host. B1-2 e' stata eseguita con ruote
+  sollevate: comandi a 255 su entrambe le ruote e sui canali separati, rotazione confermata,
+  firmware sicuro ripristinato.

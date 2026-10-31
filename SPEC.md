@@ -1,11 +1,12 @@
 # SPEC — Robocup2027HandOn
 
-**Versione:** 0.8
+**Versione:** 0.9
 **Data:** 31/10/2026
 **Stato:** sviluppo attivo; protocollo v1.1 implementato e verificato a banco. B0 parziale:
 rotazione a 255, stop e watchdog verificati; freno/coast e ripetizione da completare. B1-1:
 sessione reale Raspberry-Mega con handshake, heartbeat, status, logger e stop verificata senza
-movimento. Movimento reale disabilitato di default.
+movimento. B1-2: comandi motori a 255 con gate, ack, stop e rotazione confermata dall'operatore.
+Sensori e calibrazione ancora aperti. Movimento reale disabilitato di default.
 
 ## 1. Obiettivo
 
@@ -109,10 +110,10 @@ i motori ronzavano senza ruotare. Freno/coast e ripetizione da completare.
 Comunicazione, heartbeat, logger, motori e sensori ripetibili su banco.
 
 Stato 2026-10-31: B1-1 verificata su Raspberry Pi 5 con firmware sicuro (handshake, heartbeat
-a 200 ms, status a circa 100 ms, log JSONL, stop `X` con ack, nessun movimento). Il gate
-software per i comandi motori (`RobotSession.drive`) e' implementato e coperto da test host;
-la prova B1-2 sul robot richiede ruote sollevate e non e' ancora stata eseguita. Motori e
-sensori ripetibili restano da completare; il gate B1 non e' chiuso.
+a 200 ms, status a circa 100 ms, log JSONL, stop `X` con ack, nessun movimento). B1-2 verificata
+con ruote sollevate e conferma dell'operatore: comandi a 255 su entrambe le ruote e sui canali
+separati, ack e stop in pochi ms, rotazione osservata; firmware sicuro ripristinato. Sensori,
+calibrazione e misure restano da completare; il gate B1 non e' ancora chiuso.
 
 ### Gate F0 — line
 

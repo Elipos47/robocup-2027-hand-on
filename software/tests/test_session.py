@@ -301,6 +301,18 @@ class DriveTests(SessionTestBase):
         self.assertEqual(len(self.find("drive_ack_timeout")), 1)
         self.assertIn(protocol.stop(2).decode("ascii"), self.transport.sent_text())
 
+    def test_drive_drains_status_backlog_before_ack(self) -> None:
+        session = self.connect(config=self.motion_config())
+        for sequence in range(20):
+            self.transport.feed_line(
+                protocol.sensor_status(sequence, -1, 0, 0, 0, 0)
+            )
+        self.transport.feed_line(protocol.ack(0))
+
+        self.assertEqual(session.drive(100, 100), 0)
+        self.assertEqual(session.status_count, 20)
+        self.assertEqual(len(self.find("drive_ack")), 1)
+
     def test_drive_requires_handshake_with_complete_config(self) -> None:
         session = self.make_session(config=self.motion_config())
 
@@ -324,6 +336,19 @@ class StopTests(SessionTestBase):
         self.assertFalse(session.stop(wait_ack_s=0.0))
 
         self.assertEqual(len(self.find("stop_ack_timeout")), 1)
+
+    def test_stop_drains_status_backlog_before_ack(self) -> None:
+        session = self.connect()
+        for sequence in range(20):
+            self.transport.feed_line(
+                protocol.sensor_status(sequence, -1, 0, 0, 0, 0)
+            )
+        self.transport.feed_line(protocol.ack(0))
+
+        self.assertTrue(session.stop())
+
+        self.assertEqual(session.status_count, 20)
+        self.assertEqual(len(self.find("stop_ack")), 1)
 
     def test_close_sends_stop_closes_transport_and_logs_end(self) -> None:
         session = self.connect()

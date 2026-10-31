@@ -42,8 +42,10 @@
 14. **Gate comandi motori (2026-10-31):** `RobotSession.drive(left, right)` richiede il gate di
     `safety.py` completo, limita i valori a `pwm_max`, invia `D` solo dopo l'handshake e attende
     l'ack continuando gli heartbeat. Su rifiuto o timeout invia `X` e solleva
-    `CommandRejected`. Non e' esposto dalla CLI; la prova B1-2 sul robot richiede ruote
-    sollevate e conferma dell'operatore.
+    `CommandRejected`. Non e' esposto dalla CLI. B1-2 e' stata eseguita con ruote sollevate e
+    conferma dell'operatore: comandi a 255 su entrambe le ruote e sui canali separati, rotazione
+    osservata, firmware sicuro ripristinato. Un tentativo intermedio ha esposto un `ACK_TIMEOUT`
+    da backlog di status; `_wait_for_ack` e `stop` ora drenano fino alla deadline.
 
 ## Decisioni da prendere
 

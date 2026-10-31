@@ -58,8 +58,9 @@ heartbeat. Non e' esposto dalla CLI e non viene chiamato dalle sessioni di loggi
 configurazione attuale `DEFAULT_CONFIG` ha `pwm_max` e timeout watchdog vuoti, quindi `drive`
 solleva `SafetyError` prima di scrivere qualsiasi frame.
 
-La prova B1-2 con i motori e' pianificata in `docs/testing/B1_INTEGRATION_TEST.md` e va eseguita
-solo con ruote sollevate e firmware di banco esplicito.
+La prova B1-2 e' stata eseguita con ruote sollevate e conferma dell'operatore: comandi a 255
+su entrambe le ruote e sui canali separati, ack, stop e rotazione osservata. Il firmware sicuro
+e' stato ripristinato; il report e' in `docs/testing/B1_INTEGRATION_TEST.md`.
 
 ## Configurazione
 

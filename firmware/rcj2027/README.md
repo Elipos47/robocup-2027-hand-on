@@ -7,7 +7,9 @@ Firmware Arduino Mega 2560 + L298N per il protocollo definito in
 con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms con PWM 150/255 e timeout 1000 ms; a 150 i
 motori ronzavano senza ruotare. Freno/coast e ripetizione da completare. Firmware riportato a
 movimento disabilitato. B1-1: handshake, heartbeat, status, log JSONL e stop X verificati su
-Raspberry Pi 5 con il firmware sicuro (`docs/testing/B1_INTEGRATION_TEST.md`).
+Raspberry Pi 5 con il firmware sicuro (`docs/testing/B1_INTEGRATION_TEST.md`). B1-2: comandi
+motori a 255 con gate, ack, stop e rotazione confermata dall'operatore; firmware sicuro
+ripristinato.
 
 ## Cablaggio
 

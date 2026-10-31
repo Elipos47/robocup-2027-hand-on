@@ -232,17 +232,28 @@ class RobotSession:
         wait_ack_s: float,
         read_timeout_s: float,
     ) -> bool:
-        attempts = max(1, int(wait_ack_s / read_timeout_s))
-        for _ in range(attempts):
-            self._maybe_heartbeat(self._clock())
-            line = self.transport.read_line(timeout=read_timeout_s)
+        deadline = self._clock() + wait_ack_s
+        for _ in range(500):
+            now = self._clock()
+            if now > deadline:
+                return False
+
+            self._maybe_heartbeat(now)
+            remaining = max(0.0, deadline - now)
+            line = self.transport.read_line(
+                timeout=min(read_timeout_s, remaining)
+            )
             if line is None:
+                if now >= deadline:
+                    return False
                 continue
+
             message = self._consume_line(line)
             if isinstance(message, int) and message == sequence:
                 return True
             if isinstance(message, str):
                 raise CommandRejected(message)
+
         return False
 
     def _safe_stop(self, *, reason: str) -> None:
@@ -288,11 +299,21 @@ class RobotSession:
         self.transport.write(protocol.stop(sequence))
         self.logger.log("stop_sent", sequence=sequence)
 
-        attempts = max(1, int(wait_ack_s / read_timeout_s))
-        for _ in range(attempts):
-            line = self.transport.read_line(timeout=read_timeout_s)
+        deadline = self._clock() + wait_ack_s
+        for _ in range(500):
+            now = self._clock()
+            if now > deadline:
+                break
+
+            remaining = max(0.0, deadline - now)
+            line = self.transport.read_line(
+                timeout=min(read_timeout_s, remaining)
+            )
             if line is None:
+                if now >= deadline:
+                    break
                 continue
+
             message = self._consume_line(line)
             if isinstance(message, int) and message == sequence:
                 self.logger.log("stop_ack", sequence=sequence)
