@@ -115,6 +115,13 @@ Due raccolte da 10 s con il firmware sicuro:
 |---|---:|---:|---|---:|---:|---:|---|
 | diag-sonar-001 | 100 | 99 | 871-1597 mm | 1000,1 mm | 129,1 mm | 695 mm | FAIL |
 | diag-sonar-002 | 101 | 101 | 867-1595 mm | 1009,5 mm | 147,9 mm | 697 mm | FAIL |
+| sonar-500-001 | 100 | 100 | 400-1202 mm | 597,6 mm | 112,2 mm | 703 mm | FAIL |
+
+Il test a 500 mm ha prodotto un errore medio di **+97,6 mm** rispetto al riferimento e un salto
+massimo di 703 mm. La distribuzione si concentra tra 500 e 700 mm, con picchi a 1200 mm. La
+causa piu' probabile e' che i 500 mm siano stati misurati dal telaio invece che dalla faccia del
+sensore: il sensore e' arretrato di circa 100 mm. In alternativa, il target e' piccolo, inclinato
+o ha oggetti riflettenti dietro. Il test resta FAIL: non va abbassata la tolleranza.
 
 Il sensore risponde e il bit `SONAR_VALID` e' coerente, ma la lettura non e' stabile: il salto
 massimo supera la soglia di 500 mm. I valori si distribuiscono intorno a 900, 1000 e 1100 mm,
