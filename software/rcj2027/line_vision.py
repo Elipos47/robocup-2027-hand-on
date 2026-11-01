@@ -689,6 +689,8 @@ def detect_line(
 def annotate_frame(
     debug: LineDebug,
     observation: LineObservation,
+    *,
+    show_mask: bool = False,
 ) -> Any:
     """Disegna ROI, punti, fit e misure sul frame di lavoro."""
     if not HAS_CV2:
@@ -696,12 +698,20 @@ def annotate_frame(
     frame = debug.frame
     if frame.ndim == 2:
         frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
+    elif frame.ndim == 3 and frame.shape[2] == 4:
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)
     else:
         frame = frame.copy()
 
     left, top, right, bottom = debug.roi
+    if show_mask and debug.mask is not None and debug.mask.size:
+        overlay = frame.copy()
+        region = overlay[top:bottom, left:right]
+        region[debug.mask > 0] = (0, 255, 0)
+        cv2.addWeighted(overlay, 0.35, frame, 0.65, 0, frame)
+
     color = (0, 200, 0) if observation.found else (0, 0, 220)
-    cv2.rectangle(frame, (left, top), (right - 1, bottom - 1), (160, 160, 160), 1)
+    cv2.rectangle(frame, (left, top), (right - 1, bottom - 1), (0, 165, 255), 2)
     cv2.line(
         frame,
         (int(round(debug.optical_x)), top),

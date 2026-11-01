@@ -107,7 +107,9 @@
     offset -46,5 px, heading 4,14 deg, confidenza 0,95, nessun comando ai motori. Il costo e'
     circa 40 ms di elaborazione per frame; il controller resta il passo successivo. La vista
     live usa una finestra OpenCV (`--preview`) o uno stream MJPEG locale (`--http-port`), senza
-    autenticazione: solo rete locale.
+    autenticazione: solo rete locale. `--debug-overlay` aggiunge la maschera di segmentazione,
+    `--duration 0` acquisisce fino a `q`/ESC, il browser ha un pulsante di stop e
+    `software/line_live.py` e' l'avvio da Thonny.
 
 ## Decisioni da prendere
 

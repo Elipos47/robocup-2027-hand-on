@@ -35,6 +35,20 @@ class MjpegServerTests(unittest.TestCase):
         finally:
             server.stop()
 
+    def test_stop_endpoint(self) -> None:
+        server = MjpegServer(host="127.0.0.1", port=0)
+        server.start()
+        try:
+            self.assertFalse(server.stop_requested)
+            with urllib.request.urlopen(
+                f"http://127.0.0.1:{server.port}/stop", timeout=2
+            ) as response:
+                body = response.read()
+            self.assertIn(b"stop", body)
+            self.assertTrue(server.stop_requested)
+        finally:
+            server.stop()
+
     def test_invalid_quality_raises(self) -> None:
         with self.assertRaises(ValueError):
             MjpegServer(host="127.0.0.1", port=0, quality=10)

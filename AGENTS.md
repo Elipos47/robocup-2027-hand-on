@@ -155,8 +155,10 @@ contiene il codice applicativo del progetto precedente.
   pavimento, corretto con scansione top-down, stop sui gap e continuita' di larghezza.
   Aggiunto `line-live`: 100 frame in 5,04 s (19,8 FPS), 100/100 trovati, offset -46,5 px,
   heading 4,14 deg, confidenza 0,95, nessun comando ai motori. Vista live con `--preview` o
-  stream MJPEG `--http-port` per browser locale.
-  Test host: 182 verdi. Curvature, gap, disturbi e movimento non sono ancora provati, quindi
+  stream MJPEG `--http-port`; `--debug-overlay` mostra la maschera, `--duration 0` va fino a
+  q/ESC, il browser ha un pulsante di stop e `software/line_live.py` e' l'avvio rapido da
+  Thonny.
+  Test host: 183 verdi. Curvature, gap, disturbi e movimento non sono ancora provati, quindi
   il gate F0 resta aperto.
 - In corso: prove F0 su curvatura, linea spostata, ombre e movimento a bassa velocita';
   completare i segni IMU e chiudere i punti aperti di B0.

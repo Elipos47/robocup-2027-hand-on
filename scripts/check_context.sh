@@ -41,6 +41,7 @@ required=(
   firmware/rcj2027/README.md
   software/README.md
   software/requirements.txt
+  software/line_live.py
   software/rcj2027/__init__.py
   software/rcj2027/__main__.py
   software/rcj2027/protocol.py

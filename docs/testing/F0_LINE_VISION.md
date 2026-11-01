@@ -102,10 +102,24 @@ python3 -m rcj2027.diagnostics line-live --preview --duration 15
 # stream browser per telefono/PC sulla stessa rete
 python3 -m rcj2027.diagnostics line-live --http-port 8080 --duration 15
 # aprire http://<ip-del-raspberry>:8080/
+
+# durata illimitata fino a q/ESC, con maschera di segmentazione
+python3 -m rcj2027.diagnostics line-live --preview --debug-overlay --duration 0
 ```
 
+Da Thonny si apre `software/line_live.py`, si modifica `CONDITION` e si preme Run. Lo script
+usa `DURATION_S = 0` (fino a `q`/`ESC`), salva log, report e frame annotati in
+`software/logs/f0-<condizione>/` e puo' attivare la maschera con `DEBUG_OVERLAY = True`.
+
+La finestra live mostra sempre ROI, punti di scansione, fit, asse ottico e barra dell'offset.
+`--debug-overlay` aggiunge la maschera di segmentazione in verde trasparente: possono comparire
+anche bordo tavolo o pavimento, che il filtro di larghezza e lo stop sul gap scartano; la linea
+scelta e' il fit blu con i punti verdi.
+
 Lo stream MJPEG mostra il frame annotato (linea, offset, heading, confidenza). E' pensato per
-la rete locale: non ha autenticazione e non va esposto su Internet.
+la rete locale: non ha autenticazione e non va esposto su Internet. La pagina ha un pulsante
+**Ferma acquisizione** che chiude la run e salva il report; nella finestra locale si usa
+`q`/`ESC`.
 
 Il live usa sempre il sensore intero 2304x1296 (full-fov), come la calibrazione. Salva il log
 JSONL in `logs/<run-id>.jsonl` e stampa un riepilogo alla fine.
@@ -137,7 +151,7 @@ I test host coprono:
 - server MJPEG: indice HTML, aggiornamento frame e validazione parametri.
 
 I frame sintetici verificano il codice, non sostituiscono la prova su una linea reale.
-La suite completa e' a **182 test**, tutti verdi.
+La suite completa e' a **183 test**, tutti verdi.
 
 ## Risultato disponibile
 
@@ -223,7 +237,8 @@ requisito del controller.
 
 La vista live e' stata verificata in entrambe le modalita': finestra locale sul display del
 Raspberry (`--preview`, 18 frame in 1 s) e stream MJPEG via browser (`--http-port`, indice HTML
-e flusso JPEG valido). Lo stream non ha autenticazione: va usato solo sulla rete locale.
+e flusso JPEG valido). Verificata anche la combinazione `--preview --debug-overlay --http-port`
+con 26 frame in 2 s. Lo stream non ha autenticazione: va usato solo sulla rete locale.
 
 ### Frame senza linea
 

@@ -33,12 +33,16 @@ _INDEX_HTML = """<!doctype html>
 <style>
   body { margin: 0; background: #111; color: #eee; font-family: sans-serif; }
   header { padding: 10px 14px; background: #1d1d1d; }
-  main { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
-  img { max-width: 100vw; max-height: 85vh; display: block; }
+  main { display: flex; justify-content: center; align-items: center; min-height: 75vh; }
+  img { max-width: 100vw; max-height: 78vh; display: block; }
+  .stop { display: block; margin: 10px auto; padding: 12px 18px; width: fit-content;
+          background: #b00020; color: #fff; text-decoration: none; border-radius: 6px;
+          font-weight: bold; }
 </style>
 </head>
 <body>
 <header><strong>RCJ2027 line-live</strong> - stream locale della telecamera linea</header>
+<a class="stop" href="/stop">Ferma acquisizione</a>
 <main><img src="/stream.mjpg" alt="stream telecamera"></main>
 </body>
 </html>
@@ -72,6 +76,7 @@ class MjpegServer:
         self._frame: bytes | None = None
         self._sequence = 0
         self._stopped = threading.Event()
+        self._stop_requested = threading.Event()
         self._server = ThreadingHTTPServer((host, port), self._make_handler())
         self._server.daemon_threads = True
         self._thread: threading.Thread | None = None
@@ -81,6 +86,13 @@ class MjpegServer:
     @property
     def port(self) -> int:
         return int(self._server.server_address[1])
+
+    @property
+    def stop_requested(self) -> bool:
+        return self._stop_requested.is_set()
+
+    def request_stop(self) -> None:
+        self._stop_requested.set()
 
     def _make_handler(self) -> type[BaseHTTPRequestHandler]:
         outer = self
@@ -101,6 +113,15 @@ class MjpegServer:
                     return
                 if self.path in ("/stream.mjpg", "/stream"):
                     outer._serve_stream(self)
+                    return
+                if self.path == "/stop":
+                    outer.request_stop()
+                    body = b"stop richiesto\n"
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/plain; charset=utf-8")
+                    self.send_header("Content-Length", str(len(body)))
+                    self.end_headers()
+                    self.wfile.write(body)
                     return
                 self.send_error(404)
 

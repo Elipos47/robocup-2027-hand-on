@@ -312,11 +312,16 @@ class LineDetectionTests(unittest.TestCase):
         observation, debug = self.detector.detect(line_frame(), debug=True)
 
         annotated = line_vision.annotate_frame(debug, observation)
+        with_mask = line_vision.annotate_frame(
+            debug, observation, show_mask=True
+        )
 
         self.assertTrue(observation.found)
         self.assertEqual(debug.mask.ndim, 2)
         self.assertGreater(len(debug.points), 0)
         self.assertEqual(annotated.shape, (360, 640, 3))
+        self.assertEqual(with_mask.shape, (360, 640, 3))
+        self.assertFalse(np.array_equal(annotated, with_mask))
 
     def test_lost_frame_annotation(self) -> None:
         observation, debug = self.detector.detect(
@@ -448,20 +453,22 @@ class LineCliTests(unittest.TestCase):
             [
                 "line-live",
                 "--duration",
-                "5",
+                "0",
                 "--size",
                 "1280x720",
                 "--preview",
+                "--debug-overlay",
                 "--http-port",
                 "8080",
             ]
         )
 
         self.assertEqual(args.command, "line-live")
-        self.assertEqual(args.duration, 5.0)
+        self.assertEqual(args.duration, 0.0)
         self.assertEqual(args.size, "1280x720")
         self.assertEqual(args.camera_num, 0)
         self.assertTrue(args.preview)
+        self.assertTrue(args.debug_overlay)
         self.assertEqual(args.http_port, 8080)
 
     def test_line_command_writes_report(self) -> None:

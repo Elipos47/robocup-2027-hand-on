@@ -127,7 +127,25 @@ python3 -m rcj2027.diagnostics line-live --camera-num 0 \
 python3 -m rcj2027.diagnostics line-live --preview --duration 10
 python3 -m rcj2027.diagnostics line-live --http-port 8080 --duration 10
 # aprire http://<ip-del-raspberry>:8080/
+
+# Durata illimitata fino a q/ESC e maschera di segmentazione in overlay
+python3 -m rcj2027.diagnostics line-live --preview --debug-overlay --duration 0
 ```
+
+## Uso da Thonny
+
+Apri `software/line_live.py` in Thonny, modifica `CONDITION` (`curva`, `ombra`, `gap-05`, ...)
+e premi Run. Lo script:
+
+- avvia `line-live` con la CSI 1280x720 full-fov;
+- apre la finestra locale e, se `HTTP_PORT` non e' zero, lo stream browser;
+- dura fino a `q`/`ESC` con `DURATION_S = 0`;
+- salva log JSONL, report e frame annotati in `software/logs/f0-<condizione>/`;
+- con `DEBUG_OVERLAY = True` mostra anche la maschera di segmentazione.
+
+Non invia comandi ai motori. La finestra live mostra sempre ROI, punti di scansione, fit,
+asse ottico e barra dell'offset. Lo stream browser ha un pulsante **Ferma acquisizione**;
+in alternativa `q`/`ESC` chiude la finestra locale e salva il report.
 
 `offset_px` positivo significa linea a destra dell'asse ottico; `heading_deg` positivo
 significa linea che piega a destra. I valori restano validi solo con `found=true`. La

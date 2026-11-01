@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import glob
 import json
+import signal
 import sys
 import time
 from dataclasses import asdict
@@ -394,7 +395,11 @@ def _line_report(args: argparse.Namespace) -> int:
         if debug is not None:
             stem = Path(path).stem
             if annotated_dir is not None:
-                annotated = line_vision.annotate_frame(debug, observation)
+                annotated = line_vision.annotate_frame(
+                    debug,
+                    observation,
+                    show_mask=args.debug_overlay,
+                )
                 record["annotated"] = str(
                     line_vision.write_image(
                         annotated_dir / f"{stem}-annotated.jpg", annotated
@@ -453,8 +458,8 @@ def _line_report(args: argparse.Namespace) -> int:
 def _line_live_report(args: argparse.Namespace) -> int:
     if not HAS_PICAMERA2:
         raise CameraError("Picamera2 non installato")
-    if args.duration <= 0:
-        raise ValueError("--duration deve essere positivo")
+    if args.duration < 0:
+        raise ValueError("--duration non puo' essere negativo")
     if args.interval < 0:
         raise ValueError("--interval non puo' essere negativo")
     if args.save_every < 1:
@@ -503,8 +508,18 @@ def _line_live_report(args: argparse.Namespace) -> int:
     confidences: list[float] = []
     latencies: list[float] = []
     saved = 0
+    interrupted = False
+    old_sigint = None
 
     with JsonlLogger(log_path, run_id) as logger:
+        def _request_stop(signum: int, frame: object) -> None:
+            nonlocal interrupted
+            interrupted = True
+
+        try:
+            old_sigint = signal.signal(signal.SIGINT, _request_stop)
+        except ValueError:
+            old_sigint = None
         logger.log(
             "session_start",
             mode="line-live",
@@ -561,14 +576,28 @@ def _line_live_report(args: argparse.Namespace) -> int:
                 time.sleep(args.warmup)
 
             started_at = time.monotonic()
-            while time.monotonic() - started_at < args.duration:
+            while (
+                not interrupted
+                and not (
+                    http_server is not None
+                    and http_server.stop_requested
+                )
+                and (
+                    args.duration <= 0
+                    or time.monotonic() - started_at < args.duration
+                )
+            ):
                 loop_started = time.perf_counter()
                 frame = camera.capture_array("main")
                 if frame.ndim == 3 and frame.shape[2] == 3:
                     frame = frame[:, :, ::-1].copy()
                 if need_debug:
                     observation, debug = detector.detect(frame, debug=True)
-                    annotated = line_vision.annotate_frame(debug, observation)
+                    annotated = line_vision.annotate_frame(
+                        debug,
+                        observation,
+                        show_mask=args.debug_overlay,
+                    )
                 else:
                     observation = detector.detect(frame)
                     debug = None
@@ -652,6 +681,12 @@ def _line_live_report(args: argparse.Namespace) -> int:
                     "duration_s": round(elapsed, 2),
                     "fps": round(frames / elapsed, 1) if elapsed > 0 else 0.0,
                     "saved_frames": saved,
+                    "interrupted": interrupted,
+                    "stream_stop_requested": (
+                        http_server.stop_requested
+                        if http_server is not None
+                        else False
+                    ),
                 },
                 "passed": bool(frames) and found_ratio >= args.min_found_ratio,
             }
@@ -679,6 +714,11 @@ def _line_live_report(args: argparse.Namespace) -> int:
                 camera.close()
             except Exception:
                 pass
+            if old_sigint is not None:
+                try:
+                    signal.signal(signal.SIGINT, old_sigint)
+                except ValueError:
+                    pass
 
     print(json.dumps(report, indent=2, ensure_ascii=False))
     _write_json(report, args.json_out)
@@ -950,6 +990,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     line.add_argument("--annotated-dir", default=None)
     line.add_argument("--mask-dir", default=None)
+    line.add_argument(
+        "--debug-overlay",
+        action="store_true",
+        help="sovrappone la maschera di segmentazione ai frame annotati",
+    )
     line.add_argument("--json-out", default=None)
 
     live = subparsers.add_parser(
@@ -969,7 +1014,12 @@ def build_parser() -> argparse.ArgumentParser:
     live.add_argument("--camera-num", type=int, default=0)
     live.add_argument("--size", default="1280x720")
     live.add_argument("--warmup", type=float, default=2.0)
-    live.add_argument("--duration", type=float, default=10.0)
+    live.add_argument(
+        "--duration",
+        type=float,
+        default=10.0,
+        help="durata in secondi; 0 = fino a q/ESC o Ctrl-C",
+    )
     live.add_argument(
         "--interval",
         type=float,
@@ -985,6 +1035,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--preview",
         action="store_true",
         help="mostra una finestra locale con il frame annotato",
+    )
+    live.add_argument(
+        "--debug-overlay",
+        action="store_true",
+        help="sovrappone la maschera di segmentazione al frame live",
     )
     live.add_argument(
         "--http-port",
