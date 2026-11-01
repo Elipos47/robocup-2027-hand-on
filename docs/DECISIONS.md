@@ -86,6 +86,11 @@
     dispersione dei centri < 40 px e rapporto dimensioni < 1,05, perche' viste quasi identiche
     non vincolano focale e distorsione. Con copertura 14-20% e pose diverse si puo' usare
     `--min-coverage 0.14`; il set CSI con 15 frame identici (spread 0,6 px) e' stato rifiutato.
+23. **Calibrazione CSI accettata (2026-11-01):** 14/15 viste, copertura 16,3% (12,6-24,4%),
+    pose spread 423,6 px, size ratio 1,93, RMS 0,542 px, focale ~957/963 px, centro ~(654, 373).
+    Accettata come prima calibrazione della linea a 1280x720 full-fov e salvata in
+    `software/rcj2027/calibrations/csi_1280x720.json`. L'undistort va verificato in F0; se
+    peggiora la linea, rifare con target piu' grande o piu' pose.
 
 ## Decisioni da prendere
 

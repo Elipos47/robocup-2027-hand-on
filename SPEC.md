@@ -118,10 +118,10 @@ separati, ack e stop in pochi ms, rotazione osservata; firmware sicuro ripristin
 HC-SR04 e BNO085 letti nello status, bit 0+1. B1-4: diagnostica software con probe camera
 USB/CSI, calibrazione checkerboard e analisi sonar/IMU; USB e IMU passano, pitch/roll scambiati
 sul montaggio e corretti, calibrazione USB accettata (RMS 0,523 px, copertura 22,7%). Ruoli:
-USB = stanza/vittime/palline, CSI = linea; la CSI e' nitida con autofocus, 1280x720 verificata e
-va calibrata a quella risoluzione. Il sonar a 500 mm e' accettato per ostacoli piu' vicini di
-0,5 m (run 005/006 con target fermo). Calibrazione CSI, segni IMU e misure termiche restano da
-completare; il gate B1 non e' ancora chiuso.
+USB = stanza/vittime/palline, CSI = linea; la CSI e' nitida con autofocus, 1280x720 full-fov
+verificata e calibrazione accettata (RMS 0,542 px, copertura 16,3%). Il sonar a 500 mm e'
+accettato per ostacoli piu' vicini di 0,5 m (run 005/006 con target fermo). Verifica undistort,
+segni IMU e misure termiche restano da completare; il gate B1 non e' ancora chiuso.
 
 ### Gate F0 — line
 

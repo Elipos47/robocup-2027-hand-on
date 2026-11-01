@@ -78,14 +78,15 @@ barra da 100 mm, da stampare al 100%. Se la barra misura 95 mm, usa `--square-mm
 ristampa. `camera-capture` salva una sequenza di frame mentre sposti il target; `camera-calibrate`
 rifiuta una copertura media del pattern sotto il 20% (puntare al 50-80%). La calibrazione USB
 accettata (15 viste, RMS 0,523 px, copertura 22,7%) e' in
-`rcj2027/calibrations/usb_640x480.json`; le immagini sorgente restano in `calib/` e non sono
-versionate. Ruoli: USB = stanza/vittime/palline, CSI = linea; la CSI va calibrata alla risoluzione
-di linea (`--size 1280x720 --full-fov`), non a 640x480. `--full-fov` forza il sensore intero
-2304x1296: senza, 1280x720 usa un crop 1536x864 e la preview puo' mostrare piu' campo dello
-still. `camera-calibrate` rifiuta copertura media sotto il 20% e viste quasi identiche; con pose
-varie si puo' usare `--min-coverage 0.14`. Il test sonar usa la mediana e ammette al massimo il
-5% di outlier oltre `--outlier-mm`; il test IMU `motion` richiede che si muova l'asse indicato.
-Ogni telecamera e' esclusiva: non eseguire due probe in parallelo.
+`rcj2027/calibrations/usb_640x480.json`; la linea usa
+`rcj2027/calibrations/csi_1280x720.json` (14/15 viste, RMS 0,542 px, 1280x720 full-fov). Le
+immagini sorgente restano in `calib/` e non sono versionate. Ruoli: USB = stanza/vittime/palline,
+CSI = linea; la CSI va usata con `--size 1280x720 --full-fov`, non a 640x480. `--full-fov`
+forza il sensore intero 2304x1296: senza, 1280x720 usa un crop 1536x864 e la preview puo'
+mostrare piu' campo dello still. `camera-calibrate` rifiuta copertura media sotto il 20% e viste
+quasi identiche; con pose varie si puo' usare `--min-coverage 0.14`. Il test sonar usa la mediana
+e ammette al massimo il 5% di outlier oltre `--outlier-mm`; il test IMU `motion` richiede che si
+muova l'asse indicato. Ogni telecamera e' esclusiva: non eseguire due probe in parallelo.
 
 Risultati e limiti sono in `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`.
 

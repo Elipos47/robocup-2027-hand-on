@@ -38,9 +38,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   probe camera USB e CSI via Picamera2, metriche, target checkerboard PDF, calibrazione,
   analisi sonar/IMU e test IMU in movimento. Ruoli camera: USB = stanza/vittime/palline, CSI =
   linea. USB e IMU passano; pitch/roll scambiati sul montaggio e corretti; calibrazione USB
-  accettata (RMS 0,523 px); CSI nitida con autofocus, 1280x720 verificata e `--full-fov` per il
-  sensore intero; calibrazione di linea ancora da fare; il sonar a 500 mm e' accettato per
-  ostacoli piu' vicini di 0,5 m con target fermo.
+  accettata (RMS 0,523 px); CSI nitida con autofocus, 1280x720 full-fov verificata e
+  calibrazione CSI accettata (RMS 0,542 px, copertura 16,3%); il sonar a 500 mm e' accettato
+  per ostacoli piu' vicini di 0,5 m con target fermo.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -94,11 +94,11 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Calibrare la CSI IMX708 alla risoluzione della linea (candidata 1280x720) e definire il
-   montaggio della camera linea; la USB per stanza/vittime e' gia' calibrata a 640x480.
+1. Verificare l'undistort della CSI e iniziare il pipeline visione della linea (F0); le
+   calibrazioni USB e CSI sono accettate.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
-4. Iniziare il pipeline visione della linea (F0).
+4. Eseguire il primo test controllato della linea sul campo.
 
 La validazione e la build si eseguono con:
 

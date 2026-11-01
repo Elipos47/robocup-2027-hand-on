@@ -65,7 +65,7 @@ I test host non richiedono hardware:
 - calibrazione con viste checkerboard sintetiche;
 - raccolta status con sessione finta.
 
-La suite completa e' a **144 test**, tutti verdi.
+La suite completa e' a **145 test**, tutti verdi.
 
 ## Camera
 
@@ -131,7 +131,10 @@ La calibrazione USB a 640x480 e' accettata. Per la CSI, un set di 15 frame ha da
 14,0% ma **dispersione dei centri 0,6 px e rapporto dimensioni 1,00**: tutte le viste erano la
 stessa posa. Il calibratore ora rifiuta questo caso con `viste troppo simili`. Per una calibrazione
 utile servono 8-10 pose diverse (inclinazioni e posizioni), non 15 copie. Con copertura 14-20% e
-pose varie si puo' usare `--min-coverage 0.14`.
+pose varie si puo' usare `--min-coverage 0.14`. Il set successivo ha 14/15 viste valide,
+copertura media 16,3% (12,6-24,4%), dispersione centri 423,6 px, rapporto dimensioni 1,93 e RMS
+0,542 px: e' accettato come prima calibrazione della linea ed e' salvato in
+`rcj2027/calibrations/csi_1280x720.json`. Va usato con `--csi --size 1280x720 --full-fov`.
 
 La calibrazione intrinseca e' implementata e testata con immagini sintetiche; la CLI
 `camera-calibrate` e' stata eseguita end-to-end su 5 viste sintetiche (RMS 0,045) per verificare
@@ -237,6 +240,7 @@ dominante, non il verso.
 
 - USB 5MP acquisisce frame validi e passa le soglie di luminosita'/contrasto/nitidezza;
 - calibrazione USB accettata: 15/15 viste, RMS 0,523 px, copertura 22,7%;
+- calibrazione CSI accettata: 14/15 viste, RMS 0,542 px, copertura 16,3%, pose diverse;
 - CSI IMX708 viene enumerata da libcamera/Picamera2 e acquisisce un frame;
 - sonar e IMU producono status con bit di validita' coerenti;
 - IMU stabile a riposo e sensibile alle rotazioni yaw, pitch e roll;
@@ -247,8 +251,7 @@ dominante, non il verso.
 
 - sonar a 1000 mm e stabilita' con target in movimento; il test a 500 mm con target fermo e'
   accettato per ostacoli piu' vicini di 0,5 m;
-- calibrazione della CSI alla risoluzione di linea e verifica del montaggio definitivo;
-- calibrazione reale della CSI e miglioramento della copertura USB;
+- verifica dell'undistort e del montaggio definitivo della CSI in F0;
 - convenzione dei segni pitch/roll e comportamento dopo un rimontaggio del BNO085;
 - luminosita' in condizioni di gara (luce bassa, riflessi, ombre).
 

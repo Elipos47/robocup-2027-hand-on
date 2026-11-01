@@ -141,6 +141,23 @@ class CameraCalibrationTests(unittest.TestCase):
         self.assertGreaterEqual(data["coverage_mean"], 0.2)
         self.assertEqual(len(data["camera_matrix"]), 3)
 
+    def test_committed_csi_calibration_is_consistent(self) -> None:
+        path = (
+            Path(__file__).resolve().parent.parent
+            / "rcj2027"
+            / "calibrations"
+            / "csi_1280x720.json"
+        )
+        data = json.loads(path.read_text(encoding="utf-8"))
+
+        self.assertEqual(data["image_count"], 14)
+        self.assertEqual(data["image_size"], [1280, 720])
+        self.assertEqual(data["square_size_mm"], 23.75)
+        self.assertLess(data["rms"], 1.0)
+        self.assertGreaterEqual(data["coverage_mean"], 0.14)
+        self.assertGreater(data["pose_spread_px"], 40)
+        self.assertGreater(data["size_ratio"], 1.05)
+
     def test_save_calibration(self) -> None:
         calibration = calibrate_camera(synthetic_views(), min_images=3)
         with tempfile.TemporaryDirectory() as tmp:

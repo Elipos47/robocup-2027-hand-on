@@ -142,10 +142,13 @@ contiene il codice applicativo del progetto precedente.
   la probe da' 54 corner e `passed=true`; senza, 1280x720 usa un crop 1536x864.
 - Nota: il set CSI da 15 frame aveva copertura 14,0% ma pose identiche (spread 0,6 px, size
   ratio 1,00); il calibratore lo rifiuta. Servono 8-10 pose diverse, non 15 copie.
-- In corso: calibrare la CSI alla risoluzione di linea (candidata 1280x720) e definire il
-  montaggio; validare i segni IMU e chiudere i punti aperti di B0.
-- Prossimi passi: usare `camera-capture --csi --size 1280x720 --full-fov` e
-  `camera-calibrate`, poi iniziare il pipeline visione della linea (F0).
+- Fatto: il set CSI successivo ha 14/15 viste, copertura 16,3%, pose spread 423,6 px, size
+  ratio 1,93 e RMS 0,542 px; calibrazione accettata e salvata in
+  `software/rcj2027/calibrations/csi_1280x720.json` (1280x720 full-fov).
+- In corso: validare l'undistort CSI in F0, completare i segni IMU e chiudere i punti aperti di
+  B0.
+- Prossimi passi: iniziare il pipeline visione della linea (F0) usando CSI 1280x720 full-fov e
+  la calibrazione `csi_1280x720.json`.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione
