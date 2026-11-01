@@ -116,6 +116,16 @@ class CameraChecksTests(unittest.TestCase):
         self.assertEqual(probe.checkerboard_corners, 54)
         self.assertTrue(probe.passed)
 
+    def test_high_resolution_sharpness_is_normalized(self) -> None:
+        rng = np.random.default_rng(321)
+        frame = rng.integers(0, 256, (720, 1280, 3), dtype=np.uint8)
+
+        metrics = frame_metrics(frame)
+
+        self.assertEqual((metrics.width, metrics.height), (1280, 720))
+        self.assertTrue(metrics.passed)
+        self.assertGreater(metrics.sharpness, 50)
+
     def test_missing_checkerboard_fails_when_expected(self) -> None:
         rng = np.random.default_rng(7)
         frame = rng.integers(0, 256, (240, 320, 3), dtype=np.uint8)

@@ -30,8 +30,8 @@ cd software
 # Telecamera: elenco, probe USB e probe CSI
 python3 -m rcj2027.diagnostics camera --list
 python3 -m rcj2027.diagnostics camera --device auto --save /tmp/camera0.jpg
-python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --warmup 2 \
-  --save /tmp/csi0.jpg
+python3 -m rcj2027.diagnostics camera --csi --camera-num 0 \
+  --size 1280x720 --warmup 2 --save /tmp/csi0.jpg
 
 # Sonar: raccolta e analisi
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10
@@ -65,7 +65,7 @@ I test host non richiedono hardware:
 - calibrazione con viste checkerboard sintetiche;
 - raccolta status con sessione finta.
 
-La suite completa e' a **139 test**, tutti verdi.
+La suite completa e' a **143 test**, tutti verdi.
 
 ## Camera
 
@@ -80,6 +80,14 @@ IMX708 (CSI):          camera libcamera 0, /base/.../imx708@1a
 IMX708. La CSI non va aperta con un indice OpenCV: si usa `--csi`, che passa da
 Picamera2/libcamera.
 
+Ruoli confermati dall'operatore:
+
+- **USB 5MP = stanza/vittime e palline**;
+- **CSI IMX708 = linea**.
+
+La calibrazione USB a 640x480 vale per la stanza, non per la linea. La CSI va calibrata alla
+risoluzione usata dal pipeline della linea.
+
 La probe USB (OpenCV) ha prodotto:
 
 | Device | Aperto | Frame | Luminosita' | Contrasto | Nitidezza | Esito |
@@ -92,16 +100,22 @@ La probe USB (OpenCV) ha prodotto:
 Dopo il riavvio la numerazione e' cambiata: la USB e' passata a `/dev/video8` e `/dev/video0` e'
 diventato un nodo CSI. Per questo la CLI usa `--device auto`, che trova la USB tramite sysfs.
 
-La probe CSI (Picamera2, camera 0, warm-up 2 s) ha prodotto:
+La probe CSI (Picamera2, camera 0, autofocus continuo e warm-up 2 s) e' stata ripetuta con il
+checkerboard davanti alla camera:
 
-| Camera | Modello | Frame | Luminosita' | Contrasto | Nitidezza | Esito |
-|---|---|---|---:|---:|---:|---|
-| libcamera:0 | imx708 | 640x480 | 147,9 | 34,6 | 9,3 | **FAIL** |
+| Risoluzione | Nitidezza normalizzata a 640 px | Esito |
+|---|---:|---|
+| 640x480 | 103,0 | PASS |
+| 1280x720 | 149,3 | PASS |
+| 1536x864 | 133,9 | PASS |
+| 2304x1296 | 213,8 | PASS |
 
-La CSI acquisisce correttamente, ma il frame e' fuori fuoco (`sharpness=9,3` contro la soglia
-50). La IMX708 ha autofocus: il test imposta AF continuo e attende 2 s, ma la scena inquadrata
-resta sfocata. Non e' un problema di acquisizione: vanno verificati messa a fuoco e montaggio
-della camera. Il test fallisce correttamente.
+La misura precedente (`sharpness=9,3`) era una scena fuori fuoco, non un problema del sensore.
+La IMX708 con autofocus e checkerboard e' nitida. La nitidezza viene ora normalizzata a 640 px
+di larghezza, altrimenti il valore numerico cambia con la risoluzione.
+
+Per la linea va scelta una risoluzione di lavoro (candidata: 1280x720) e la CSI va calibrata a
+quella risoluzione, non a 640x480.
 
 La calibrazione intrinseca e' implementata e testata con immagini sintetiche; la CLI
 `camera-calibrate` e' stata eseguita end-to-end su 5 viste sintetiche (RMS 0,045) per verificare
@@ -120,7 +134,8 @@ python3 -m rcj2027.diagnostics camera-capture --device auto \
   --count 15 --interval 2 --output-dir calib/usb
 ```
 
-Per la CSI si usa `--csi --camera-num 0`; prima va risolta la sfocatura.
+Per la CSI si usa `--csi --camera-num 0 --size 1280x720` (o la risoluzione scelta per la
+linea); la calibrazione va rifatta a quella risoluzione.
 
 ## Sonar
 
@@ -216,7 +231,7 @@ dominante, non il verso.
 
 - sonar a 1000 mm e stabilita' con target in movimento; il test a 500 mm con target fermo e'
   accettato per ostacoli piu' vicini di 0,5 m;
-- messa a fuoco e montaggio della CSI: il frame attuale e' sfocato;
+- calibrazione della CSI alla risoluzione di linea e verifica del montaggio definitivo;
 - calibrazione reale della CSI e miglioramento della copertura USB;
 - convenzione dei segni pitch/roll e comportamento dopo un rimontaggio del BNO085;
 - luminosita' in condizioni di gara (luce bassa, riflessi, ombre).

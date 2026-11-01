@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from rcj2027.diagnostics import _parse_pattern, build_parser, collect_readings
+from rcj2027.diagnostics import _parse_pattern, _parse_size, build_parser, collect_readings
 from rcj2027.protocol import SensorReading
 
 
@@ -54,6 +54,15 @@ class DiagnosticsTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 _parse_pattern(text)
 
+    def test_parse_size(self) -> None:
+        self.assertEqual(_parse_size("1280x720"), (1280, 720))
+        self.assertEqual(_parse_size(" 1536X864 "), (1536, 864))
+
+    def test_parse_size_rejects_invalid_values(self) -> None:
+        for text in ("1280", "0x720", "a x b"):
+            with self.assertRaises(ValueError):
+                _parse_size(text)
+
     def test_collect_readings_deduplicates_sequence(self) -> None:
         clock = FakeClock()
         session = FakeSession([reading(0), reading(0), reading(1)], clock)
@@ -95,6 +104,15 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertTrue(args.csi)
         self.assertEqual(args.camera_num, 0)
         self.assertEqual(args.warmup, 2.0)
+
+    def test_parser_builds_csi_size(self) -> None:
+        parser = build_parser()
+
+        args = parser.parse_args(
+            ["camera", "--csi", "--size", "1280x720"]
+        )
+
+        self.assertEqual(args.size, "1280x720")
 
     def test_parser_builds_checkerboard_command(self) -> None:
         parser = build_parser()

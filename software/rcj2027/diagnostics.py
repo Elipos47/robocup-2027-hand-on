@@ -76,6 +76,17 @@ def _resolve_device(text: str) -> int | str:
     return text
 
 
+def _parse_size(text: str) -> tuple[int, int]:
+    try:
+        width, height = text.lower().split("x", 1)
+        size = (int(width), int(height))
+    except ValueError as exc:
+        raise ValueError(f"size non valida: {text}; atteso LARGHEZZAxALTEZZA") from exc
+    if size[0] <= 0 or size[1] <= 0:
+        raise ValueError("size deve essere positiva")
+    return size
+
+
 def collect_readings(
     session: RobotSession,
     duration_s: float,
@@ -210,6 +221,7 @@ def _camera_report(args: argparse.Namespace) -> int:
     if args.csi:
         probe: CameraProbe = probe_libcamera_camera(
             args.camera_num,
+            size=_parse_size(args.size),
             warmup_s=args.warmup,
             save_path=args.save,
             checkerboard_size=checkerboard,
@@ -238,6 +250,7 @@ def _camera_capture_report(args: argparse.Namespace) -> int:
             count=args.count,
             interval_s=args.interval,
             prefix=args.prefix,
+            size=_parse_size(args.size),
             warmup_s=args.warmup,
         )
     else:
@@ -381,6 +394,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     camera.add_argument("--camera-num", type=int, default=0, help="indice Picamera2")
     camera.add_argument(
+        "--size",
+        default="640x480",
+        help="risoluzione libcamera, es. 1280x720 o 1536x864",
+    )
+    camera.add_argument(
         "--warmup",
         type=float,
         default=1.0,
@@ -425,6 +443,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="usa Picamera2/libcamera",
     )
     capture.add_argument("--camera-num", type=int, default=0)
+    capture.add_argument(
+        "--size",
+        default="640x480",
+        help="risoluzione libcamera, es. 1280x720 o 1536x864",
+    )
     capture.add_argument("--warmup", type=float, default=1.0)
     capture.add_argument("--count", type=int, default=15)
     capture.add_argument("--interval", type=float, default=1.0)

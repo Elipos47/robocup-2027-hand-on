@@ -75,6 +75,12 @@
     prima calibrazione della USB a 640x480 e salvata in
     `software/rcj2027/calibrations/usb_640x480.json`. La copertura e' appena sopra il minimo:
     una calibrazione con target piu' grande puo' migliorare l'RMS.
+21. **Ruoli telecamere (2026-11-01):** la **USB 5MP** e' la camera stanza/vittime e palline;
+    la **CSI IMX708** e' la camera linea. La calibrazione USB a 640x480 vale solo per la stanza.
+    La CSI va calibrata alla risoluzione di lavoro della linea; **1280x720** e' la candidata e
+    la probe passa con nitidezza normalizzata 149,3. La nitidezza e' normalizzata a 640 px per
+    confrontare risoluzioni diverse. Con autofocus e checkerboard la CSI e' risultata nitida;
+    la precedente sfocatura era la scena.
 
 ## Decisioni da prendere
 

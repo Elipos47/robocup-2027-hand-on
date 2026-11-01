@@ -95,7 +95,16 @@ def frame_metrics(
     gray = _gray(frame)
     brightness = float(gray.mean())
     contrast = float(gray.std())
-    sharpness = float(cv2.Laplacian(gray, cv2.CV_64F).var())
+
+    sharp_gray = gray
+    if gray.shape[1] > 640:
+        scale = 640.0 / gray.shape[1]
+        sharp_gray = cv2.resize(
+            gray,
+            (640, max(1, int(gray.shape[0] * scale))),
+            interpolation=cv2.INTER_AREA,
+        )
+    sharpness = float(cv2.Laplacian(sharp_gray, cv2.CV_64F).var())
 
     dark = brightness < dark_below
     overexposed = brightness > overexposed_above

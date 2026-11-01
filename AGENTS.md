@@ -135,10 +135,14 @@ contiene il codice applicativo del progetto precedente.
   con ack 3,7-3,9 ms e watchdog a 1004,9-1008,3 ms con PWM 150/255 e timeout 1000 ms. A 150 i
   motori ronzavano senza ruotare; a 255 hanno girato (conferma dell'operatore). Firmware
   riportato a movimento disabilitato.
-- In corso: calibrare la camera USB con checkerboard, sistemare messa a fuoco/montaggio della
-  CSI e calibrarla; validare i segni IMU e chiudere i punti aperti di B0.
-- Prossimi passi: usare `camera-capture` e `camera-calibrate`, definire la convenzione dei segni
-  pitch/roll, poi passare a F0.
+- Fatto: ruoli telecamere confermati: USB 5MP = stanza/vittime/palline, CSI IMX708 = linea.
+  La CSI con autofocus e checkerboard e' nitida a 640x480-2304x1296; a 1280x720 la probe passa
+  con nitidezza normalizzata 149,3. La nitidezza e' normalizzata a 640 px per confrontare
+  risoluzioni diverse.
+- In corso: calibrare la CSI alla risoluzione di linea (candidata 1280x720) e definire il
+  montaggio; validare i segni IMU e chiudere i punti aperti di B0.
+- Prossimi passi: usare `camera-capture --csi --size 1280x720` e `camera-calibrate`, poi
+  iniziare il pipeline visione della linea (F0).
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

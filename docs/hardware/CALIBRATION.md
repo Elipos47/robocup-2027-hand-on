@@ -53,7 +53,8 @@ riferimento e l'orientamento degli assi vanno dichiarati dall'operatore.
    python3 -m rcj2027.diagnostics camera-capture --device auto \
      --count 15 --interval 2 --output-dir calib/usb
    ```
-   Per la CSI usare `--csi --camera-num 0`; prima va risolta la sfocatura.
+   Per la CSI usare `--csi --camera-num 0 --size 1280x720`; la calibrazione va fatta alla
+   stessa risoluzione usata dal pipeline della linea.
 4. Salva le immagini in una cartella, ad esempio `calib/`.
 5. Esegui `camera-calibrate` con lo stesso pattern e lato usati per la stampa.
 6. Il calibratore rifiuta se il pattern occupa in media meno del **20%** del frame. Punta al
@@ -113,6 +114,10 @@ Ripeti a 1000 mm e registra media, deviazione standard e salto massimo.
 
 ## Camera linea
 
+La camera linea e' la **CSI IMX708**. Va calibrata alla risoluzione di lavoro (ad esempio
+1280x720 o 1536x864), non a 640x480: la calibrazione e' legata alla risoluzione. Verificare prima
+messa a fuoco e montaggio; poi:
+
 1. Fissare la camera nella posizione definitiva.
 2. Registrare altezza, inclinazione, focale e distanza dal suolo.
 3. Catturare una superficie bianca e una linea nera con luce nota.
@@ -120,6 +125,9 @@ Ripeti a 1000 mm e registra media, deviazione standard e salto massimo.
 5. Ripetere con luce debole, luce forte e ombre.
 
 ## Camera vittime
+
+La camera stanza/vittime e' la **USB 5MP**. La calibrazione 640x480 accettata e' in
+`software/rcj2027/calibrations/usb_640x480.json`; se si usa una risoluzione diversa va rifatta.
 
 - fotografare la posizione della camera;
 - misurare distanza e angolo di visione della stanza;

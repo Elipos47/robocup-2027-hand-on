@@ -51,8 +51,8 @@ La CLI `diagnostics` verifica i dati di camera, sonar e IMU senza abilitare il m
 cd software
 python3 -m rcj2027.diagnostics camera --list
 python3 -m rcj2027.diagnostics camera --device auto --save /tmp/camera0.jpg
-python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --warmup 2 \
-  --save /tmp/csi0.jpg
+python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --size 1280x720 \
+  --warmup 2 --save /tmp/csi0.jpg
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10 \
   --reference-mm 500 --reference-tolerance 50
@@ -77,9 +77,10 @@ ristampa. `camera-capture` salva una sequenza di frame mentre sposti il target; 
 rifiuta una copertura media del pattern sotto il 20% (puntare al 50-80%). La calibrazione USB
 accettata (15 viste, RMS 0,523 px, copertura 22,7%) e' in
 `rcj2027/calibrations/usb_640x480.json`; le immagini sorgente restano in `calib/` e non sono
-versionate. Il test sonar usa la mediana e ammette al massimo il 5% di outlier oltre
-`--outlier-mm`; il test IMU `motion` richiede che si muova l'asse indicato. Ogni telecamera e'
-esclusiva: non eseguire due probe in parallelo.
+versionate. Ruoli: USB = stanza/vittime/palline, CSI = linea; la CSI va calibrata alla risoluzione
+di linea (`--size 1280x720`), non a 640x480. Il test sonar usa la mediana e ammette al massimo il
+5% di outlier oltre `--outlier-mm`; il test IMU `motion` richiede che si muova l'asse indicato.
+Ogni telecamera e' esclusiva: non eseguire due probe in parallelo.
 
 Risultati e limiti sono in `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`.
 

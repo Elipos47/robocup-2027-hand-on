@@ -25,8 +25,8 @@ Schermo ──────────────────► Raspberry Pi
 |---|---|---|
 | Raspberry Pi 5 4GB | elaborazione e visione | presente |
 | Arduino Mega 2560 | controllo basso livello | presente |
-| Camera linea | imaging della linea | USB 5MP, path variabile rilevato con `--device auto`, verificata in B1-4; ruolo da confermare |
-| Camera vittime | imaging stanza/vittime | CSI IMX708, acquisisce ma frame sfocato in B1-4; ruolo da confermare |
+| Camera linea | imaging della linea | CSI IMX708; da calibrare alla risoluzione di lavoro, fuoco/montaggio da verificare |
+| Camera vittime | imaging stanza/vittime | USB 5MP, path variabile rilevato con `--device auto`, calibrazione 640x480 accettata |
 | UPS | continuità alimentazione Pi | presente |
 | L298N | driver motori | presente |
 | HC-SR04 | distanza frontale | presente, letto in B1-3 |
