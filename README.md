@@ -46,7 +46,8 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   CSI, ROI, adaptive threshold, scanline top-down, fit robusto, confidenza e tracker. Prova
   reale su linea retta con robot fermo: 30/30 frame trovati, offset stabile -46,0 px, heading
   ~3,95 deg, confidenza ~0,95, 0 perdite. Loop `line-live` dalla CSI: 100 frame in 5,04 s,
-  19,8 FPS, 100/100 trovati. Curvature, gap, ombre e movimento restano da provare.
+  19,8 FPS, 100/100 trovati. Vista live con finestra locale o stream browser per telefono/PC.
+  Curvature, gap, ombre e movimento restano da provare.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.

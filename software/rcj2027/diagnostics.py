@@ -41,6 +41,7 @@ from .camera_calibration import (
 )
 from .checkerboard import CheckerboardError, make_checkerboard_pdf
 from . import line_vision
+from .live_view import LiveViewError, MjpegServer
 from .logger import JsonlLogger
 from .protocol import SensorReading
 from .safety import DEFAULT_CONFIG
@@ -483,11 +484,16 @@ def _line_live_report(args: argparse.Namespace) -> int:
     annotated_dir = Path(args.annotated_dir) if args.annotated_dir else None
     mask_dir = Path(args.mask_dir) if args.mask_dir else None
     save_debug = annotated_dir is not None or mask_dir is not None
+    need_http = args.http_port > 0
+    need_preview = bool(args.preview)
+    need_debug = save_debug or need_http or need_preview
 
     run_id = args.run_id or _default_run_id("line-live")
     log_path = Path(args.log_dir) / f"{run_id}.jsonl"
     camera = Picamera2(camera_num=args.camera_num)
     started = False
+    http_server: MjpegServer | None = None
+    preview_cv2 = None
     frames = 0
     found = 0
     confirmed = 0
@@ -509,6 +515,37 @@ def _line_live_report(args: argparse.Namespace) -> int:
             calibration=str(args.calibration) if camera_model is not None else None,
         )
         try:
+            if need_http:
+                http_server = MjpegServer(
+                    host=args.http_host,
+                    port=args.http_port,
+                    width=args.stream_width,
+                    quality=args.jpeg_quality,
+                )
+                http_server.start()
+                print(
+                    f"stream live: http://<ip-del-robot>:{http_server.port}/",
+                    file=sys.stderr,
+                    flush=True,
+                )
+            if need_preview:
+                try:
+                    import cv2 as preview_cv2
+                except ImportError as exc:  # pragma: no cover - ambiente
+                    raise LiveViewError(
+                        "OpenCV non disponibile per --preview; usa --http-port"
+                    ) from exc
+                try:
+                    preview_cv2.namedWindow(
+                        "RCJ2027 line-live", preview_cv2.WINDOW_NORMAL
+                    )
+                    preview_cv2.resizeWindow(
+                        "RCJ2027 line-live", 960, 540
+                    )
+                except Exception as exc:  # pragma: no cover - display
+                    raise LiveViewError(
+                        "finestra non disponibile; usa --http-port per il browser"
+                    ) from exc
             video_config = camera.create_video_configuration(
                 main={"size": size, "format": "RGB888"},
                 sensor={"output_size": (2304, 1296)},
@@ -529,11 +566,13 @@ def _line_live_report(args: argparse.Namespace) -> int:
                 frame = camera.capture_array("main")
                 if frame.ndim == 3 and frame.shape[2] == 3:
                     frame = frame[:, :, ::-1].copy()
-                if save_debug:
+                if need_debug:
                     observation, debug = detector.detect(frame, debug=True)
+                    annotated = line_vision.annotate_frame(debug, observation)
                 else:
                     observation = detector.detect(frame)
                     debug = None
+                    annotated = None
                 state = tracker.update(observation)
                 frames += 1
                 if observation.found:
@@ -553,16 +592,23 @@ def _line_live_report(args: argparse.Namespace) -> int:
                 )
                 if debug is not None and save_debug and (frames - 1) % args.save_every == 0:
                     stem = f"frame-{frames - 1:05d}"
-                    if annotated_dir is not None:
+                    if annotated_dir is not None and annotated is not None:
                         line_vision.write_image(
                             annotated_dir / f"{stem}-annotated.jpg",
-                            line_vision.annotate_frame(debug, observation),
+                            annotated,
                         )
                         saved += 1
                     if mask_dir is not None:
                         line_vision.write_image(
                             mask_dir / f"{stem}-mask.png", debug.mask
                         )
+                if http_server is not None and annotated is not None:
+                    http_server.update(annotated)
+                if preview_cv2 is not None and annotated is not None:
+                    preview_cv2.imshow("RCJ2027 line-live", annotated)
+                    key = preview_cv2.waitKey(1) & 0xFF
+                    if key in (27, ord("q")):
+                        break
                 if args.interval:
                     remaining = args.interval - (time.perf_counter() - loop_started)
                     if remaining > 0:
@@ -588,6 +634,10 @@ def _line_live_report(args: argparse.Namespace) -> int:
                 "camera": args.camera_num,
                 "size": list(size),
                 "full_fov": True,
+                "preview": need_preview,
+                "stream_port": (
+                    http_server.port if http_server is not None else None
+                ),
                 "summary": {
                     "frames": frames,
                     "found": found,
@@ -613,6 +663,13 @@ def _line_live_report(args: argparse.Namespace) -> int:
                 found_ratio=round(found_ratio, 4),
             )
         finally:
+            if http_server is not None:
+                http_server.stop()
+            if preview_cv2 is not None:
+                try:
+                    preview_cv2.destroyWindow("RCJ2027 line-live")
+                except Exception:
+                    pass
             if started:
                 try:
                     camera.stop()
@@ -924,6 +981,20 @@ def build_parser() -> argparse.ArgumentParser:
     live.add_argument("--annotated-dir", default=None)
     live.add_argument("--mask-dir", default=None)
     live.add_argument("--save-every", type=int, default=10)
+    live.add_argument(
+        "--preview",
+        action="store_true",
+        help="mostra una finestra locale con il frame annotato",
+    )
+    live.add_argument(
+        "--http-port",
+        type=int,
+        default=0,
+        help="porta dello stream MJPEG; 0 = disattivato (es. 8080)",
+    )
+    live.add_argument("--http-host", default="0.0.0.0")
+    live.add_argument("--stream-width", type=int, default=960)
+    live.add_argument("--jpeg-quality", type=int, default=70)
     live.add_argument("--min-confidence", type=float, default=0.35)
     live.add_argument("--min-valid-ratio", type=float, default=0.45)
     live.add_argument("--min-found-ratio", type=float, default=0.8)

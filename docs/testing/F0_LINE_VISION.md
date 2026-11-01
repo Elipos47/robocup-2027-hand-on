@@ -93,6 +93,20 @@ python3 -m rcj2027.diagnostics line-live --camera-num 0 \
   --json-out logs/f0-live/report.json
 ```
 
+Vista live durante la raccolta:
+
+```sh
+# finestra locale sul display del Raspberry
+python3 -m rcj2027.diagnostics line-live --preview --duration 15
+
+# stream browser per telefono/PC sulla stessa rete
+python3 -m rcj2027.diagnostics line-live --http-port 8080 --duration 15
+# aprire http://<ip-del-raspberry>:8080/
+```
+
+Lo stream MJPEG mostra il frame annotato (linea, offset, heading, confidenza). E' pensato per
+la rete locale: non ha autenticazione e non va esposto su Internet.
+
 Il live usa sempre il sensore intero 2304x1296 (full-fov), come la calibrazione. Salva il log
 JSONL in `logs/<run-id>.jsonl` e stampa un riepilogo alla fine.
 
@@ -119,10 +133,11 @@ I test host coprono:
 - rumore, debug, annotazione e risoluzione sbagliata;
 - conferma, perdita e ripresa del tracker;
 - validazione dell'undistort su viste checkerboard sintetiche;
-- comando `line` con report JSON e parser `line-live`.
+- comando `line`, `line-undistort` e parser `line-live`;
+- server MJPEG: indice HTML, aggiornamento frame e validazione parametri.
 
 I frame sintetici verificano il codice, non sostituiscono la prova su una linea reale.
-La suite completa e' a **178 test**, tutti verdi.
+La suite completa e' a **182 test**, tutti verdi.
 
 ## Risultato disponibile
 
@@ -205,6 +220,10 @@ Report locale: `software/logs/f0-live-001/report.json`; log JSONL:
 Il loop live e' quindi utilizzabile per prove a bassa velocita'. Il limite di 19,8 FPS e' il
 risultato di acquisizione (circa 30 FPS) piu' elaborazione (circa 40 ms); non e' ancora un
 requisito del controller.
+
+La vista live e' stata verificata in entrambe le modalita': finestra locale sul display del
+Raspberry (`--preview`, 18 frame in 1 s) e stream MJPEG via browser (`--http-port`, indice HTML
+e flusso JPEG valido). Lo stream non ha autenticazione: va usato solo sulla rete locale.
 
 ### Frame senza linea
 

@@ -17,6 +17,7 @@ software/
     camera_calibration.py calibrazione checkerboard
     checkerboard.py       target PDF a dimensione reale
     line_vision.py        undistort, rilevamento linea e tracker F0
+    live_view.py          stream MJPEG per la vista live
     diagnostics.py        CLI di diagnostica camera/sonar/IMU/linea
     calibrations/         JSON delle calibrazioni telecamere
     __main__.py    demo, sessione reale e console manuale
@@ -121,6 +122,11 @@ python3 -m rcj2027.diagnostics line-live --camera-num 0 \
   --size 1280x720 --warmup 2 --duration 10 \
   --annotated-dir logs/f0-live/annotated --save-every 15 \
   --json-out logs/f0-live/report.json
+
+# Vista live: finestra locale oppure browser sulla rete locale
+python3 -m rcj2027.diagnostics line-live --preview --duration 10
+python3 -m rcj2027.diagnostics line-live --http-port 8080 --duration 10
+# aprire http://<ip-del-raspberry>:8080/
 ```
 
 `offset_px` positivo significa linea a destra dell'asse ottico; `heading_deg` positivo

@@ -445,13 +445,24 @@ class LineCliTests(unittest.TestCase):
         parser = build_parser()
 
         args = parser.parse_args(
-            ["line-live", "--duration", "5", "--size", "1280x720"]
+            [
+                "line-live",
+                "--duration",
+                "5",
+                "--size",
+                "1280x720",
+                "--preview",
+                "--http-port",
+                "8080",
+            ]
         )
 
         self.assertEqual(args.command, "line-live")
         self.assertEqual(args.duration, 5.0)
         self.assertEqual(args.size, "1280x720")
         self.assertEqual(args.camera_num, 0)
+        self.assertTrue(args.preview)
+        self.assertEqual(args.http_port, 8080)
 
     def test_line_command_writes_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -105,7 +105,9 @@
     1280x720 full-fov, applica la calibrazione a ogni frame e scrive un JSONL con offset,
     heading, confidenza e tracker. Prima prova: 100 frame in 5,04 s (19,8 FPS), 100/100 trovati,
     offset -46,5 px, heading 4,14 deg, confidenza 0,95, nessun comando ai motori. Il costo e'
-    circa 40 ms di elaborazione per frame; il controller resta il passo successivo.
+    circa 40 ms di elaborazione per frame; il controller resta il passo successivo. La vista
+    live usa una finestra OpenCV (`--preview`) o uno stream MJPEG locale (`--http-port`), senza
+    autenticazione: solo rete locale.
 
 ## Decisioni da prendere
 
