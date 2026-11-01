@@ -8,8 +8,8 @@ sessione reale con handshake, heartbeat, status, logger e stop. B1-2: comandi mo
 gate, ack, stop e rotazione confermata. B1-3: HC-SR04 e BNO085 letti nello status. B1-4:
 diagnostica software per camera, sonar e IMU; camera e IMU passano, sonar valido ma instabile.
 Calibrazioni USB e CSI accettate; F0-1: primo pipeline linea con undistort, rilevamento,
-tracker e CLI, verificato sui test host e su 30 frame reali di una linea retta (30/30,
-offset stabile). Curvature, gap, ombre e movimento restano da provare. Valori operativi
+tracker e CLI, verificato sui test host, su 30 frame reali di una linea retta (30/30) e in
+live a 19,9 FPS. Curvature, gap, ombre e movimento restano da provare. Valori operativi
 `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`; gate predefinito chiuso. Movimento
 reale disabilitato di default.
 
@@ -135,8 +135,8 @@ Stato 2026-11-01: pipeline F0-1 implementato in `software/rcj2027/line_vision.py
 undistort CSI, ROI, adaptive threshold, scanline top-down, fit robusto, confidenza, tracker e
 CLI. Verifica undistort sulle immagini di calibrazione PASS (0,4392 -> 0,4287 px); test host
 verdi. Prova reale su linea retta con robot fermo: 30/30 frame trovati, offset -46,0 px,
-heading 3,95 deg, confidenza 0,95, 0 perdite. Il gate resta aperto per curvature, gap,
-disturbi, illuminazione e movimento.
+heading 3,95 deg, confidenza 0,95, 0 perdite. Loop `line-live`: 100 frame in 5,03 s, 19,9 FPS,
+100/100 trovati. Il gate resta aperto per curvature, gap, disturbi, illuminazione e movimento.
 
 ### Gate F1 — mission elements
 

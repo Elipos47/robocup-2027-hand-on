@@ -449,6 +449,185 @@ def _line_report(args: argparse.Namespace) -> int:
     return 0 if report["passed"] else 1
 
 
+def _line_live_report(args: argparse.Namespace) -> int:
+    if not HAS_PICAMERA2:
+        raise CameraError("Picamera2 non installato")
+    if args.duration <= 0:
+        raise ValueError("--duration deve essere positivo")
+    if args.interval < 0:
+        raise ValueError("--interval non puo' essere negativo")
+    if args.save_every < 1:
+        raise ValueError("--save-every deve essere positivo")
+    if not 0 <= args.min_found_ratio <= 1:
+        raise ValueError("--min-found-ratio deve essere tra 0 e 1")
+
+    from libcamera import controls
+    from picamera2 import Picamera2
+
+    size = _parse_size(args.size)
+    camera_model = None
+    if not args.no_undistort:
+        camera_model = line_vision.load_camera_model(args.calibration)
+        if size != camera_model.image_size:
+            raise line_vision.LineVisionError(
+                f"size {size[0]}x{size[1]} diversa dalla calibrazione "
+                f"{camera_model.width}x{camera_model.height}"
+            )
+
+    config = line_vision.LineConfig(
+        min_confidence=args.min_confidence,
+        min_valid_ratio=args.min_valid_ratio,
+    )
+    detector = line_vision.LineDetector(camera_model, config)
+    tracker = line_vision.LineTracker()
+    annotated_dir = Path(args.annotated_dir) if args.annotated_dir else None
+    mask_dir = Path(args.mask_dir) if args.mask_dir else None
+    save_debug = annotated_dir is not None or mask_dir is not None
+
+    run_id = args.run_id or _default_run_id("line-live")
+    log_path = Path(args.log_dir) / f"{run_id}.jsonl"
+    camera = Picamera2(camera_num=args.camera_num)
+    started = False
+    frames = 0
+    found = 0
+    confirmed = 0
+    max_lost = 0
+    offsets: list[float] = []
+    headings: list[float] = []
+    confidences: list[float] = []
+    latencies: list[float] = []
+    saved = 0
+
+    with JsonlLogger(log_path, run_id) as logger:
+        logger.log(
+            "session_start",
+            mode="line-live",
+            camera=args.camera_num,
+            size=list(size),
+            full_fov=True,
+            duration_s=args.duration,
+            calibration=str(args.calibration) if camera_model is not None else None,
+        )
+        try:
+            video_config = camera.create_video_configuration(
+                main={"size": size, "format": "RGB888"},
+                sensor={"output_size": (2304, 1296)},
+            )
+            camera.configure(video_config)
+            camera.start()
+            started = True
+            try:
+                camera.set_controls({"AfMode": controls.AfModeEnum.Continuous})
+            except Exception:
+                pass
+            if args.warmup:
+                time.sleep(args.warmup)
+
+            started_at = time.monotonic()
+            while time.monotonic() - started_at < args.duration:
+                loop_started = time.perf_counter()
+                frame = camera.capture_array("main")
+                if frame.ndim == 3 and frame.shape[2] == 3:
+                    frame = frame[:, :, ::-1].copy()
+                if save_debug:
+                    observation, debug = detector.detect(frame, debug=True)
+                else:
+                    observation = detector.detect(frame)
+                    debug = None
+                state = tracker.update(observation)
+                frames += 1
+                if observation.found:
+                    found += 1
+                    offsets.append(observation.offset_px)
+                    headings.append(observation.heading_deg)
+                if state.confirmed:
+                    confirmed += 1
+                max_lost = max(max_lost, state.lost_frames)
+                confidences.append(observation.confidence)
+                latencies.append(observation.processing_ms)
+                logger.log(
+                    "line",
+                    frame=frames - 1,
+                    **observation.to_dict(),
+                    tracker=asdict(state),
+                )
+                if debug is not None and save_debug and (frames - 1) % args.save_every == 0:
+                    stem = f"frame-{frames - 1:05d}"
+                    if annotated_dir is not None:
+                        line_vision.write_image(
+                            annotated_dir / f"{stem}-annotated.jpg",
+                            line_vision.annotate_frame(debug, observation),
+                        )
+                        saved += 1
+                    if mask_dir is not None:
+                        line_vision.write_image(
+                            mask_dir / f"{stem}-mask.png", debug.mask
+                        )
+                if args.interval:
+                    remaining = args.interval - (time.perf_counter() - loop_started)
+                    if remaining > 0:
+                        time.sleep(remaining)
+                if frames % 30 == 0:
+                    print(
+                        f"frame {frames}: found {found}, "
+                        f"offset {observation.offset_px:+.1f} px",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+
+            elapsed = time.monotonic() - started_at
+            found_ratio = found / frames if frames else 0.0
+            report = {
+                "kind": "line-live",
+                "run_id": run_id,
+                "log": str(log_path),
+                "calibration": (
+                    str(args.calibration) if camera_model is not None else None
+                ),
+                "undistorted": camera_model is not None,
+                "camera": args.camera_num,
+                "size": list(size),
+                "full_fov": True,
+                "summary": {
+                    "frames": frames,
+                    "found": found,
+                    "found_ratio": round(found_ratio, 4),
+                    "confirmed_frames": confirmed,
+                    "recoveries": tracker.recoveries,
+                    "max_lost_frames": max_lost,
+                    "offset_px": _distribution(offsets),
+                    "heading_deg": _distribution(headings),
+                    "confidence": _distribution(confidences),
+                    "processing_ms": _distribution(latencies),
+                    "duration_s": round(elapsed, 2),
+                    "fps": round(frames / elapsed, 1) if elapsed > 0 else 0.0,
+                    "saved_frames": saved,
+                },
+                "passed": bool(frames) and found_ratio >= args.min_found_ratio,
+            }
+            logger.log(
+                "session_end",
+                mode="line-live",
+                frames=frames,
+                found=found,
+                found_ratio=round(found_ratio, 4),
+            )
+        finally:
+            if started:
+                try:
+                    camera.stop()
+                except Exception:
+                    pass
+            try:
+                camera.close()
+            except Exception:
+                pass
+
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+    _write_json(report, args.json_out)
+    return 0 if report["passed"] else 1
+
+
 def _line_undistort_report(args: argparse.Namespace) -> int:
     paths = sorted(glob.glob(args.images))
     if not paths:
@@ -716,6 +895,40 @@ def build_parser() -> argparse.ArgumentParser:
     line.add_argument("--mask-dir", default=None)
     line.add_argument("--json-out", default=None)
 
+    live = subparsers.add_parser(
+        "line-live",
+        help="rileva la linea in tempo reale dalla CSI, senza comandi motori",
+    )
+    live.add_argument(
+        "--calibration",
+        default=str(DEFAULT_LINE_CALIBRATION),
+        help="calibrazione della telecamera linea (default: CSI 1280x720)",
+    )
+    live.add_argument(
+        "--no-undistort",
+        action="store_true",
+        help="analizza il frame grezzo, senza calibrazione",
+    )
+    live.add_argument("--camera-num", type=int, default=0)
+    live.add_argument("--size", default="1280x720")
+    live.add_argument("--warmup", type=float, default=2.0)
+    live.add_argument("--duration", type=float, default=10.0)
+    live.add_argument(
+        "--interval",
+        type=float,
+        default=0.0,
+        help="pausa minima tra frame; 0 = elabora appena possibile",
+    )
+    live.add_argument("--run-id", default=None)
+    live.add_argument("--log-dir", type=Path, default=Path("logs"))
+    live.add_argument("--annotated-dir", default=None)
+    live.add_argument("--mask-dir", default=None)
+    live.add_argument("--save-every", type=int, default=10)
+    live.add_argument("--min-confidence", type=float, default=0.35)
+    live.add_argument("--min-valid-ratio", type=float, default=0.45)
+    live.add_argument("--min-found-ratio", type=float, default=0.8)
+    live.add_argument("--json-out", default=None)
+
     undistort = subparsers.add_parser(
         "line-undistort",
         help="verifica l'undistort della telecamera linea su checkerboard",
@@ -771,6 +984,8 @@ def main(argv: list[str] | None = None) -> int:
             return _camera_calibrate_report(args)
         if args.command == "line":
             return _line_report(args)
+        if args.command == "line-live":
+            return _line_live_report(args)
         if args.command == "line-undistort":
             return _line_undistort_report(args)
         if args.command == "checkerboard":

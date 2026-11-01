@@ -101,6 +101,11 @@
     ma non e' una prova indipendente. Prova reale su linea retta, robot fermo: 30/30 frame
     trovati, offset -46,0 px, heading 3,95 deg, confidenza 0,95, 0 perdite. Curvature, gap,
     illuminazione e movimento restano il criterio per chiudere F0.
+25. **Loop live della linea (2026-11-01):** `line-live` usa Picamera2 in configurazione video
+    1280x720 full-fov, applica la calibrazione a ogni frame e scrive un JSONL con offset,
+    heading, confidenza e tracker. Prima prova: 100 frame in 5,03 s (19,9 FPS), 100/100 trovati,
+    offset -46,5 px, heading 4,17 deg, confidenza 0,95, nessun comando ai motori. Il costo e'
+    circa 40 ms di elaborazione per frame; il controller resta il passo successivo.
 
 ## Decisioni da prendere
 

@@ -441,6 +441,18 @@ class LineCliTests(unittest.TestCase):
         self.assertEqual(args.command, "line-undistort")
         self.assertEqual(args.pattern, "9x6")
 
+    def test_parser_builds_line_live_command(self) -> None:
+        parser = build_parser()
+
+        args = parser.parse_args(
+            ["line-live", "--duration", "5", "--size", "1280x720"]
+        )
+
+        self.assertEqual(args.command, "line-live")
+        self.assertEqual(args.duration, 5.0)
+        self.assertEqual(args.size, "1280x720")
+        self.assertEqual(args.camera_num, 0)
+
     def test_line_command_writes_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -471,6 +483,51 @@ class LineCliTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(report["images"], 3)
         self.assertEqual(report["summary"]["found"], 3)
+        self.assertTrue(report["passed"])
+
+    def test_line_undistort_command(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            views = synthetic_views()
+            for index, view in enumerate(views):
+                cv2.imwrite(str(root / f"view-{index}.jpg"), view)
+            width, height = views[0].shape[1], views[0].shape[0]
+            calibration = {
+                "image_size": [width, height],
+                "camera_matrix": [
+                    [500.0, 0.0, width / 2.0],
+                    [0.0, 500.0, height / 2.0],
+                    [0.0, 0.0, 1.0],
+                ],
+                "distortion": [0.0, 0.0, 0.0, 0.0],
+                "rms": 0.0,
+            }
+            calibration_path = root / "calibration.json"
+            calibration_path.write_text(
+                json.dumps(calibration), encoding="utf-8"
+            )
+            output = root / "undistort.json"
+            buffer = io.StringIO()
+
+            with contextlib.redirect_stdout(buffer):
+                code = main(
+                    [
+                        "line-undistort",
+                        "--images",
+                        str(root / "view-*.jpg"),
+                        "--calibration",
+                        str(calibration_path),
+                        "--min-images",
+                        "3",
+                        "--json-out",
+                        str(output),
+                    ]
+                )
+
+            report = json.loads(output.read_text(encoding="utf-8"))
+
+        self.assertEqual(code, 0)
+        self.assertEqual(report["accepted"], 3)
         self.assertTrue(report["passed"])
 
 

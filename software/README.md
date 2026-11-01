@@ -115,6 +115,12 @@ python3 -m rcj2027.diagnostics line \
   --annotated-dir logs/f0-linea-001/annotated \
   --mask-dir logs/f0-linea-001/mask \
   --json-out logs/f0-linea-001/report.json
+
+# Loop live dalla CSI, senza comandi ai motori
+python3 -m rcj2027.diagnostics line-live --camera-num 0 \
+  --size 1280x720 --warmup 2 --duration 10 \
+  --annotated-dir logs/f0-live/annotated --save-every 15 \
+  --json-out logs/f0-live/report.json
 ```
 
 `offset_px` positivo significa linea a destra dell'asse ottico; `heading_deg` positivo
@@ -123,7 +129,8 @@ calibrazione e' legata a 1280x720 full-fov: un frame di risoluzione diversa vien
 Exit code del comando `line`: `0` se la frazione di frame con linea raggiunge
 `--min-found-ratio` (default 0.8), `1` se sotto soglia, `2` per errore. La sequenza reale
 F0-1 (`calib/linea-f0-001`, 30 frame) ha dato 30/30 frame trovati, offset -46,0 px,
-heading 3,95 deg e confidenza 0,95. Il report e' in `logs/f0-linea-001/report.json`; dettagli
+heading 3,95 deg e confidenza 0,95. Il loop `line-live` ha elaborato 100 frame in 5,03 s
+(19,9 FPS) con 100/100 frame trovati. Il report e' in `logs/f0-linea-001/report.json`; dettagli
 e limiti in `docs/testing/F0_LINE_VISION.md`.
 
 Per una console manuale sulla porta reale, che accetta comandi in minuscolo e calcola il

@@ -153,12 +153,15 @@ contiene il codice applicativo del progetto precedente.
   -46,0 px, heading ~3,95 deg, confidenza ~0,95, 0 perdite; report in
   `software/logs/f0-linea-001/report.json`. Il primo tentativo dava 0/30 per bordo tavolo e
   pavimento, corretto con scansione top-down, stop sui gap e continuita' di larghezza.
-  Test host: 176 verdi. Curvature, gap, disturbi e movimento non sono ancora provati, quindi
+  Aggiunto `line-live`: 100 frame in 5,03 s (19,9 FPS), 100/100 trovati, offset -46,5 px,
+  heading 4,17 deg, confidenza 0,95, nessun comando ai motori.
+  Test host: 178 verdi. Curvature, gap, disturbi e movimento non sono ancora provati, quindi
   il gate F0 resta aperto.
 - In corso: prove F0 su curvatura, linea spostata, ombre e movimento a bassa velocita';
   completare i segni IMU e chiudere i punti aperti di B0.
-- Prossimi passi: acquisire sequenze con linea inclinata/curva e un'ombra, analizzarle con
-  `line` e conservare report e frame annotati; solo dopo collegare il controller ai motori.
+- Prossimi passi: eseguire `line-live` mentre la linea o il robot vengono spostati a mano,
+  registrare le condizioni e conservare report e frame annotati; solo dopo collegare il
+  controller ai motori.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

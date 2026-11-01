@@ -26,7 +26,7 @@ sovrascrivere con la variabile `FQBN`.
 suite copre protocollo, logger, safety, trasporto finto e reale bufferizzato, sessione
 (handshake, heartbeat, status, stop, link), comandi motori con gate e ack, analisi sonar/IMU,
 metriche camera, calibrazione checkerboard sintetica, CLI diagnostica, normalizzazione della
-console e pipeline linea F0 (undistort, rilevamento, tracker, report).
+console e pipeline linea F0 (undistort, rilevamento, tracker, report, loop live).
 
 ## Criterio
 

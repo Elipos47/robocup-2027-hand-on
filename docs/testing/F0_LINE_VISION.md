@@ -84,6 +84,18 @@ python3 -m rcj2027.diagnostics line \
   --json-out logs/f0-linea-001/report.json
 ```
 
+Loop live dalla CSI, senza comandi ai motori:
+
+```sh
+python3 -m rcj2027.diagnostics line-live --camera-num 0 \
+  --size 1280x720 --warmup 2 --duration 10 \
+  --annotated-dir logs/f0-live/annotated --save-every 15 \
+  --json-out logs/f0-live/report.json
+```
+
+Il live usa sempre il sensore intero 2304x1296 (full-fov), come la calibrazione. Salva il log
+JSONL in `logs/<run-id>.jsonl` e stampa un riepilogo alla fine.
+
 Per un confronto senza calibrazione:
 
 ```sh
@@ -107,10 +119,10 @@ I test host coprono:
 - rumore, debug, annotazione e risoluzione sbagliata;
 - conferma, perdita e ripresa del tracker;
 - validazione dell'undistort su viste checkerboard sintetiche;
-- comando `line` con report JSON.
+- comando `line` con report JSON e parser `line-live`.
 
 I frame sintetici verificano il codice, non sostituiscono la prova su una linea reale.
-La suite completa e' a **176 test**, tutti verdi.
+La suite completa e' a **178 test**, tutti verdi.
 
 ## Risultato disponibile
 
@@ -167,6 +179,30 @@ dell'asse ottico della calibrazione (`cx=653,8`) e l'heading e' circa 4 gradi a 
 misure in pixel, non una prova di inseguimento: il robot non si e' mosso e il controller non
 e' collegato.
 
+### Loop live F0-2
+
+La stessa linea e' stata elaborata in tempo reale dalla CSI con `line-live`, senza salvare i
+frame prima dell'analisi. La calibrazione e' applicata a ogni frame e il log JSONL contiene
+offset, heading, confidenza e stato del tracker.
+
+| Voce | Valore |
+|---|---:|
+| Durata | 5,03 s |
+| Frame elaborati | 100 |
+| FPS | 19,9 |
+| Frame con linea | 100/100 |
+| Frame confermati | 98/100 (i primi 2 non ancora) |
+| Perdite | 0 |
+| Offset | mediana -46,53 px (-47,62..-46,42) |
+| Heading | mediana 4,17 deg (4,05..4,66) |
+| Confidenza | mediana 0,954 (0,917..0,963) |
+| Tempo di elaborazione | mediana 39,9 ms (35,3..95,5) |
+| Frame annotati salvati | 7 |
+
+Il loop live e' quindi utilizzabile per prove a bassa velocita'. Il limite di 19,9 FPS e' il
+risultato di acquisizione (circa 30 FPS) piu' elaborazione (circa 40 ms); non e' ancora un
+requisito del controller.
+
 ### Frame senza linea
 
 Un frame reale della scrivania, senza linea, e' stato analizzato con la calibrazione CSI:
@@ -195,16 +231,15 @@ velocita', non e' ancora un requisito di controllo.
 - L'offset e' riferito all'asse ottico della calibrazione (`cx=653,8`), non al centro
   meccanico del robot: l'allineamento camera-telaio resta da misurare.
 - Non sono gestiti incroci, gap ampi, linea argentata, marker o linee multiple.
-- Il pipeline analizza sequenze salvate; il loop live con la CSI e il controller sono il
-  passo successivo.
+- Il controller non e' collegato: il live misura la linea ma non comanda i motori.
 - Le soglie della confidenza vanno tarate su linee reali con illuminazione e superfici
   diverse.
 - Il gate F0 resta aperto: servono curvature, gap, disturbi e movimento.
 
 ## Prossima prova
 
-1. Ripetere la sequenza con linea spostata a destra/sinistra, inclinata e curva.
-2. Provare un'ombra sulla linea e una superficie con venature o riflessi.
-3. Registrare found ratio, offset, heading, confidenza e tempo per ogni condizione.
+1. Eseguire `line-live` mentre l'operatore sposta la linea o il robot a mano lungo il tracciato.
+2. Ripetere con linea inclinata/curva, ombra e superficie con venature o riflessi.
+3. Registrare found ratio, offset, heading, confidenza, FPS e tempo per ogni condizione.
 4. Solo dopo collegare il controller ai motori, con ruote sollevate e gate di sicurezza.
 5. Chiudere F0 quando tutte le condizioni hanno una prova ripetibile e un report.
