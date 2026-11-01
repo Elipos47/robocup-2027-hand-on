@@ -65,7 +65,7 @@ I test host non richiedono hardware:
 - calibrazione con viste checkerboard sintetiche;
 - raccolta status con sessione finta.
 
-La suite completa e' a **138 test**, tutti verdi.
+La suite completa e' a **139 test**, tutti verdi.
 
 ## Camera
 
@@ -111,7 +111,9 @@ corner, quadrati 25 mm, barra da 100 mm); va stampato al 100% su carta opaca. Se
 20%: le 15 foto USB attuali coprono solo 3,6-9,6% e non sono valide per una calibrazione reale.
 Un secondo set di 15 foto ha rilevato il pattern in 8 immagini, con copertura 3,8-28,8% e media
 11,0%: solo 3 viste superano il 20%. Il problema e' la distanza incoerente tra i frame; servono
-almeno 8-10 viste con il pattern grande e interamente visibile. La sequenza si acquisisce con:
+almeno 8-10 viste con il pattern grande e interamente visibile. Il terzo set ha rilevato 15/15
+immagini, copertura media 22,7% (20,0-31,3%) e RMS 0,523 px: e' accettato come prima calibrazione
+USB ed e' salvato in `rcj2027/calibrations/usb_640x480.json`. La sequenza si acquisisce con:
 
 ```sh
 python3 -m rcj2027.diagnostics camera-capture --device auto \
@@ -202,20 +204,20 @@ dominante, non il verso.
 
 ## Cosa e' verificato
 
-- USB 0 acquisisce frame validi e passa le soglie di luminosita'/contrasto/nitidezza;
+- USB 5MP acquisisce frame validi e passa le soglie di luminosita'/contrasto/nitidezza;
+- calibrazione USB accettata: 15/15 viste, RMS 0,523 px, copertura 22,7%;
 - CSI IMX708 viene enumerata da libcamera/Picamera2 e acquisisce un frame;
 - sonar e IMU producono status con bit di validita' coerenti;
 - IMU stabile a riposo e sensibile alle rotazioni yaw, pitch e roll;
 - pitch/roll scambiati sul montaggio corretti nel firmware;
-- analisi e calibrazione sono coperte da test host;
-- il comando di calibrazione camera e' pronto per un target reale.
+- analisi e calibrazione sono coperte da test host.
 
 ## Cosa non e' verificato
 
 - sonar a 1000 mm e stabilita' con target in movimento; il test a 500 mm con target fermo e'
   accettato per ostacoli piu' vicini di 0,5 m;
 - messa a fuoco e montaggio della CSI: il frame attuale e' sfocato;
-- calibrazione reale di USB e CSI con checkerboard;
+- calibrazione reale della CSI e miglioramento della copertura USB;
 - convenzione dei segni pitch/roll e comportamento dopo un rimontaggio del BNO085;
 - luminosita' in condizioni di gara (luce bassa, riflessi, ombre).
 

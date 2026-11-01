@@ -17,6 +17,7 @@ software/
     camera_calibration.py calibrazione checkerboard
     checkerboard.py       target PDF a dimensione reale
     diagnostics.py        CLI di diagnostica camera/sonar/IMU
+    calibrations/         JSON delle calibrazioni telecamere
     __main__.py    demo, sessione reale e console manuale
   tests/           test host con unittest
   requirements.txt pyserial, OpenCV e numpy
@@ -73,9 +74,12 @@ I report si salvano con `--json-out`. La numerazione `/dev/videoN` cambia al ria
 `checkerboard` e' pronto in `docs/hardware/checkerboard-a4.pdf`: PDF A4 con quadrati da 25 mm e
 barra da 100 mm, da stampare al 100%. Se la barra misura 95 mm, usa `--square-mm 23.75` o
 ristampa. `camera-capture` salva una sequenza di frame mentre sposti il target; `camera-calibrate`
-rifiuta una copertura media del pattern sotto il 20% (puntare al 50-80%). Il test sonar usa la
-mediana e ammette al massimo il 5% di outlier oltre `--outlier-mm`; il test IMU `motion` richiede
-che si muova l'asse indicato. Ogni telecamera e' esclusiva: non eseguire due probe in parallelo.
+rifiuta una copertura media del pattern sotto il 20% (puntare al 50-80%). La calibrazione USB
+accettata (15 viste, RMS 0,523 px, copertura 22,7%) e' in
+`rcj2027/calibrations/usb_640x480.json`; le immagini sorgente restano in `calib/` e non sono
+versionate. Il test sonar usa la mediana e ammette al massimo il 5% di outlier oltre
+`--outlier-mm`; il test IMU `motion` richiede che si muova l'asse indicato. Ogni telecamera e'
+esclusiva: non eseguire due probe in parallelo.
 
 Risultati e limiti sono in `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`.
 

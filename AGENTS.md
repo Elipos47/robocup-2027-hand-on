@@ -122,7 +122,8 @@ contiene il codice applicativo del progetto precedente.
   `camera-capture` per acquisire 12-20 frame di calibrazione. Le prime 15 foto USB sono state
   rifiutate: RMS 0,896 px ma copertura media 7,2%, sotto il minimo 20%; rifare piu' vicino. Un
   secondo set ha rilevato 8/15 frame con copertura media 11,0% e solo 3 viste >=20%: distanza
-  incoerente, rifare con target grande e fermo.
+  incoerente. Il terzo set ha 15/15 viste, RMS 0,523 px e copertura 22,7%: accettato e salvato in
+  `software/rcj2027/calibrations/usb_640x480.json`.
 - Fatto: la CLI camera usa `--device auto`: dopo il riavvio la USB e' passata a `/dev/video8`
   e `/dev/video0` e' diventato un nodo CSI; la numerazione non e' piu' stabile.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento

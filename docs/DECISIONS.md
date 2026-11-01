@@ -70,6 +70,11 @@
     con mediana 522/507,5 mm, outlier 3,0%/1,0% e riferimento entro ±50 mm. L'operatore accetta
     questo test per ostacoli piu' vicini di 0,5 m; il test a 1000 mm non e' necessario ora. Il
     test resta FAIL se il target si muove.
+20. **Calibrazione USB accettata (2026-11-01):** 15/15 immagini, pattern 9x6, lato reale
+    23,75 mm, RMS 0,523 px, copertura media 22,7% (20,0-31,3%), focale ~248 px. Accettata come
+    prima calibrazione della USB a 640x480 e salvata in
+    `software/rcj2027/calibrations/usb_640x480.json`. La copertura e' appena sopra il minimo:
+    una calibrazione con target piu' grande puo' migliorare l'RMS.
 
 ## Decisioni da prendere
 

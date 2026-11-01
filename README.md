@@ -37,8 +37,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 - Fatto: B1-4, suite software di diagnostica (`docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`):
   probe camera USB e CSI via Picamera2, metriche, target checkerboard PDF, calibrazione,
   analisi sonar/IMU e test IMU in movimento. USB e IMU passano; pitch/roll scambiati sul
-  montaggio e corretti nel firmware; CSI acquisisce ma il frame e' sfocato; il sonar a 500 mm
-  e' accettato per ostacoli piu' vicini di 0,5 m con target fermo.
+  montaggio e corretti nel firmware; calibrazione USB accettata (RMS 0,523 px); CSI acquisisce
+  ma il frame e' sfocato; il sonar a 500 mm e' accettato per ostacoli piu' vicini di 0,5 m con
+  target fermo.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.

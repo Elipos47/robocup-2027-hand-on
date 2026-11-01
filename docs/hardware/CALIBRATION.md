@@ -63,6 +63,9 @@ riferimento e l'orientamento degli assi vanno dichiarati dall'operatore.
 La calibrazione reale usa la lente e il montaggio veri; le viste sintetiche verificano solo il
 codice. Una camera sfocata o un target storto producono un RMS alto e non vanno usati.
 
+Calibrazione USB accettata il 2026-11-01: 15 viste, RMS 0,523 px, copertura media 22,7%, lato
+reale 23,75 mm. Il JSON e' in `software/rcj2027/calibrations/usb_640x480.json`.
+
 ## Assi IMU
 
 Il BNO085 riporta tre rotazioni rispetto ai propri assi:

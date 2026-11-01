@@ -52,6 +52,8 @@ required=(
   software/rcj2027/checkerboard.py
   software/rcj2027/sensor_checks.py
   software/rcj2027/diagnostics.py
+  software/rcj2027/calibrations/README.md
+  software/rcj2027/calibrations/usb_640x480.json
   software/tests/__init__.py
   software/tests/test_protocol.py
   software/tests/test_logger.py

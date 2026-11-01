@@ -117,6 +117,22 @@ class CameraCalibrationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             calibrate_camera([], square_size_mm=0)
 
+    def test_committed_usb_calibration_is_consistent(self) -> None:
+        path = (
+            Path(__file__).resolve().parent.parent
+            / "rcj2027"
+            / "calibrations"
+            / "usb_640x480.json"
+        )
+        data = json.loads(path.read_text(encoding="utf-8"))
+
+        self.assertEqual(data["image_count"], 15)
+        self.assertEqual(data["image_size"], [640, 480])
+        self.assertEqual(data["square_size_mm"], 23.75)
+        self.assertLess(data["rms"], 1.0)
+        self.assertGreaterEqual(data["coverage_mean"], 0.2)
+        self.assertEqual(len(data["camera_matrix"]), 3)
+
     def test_save_calibration(self) -> None:
         calibration = calibrate_camera(synthetic_views(), min_images=3)
         with tempfile.TemporaryDirectory() as tmp:
