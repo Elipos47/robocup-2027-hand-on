@@ -43,9 +43,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   calibrazione CSI accettata (RMS 0,542 px, copertura 16,3%); il sonar a 500 mm e' accettato
   per ostacoli piu' vicini di 0,5 m con target fermo.
 - Fatto: F0-1, primo pipeline visione linea (`docs/testing/F0_LINE_VISION.md`): undistort
-  CSI, ROI, adaptive threshold, scanline, fit robusto, confidenza, tracker e CLI. La verifica
-  undistort passa sulle immagini di calibrazione; la prova positiva su una linea reale e'
-  ancora da eseguire.
+  CSI, ROI, adaptive threshold, scanline top-down, fit robusto, confidenza e tracker. Prova
+  reale su linea retta con robot fermo: 30/30 frame trovati, offset stabile -46,0 px, heading
+  ~3,95 deg, confidenza ~0,95, 0 perdite. Curvature, gap, ombre e movimento restano da provare.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -99,8 +99,8 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Eseguire la prima prova su linea reale con il pipeline F0 (`docs/testing/F0_LINE_VISION.md`);
-   l'undistort CSI e' verificato sulle immagini di calibrazione, non ancora su una linea.
+1. Ripetere F0 con linea inclinata/curva, ombra e movimento a bassa velocita'; la linea
+   retta e' gia' stata rilevata 30/30 con robot fermo.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Ripetere il test della linea con illuminazione e superfici diverse, poi collegare il

@@ -143,18 +143,21 @@ class LineConfig:
     scan_rows: int = 60
     threshold_block: int | None = None
     threshold_c: float = 10.0
-    dark_threshold: float = 80.0
-    dark_max_fraction: float = 0.25
+    dark_threshold: float = 140.0
+    dark_max_fraction: float = 0.45
     blur_ksize: int = 5
     clahe_clip: float = 2.0
     clahe_grid: int = 8
     min_run_px: int = 8
-    max_run_ratio: float = 0.60
+    max_run_ratio: float = 0.35
     max_jump_ratio: float = 0.08
+    max_gap_ratio: float = 0.06
+    width_tolerance_ratio: float = 0.50
     min_valid_ratio: float = 0.45
+    min_valid_rows: int = 15
     min_confidence: float = 0.35
     max_heading_deg: float = 75.0
-    fit_residual_px: float = 4.0
+    fit_residual_px: float = 8.0
     width_variation_ratio: float = 0.35
     polynomial_degree: int = 2
 
@@ -183,8 +186,14 @@ class LineConfig:
             raise LineVisionError("max_run_ratio deve essere tra 0 e 1")
         if not 0 < self.max_jump_ratio <= 1:
             raise LineVisionError("max_jump_ratio deve essere tra 0 e 1")
+        if not 0 <= self.max_gap_ratio <= 1:
+            raise LineVisionError("max_gap_ratio deve essere tra 0 e 1")
+        if not 0 < self.width_tolerance_ratio <= 1:
+            raise LineVisionError("width_tolerance_ratio deve essere tra 0 e 1")
         if not 0 <= self.min_valid_ratio <= 1:
             raise LineVisionError("min_valid_ratio deve essere tra 0 e 1")
+        if self.min_valid_rows < 5:
+            raise LineVisionError("min_valid_rows deve essere almeno 5")
         if not 0 <= self.min_confidence <= 1:
             raise LineVisionError("min_confidence deve essere tra 0 e 1")
         if not 0 < self.max_heading_deg <= 90:
@@ -358,7 +367,7 @@ def _fit_polynomial(
     degree: int,
     residual_px: float,
 ) -> tuple[Any, Any, float]:
-    """Fit robusto x(y); restituisce coefficienti, punti mantenuti e residuo RMS."""
+    """Fit robusto x(y); restituisce coefficienti, maschera inlier e residuo RMS."""
     t = (points[:, 1] - bottom_y) / roi_height
     coefficient = np.polyfit(t, points[:, 0], degree)
     keep = np.ones(len(points), dtype=bool)
@@ -374,7 +383,7 @@ def _fit_polynomial(
         coefficient = np.polyfit(t[keep], points[keep, 0], degree)
     residual = points[keep, 0] - np.polyval(coefficient, t[keep])
     rms = float(np.sqrt(np.mean(residual**2))) if len(residual) else float("inf")
-    return coefficient, points[keep], rms
+    return coefficient, keep, rms
 
 
 def _width_score(points: Any, max_variation_ratio: float) -> float:
@@ -493,25 +502,54 @@ class LineDetector:
         )
         rows = np.unique(
             np.linspace(roi_height - 1, 0, scan_rows).astype(int)
-        )[::-1]
+        )
         max_run = max(1, int(round(roi_width * self.config.max_run_ratio)))
         max_jump = max(4, int(round(roi_width * self.config.max_jump_ratio)))
+        max_gap_rows = max(
+            2, int(round(len(rows) * self.config.max_gap_ratio))
+        )
 
         previous_x = roi_width / 2.0
         points: list[tuple[float, float, int]] = []
+        point_scan_indices: list[int] = []
+        recent_widths: list[int] = []
+        gap_rows = 0
         for index, row_index in enumerate(rows):
             runs = _row_runs(mask[row_index], self.config.min_run_px, max_run)
-            if not runs:
+            selected: tuple[float, int] | None = None
+            if runs:
+                candidates = [
+                    ((start + end - 1) / 2.0, end - start)
+                    for start, end in runs
+                ]
+                if len(recent_widths) >= 3:
+                    expected_width = float(np.median(recent_widths[-10:]))
+                    tolerance = max(
+                        8.0,
+                        expected_width * self.config.width_tolerance_ratio,
+                    )
+                    candidates = [
+                        candidate
+                        for candidate in candidates
+                        if abs(candidate[1] - expected_width) <= tolerance
+                    ]
+                if candidates:
+                    center, line_width = min(
+                        candidates, key=lambda item: abs(item[0] - previous_x)
+                    )
+                    if not points or abs(center - previous_x) <= max_jump:
+                        selected = (center, line_width)
+            if selected is None:
+                if points:
+                    gap_rows += 1
+                    if gap_rows > max_gap_rows:
+                        break
                 continue
-            candidates = [
-                ((start + end - 1) / 2.0, end - start) for start, end in runs
-            ]
-            center, line_width = min(
-                candidates, key=lambda item: abs(item[0] - previous_x)
-            )
-            if index > 0 and abs(center - previous_x) > max_jump:
-                continue
+            center, line_width = selected
+            gap_rows = 0
+            recent_widths.append(line_width)
             points.append((center, float(row_index + top), line_width))
+            point_scan_indices.append(index)
             previous_x = center
 
         optical_x = (
@@ -521,7 +559,13 @@ class LineDetector:
         )
         roi_tuple = (left, top, right, bottom)
 
-        minimum_rows = max(5, int(round(len(rows) * self.config.min_valid_ratio)))
+        minimum_rows = min(
+            len(rows),
+            max(
+                self.config.min_valid_rows,
+                int(round(len(rows) * 0.20)),
+            ),
+        )
         if len(points) < minimum_rows:
             processing_ms = (time.perf_counter() - started) * 1000.0
             observation = LineObservation(
@@ -554,24 +598,36 @@ class LineDetector:
             return (observation, debug_data) if debug else observation
 
         array = np.asarray(points, dtype=np.float64)
-        coefficient, inliers, rms = _fit_polynomial(
+        coefficient, keep, rms = _fit_polynomial(
             array,
             bottom - 1,
             roi_height,
             self.config.polynomial_degree,
             self.config.fit_residual_px,
         )
+        inliers = array[keep]
+        scan_indices = np.asarray(point_scan_indices, dtype=int)[keep]
         residual_score = max(
             0.0, min(1.0, 1.0 - rms / self.config.fit_residual_px)
         )
-        coverage = len(inliers) / len(rows)
+        span_rows = max(
+            1, int(scan_indices.max() - scan_indices.min() + 1)
+        )
+        coverage = min(1.0, len(inliers) / span_rows)
         confidence = coverage * residual_score * _width_score(
             inliers, self.config.width_variation_ratio
         )
 
-        line_x = float(np.polyval(coefficient, 0.0)) + left
+        line_x = float(
+            np.polyval(
+                coefficient,
+                (float(np.max(inliers[:, 1])) - (bottom - 1)) / roi_height,
+            )
+        ) + left
         offset = line_x - optical_x
-        t_heading = -0.25
+        t_bottom = (float(np.max(inliers[:, 1])) - (bottom - 1)) / roi_height
+        t_top = (float(np.min(inliers[:, 1])) - (bottom - 1)) / roi_height
+        t_heading = t_bottom + 0.25 * (t_top - t_bottom)
         derivative = (
             2.0 * coefficient[0] * t_heading + coefficient[1]
         ) / roi_height
@@ -581,6 +637,8 @@ class LineDetector:
         reason = "ok"
         if abs(heading) > self.config.max_heading_deg:
             reason = "heading"
+        elif coverage < self.config.min_valid_ratio:
+            reason = "gaps"
         elif confidence < self.config.min_confidence:
             reason = "low_confidence"
         found = reason == "ok"
@@ -606,7 +664,10 @@ class LineDetector:
         debug_data = LineDebug(
             frame=working,
             mask=mask,
-            points=tuple(points),
+            points=tuple(
+                (float(point[0]), float(point[1]), int(point[2]))
+                for point in inliers
+            ),
             roi=roi_tuple,
             polynomial=tuple(float(value) for value in coefficient),
             bottom_y=bottom - 1,
@@ -650,23 +711,27 @@ def annotate_frame(
     )
     for x, y, _ in debug.points:
         cv2.circle(frame, (int(round(x + left)), int(round(y))), 2, color, -1)
-    if debug.polynomial is not None:
+    if debug.polynomial is not None and debug.points:
+        point_ys = [point[1] for point in debug.points]
+        t_bottom = (max(point_ys) - debug.bottom_y) / debug.roi_height
+        t_top = (min(point_ys) - debug.bottom_y) / debug.roi_height
         curve = []
         for step in range(0, 101):
-            t = -step / 100.0
+            t = t_bottom + (t_top - t_bottom) * step / 100.0
             x = float(np.polyval(debug.polynomial, t)) + left
             y = debug.bottom_y + t * debug.roi_height
             curve.append((int(round(x)), int(round(y))))
         cv2.polylines(frame, [np.asarray(curve, dtype=np.int32)], False, (255, 120, 0), 2)
-        bottom_x = int(round(float(np.polyval(debug.polynomial, 0.0)) + left))
+        bottom_x = int(round(float(np.polyval(debug.polynomial, t_bottom)) + left))
+        bottom_y = int(round(debug.bottom_y + t_bottom * debug.roi_height))
         cv2.line(
             frame,
-            (int(round(debug.optical_x)), debug.bottom_y),
-            (bottom_x, debug.bottom_y),
+            (int(round(debug.optical_x)), bottom_y),
+            (bottom_x, bottom_y),
             color,
             2,
         )
-        cv2.circle(frame, (bottom_x, debug.bottom_y), 4, color, -1)
+        cv2.circle(frame, (bottom_x, bottom_y), 4, color, -1)
 
     text = (
         f"{'FOUND' if observation.found else 'LOST'} "

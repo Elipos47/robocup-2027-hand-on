@@ -350,6 +350,11 @@ def _line_report(args: argparse.Namespace) -> int:
         roi_bottom=args.roi_bottom,
         threshold_block=args.block_size or None,
         threshold_c=args.threshold_c,
+        dark_threshold=args.dark_threshold,
+        max_run_ratio=args.max_run_ratio,
+        max_gap_ratio=args.max_gap_ratio,
+        width_tolerance_ratio=args.width_tolerance,
+        fit_residual_px=args.fit_residual,
         min_confidence=args.min_confidence,
         min_valid_ratio=args.min_valid_ratio,
     )
@@ -415,6 +420,13 @@ def _line_report(args: argparse.Namespace) -> int:
             "roi_bottom": args.roi_bottom,
             "block_size": args.block_size or None,
             "threshold_c": args.threshold_c,
+            "dark_threshold": config.dark_threshold,
+            "dark_max_fraction": config.dark_max_fraction,
+            "max_run_ratio": config.max_run_ratio,
+            "max_gap_ratio": config.max_gap_ratio,
+            "width_tolerance_ratio": config.width_tolerance_ratio,
+            "fit_residual_px": config.fit_residual_px,
+            "min_valid_rows": config.min_valid_rows,
             "min_confidence": args.min_confidence,
             "min_valid_ratio": args.min_valid_ratio,
         },
@@ -687,6 +699,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="dimensione adattiva dispari; 0 = automatica",
     )
     line.add_argument("--threshold-c", type=float, default=10.0)
+    line.add_argument("--dark-threshold", type=float, default=140.0)
+    line.add_argument("--max-run-ratio", type=float, default=0.35)
+    line.add_argument("--max-gap-ratio", type=float, default=0.06)
+    line.add_argument("--width-tolerance", type=float, default=0.50)
+    line.add_argument("--fit-residual", type=float, default=8.0)
     line.add_argument("--min-confidence", type=float, default=0.35)
     line.add_argument("--min-valid-ratio", type=float, default=0.45)
     line.add_argument(

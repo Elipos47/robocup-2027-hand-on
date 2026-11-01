@@ -146,15 +146,19 @@ contiene il codice applicativo del progetto precedente.
   ratio 1,93 e RMS 0,542 px; calibrazione accettata e salvata in
   `software/rcj2027/calibrations/csi_1280x720.json` (1280x720 full-fov).
 - Fatto: F0-1, primo pipeline visione linea in `software/rcj2027/line_vision.py`
-  (`docs/testing/F0_LINE_VISION.md`): undistort CSI, ROI, adaptive threshold, scanline, fit
-  parabolico robusto, confidenza, tracker e CLI `line`/`line-undistort`. La verifica
-  undistort sulle 14 viste checkerboard passa (errore omografia 0,4392 -> 0,4287 px); un frame
-  reale senza linea viene rifiutato (confidenza 0). Test host: 175 verdi. La prova positiva su
-  una linea reale non e' ancora stata eseguita.
-- In corso: eseguire la prima prova su linea reale con la CSI 1280x720 full-fov, completare i
-  segni IMU e chiudere i punti aperti di B0.
-- Prossimi passi: acquisire 30 frame di una linea reale con `camera-capture`, analizzarli con
-  `line` e conservare report, frame annotati e maschere; solo dopo si chiude F0-1.
+  (`docs/testing/F0_LINE_VISION.md`): undistort CSI, ROI, adaptive threshold, scanline
+  top-down, fit parabolico robusto, confidenza, tracker e CLI `line`/`line-undistort`. La
+  verifica undistort sulle 14 viste checkerboard passa (errore omografia 0,4392 -> 0,4287 px).
+  Prova reale su linea nera retta con robot fermo: 30/30 frame trovati, offset stabile
+  -46,0 px, heading ~3,95 deg, confidenza ~0,95, 0 perdite; report in
+  `software/logs/f0-linea-001/report.json`. Il primo tentativo dava 0/30 per bordo tavolo e
+  pavimento, corretto con scansione top-down, stop sui gap e continuita' di larghezza.
+  Test host: 176 verdi. Curvature, gap, disturbi e movimento non sono ancora provati, quindi
+  il gate F0 resta aperto.
+- In corso: prove F0 su curvatura, linea spostata, ombre e movimento a bassa velocita';
+  completare i segni IMU e chiudere i punti aperti di B0.
+- Prossimi passi: acquisire sequenze con linea inclinata/curva e un'ombra, analizzarle con
+  `line` e conservare report e frame annotati; solo dopo collegare il controller ai motori.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

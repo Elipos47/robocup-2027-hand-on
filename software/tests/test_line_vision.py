@@ -55,6 +55,19 @@ def curved_frame(width: int = 640, height: int = 360) -> np.ndarray:
     return image
 
 
+def tabletop_frame(width: int = 1280, height: int = 720) -> np.ndarray:
+    """Linea che termina sul bordo del tavolo, con pavimento scuro sotto."""
+    image = np.full((height, width), 200, np.uint8)
+    cv2.line(image, (620, 0), (620, 584), 30, 140)
+    cv2.rectangle(image, (0, 590), (width - 1, 610), 60, -1)
+    image[610:, :] = 100
+    rng = np.random.default_rng(12)
+    for x in range(0, width, 23):
+        top = 610 + int(rng.integers(0, 40))
+        cv2.line(image, (x, top), (x + 8, height - 1), 55, 3)
+    return image
+
+
 def checkerboard(
     squares_x: int = 10,
     squares_y: int = 7,
@@ -217,6 +230,17 @@ class LineDetectionTests(unittest.TestCase):
         self.assertTrue(observation.found)
         self.assertLess(abs(observation.offset_px), 3.0)
         self.assertGreater(observation.line_width_px, 150.0)
+
+    def test_line_ending_at_table_edge(self) -> None:
+        detector = line_vision.LineDetector()
+
+        observation = detector.detect(tabletop_frame())
+
+        self.assertTrue(observation.found)
+        self.assertGreater(observation.confidence, 0.8)
+        self.assertLess(observation.residual_px, 1.0)
+        self.assertAlmostEqual(observation.offset_px, -19.5, delta=5.0)
+        self.assertLess(observation.valid_rows, observation.scan_rows)
 
     def test_line_on_the_right_has_positive_offset(self) -> None:
         observation = self.detector.detect(line_frame(bottom_x=380))
@@ -404,6 +428,8 @@ class LineCliTests(unittest.TestCase):
         self.assertEqual(args.command, "line")
         self.assertTrue(args.no_undistort)
         self.assertEqual(args.min_found_ratio, 0.8)
+        self.assertEqual(args.dark_threshold, 140.0)
+        self.assertEqual(args.max_gap_ratio, 0.06)
 
     def test_parser_builds_line_undistort_command(self) -> None:
         parser = build_parser()
