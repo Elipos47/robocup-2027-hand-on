@@ -64,6 +64,11 @@ chiuso. Calibrazione di sonar, assi IMU e camere ancora da completare.
 - misurare deviazione e ripresa dopo perdita linea;
 - non usare coordinate di percorso al posto della percezione.
 
+Stato 2026-11-01: F0-1 avviato. `line_vision.py` implementa undistort CSI, ROI, soglia
+adattiva, scanline, fit parabolico, confidenza e tracker; la CLI `line` analizza sequenze e
+salva frame annotati. Test host e verifica undistort sulle immagini di calibrazione passano.
+Manca la prova positiva su una linea reale: F0 non e' chiuso.
+
 ### F1 — Elementi di missione
 
 ostacolo, marker, salite/discese, velocita' variabile, linea argentata, stanza, vittime e uscita.

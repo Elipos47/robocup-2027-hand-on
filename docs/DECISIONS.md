@@ -91,6 +91,14 @@
     Accettata come prima calibrazione della linea a 1280x720 full-fov e salvata in
     `software/rcj2027/calibrations/csi_1280x720.json`. L'undistort va verificato in F0; se
     peggiora la linea, rifare con target piu' grande o piu' pose.
+24. **Primo pipeline linea F0 (2026-11-01):** `line_vision.py` usa la calibrazione CSI, ROI
+    inferiore, adaptive threshold con fallback scuro per linee larghe, scanline e fit parabolico
+    robusto. Convenzione: offset positivo a destra, heading positivo a destra; valori in pixel
+    finche' non c'e' la trasformazione al piano del pavimento. La confidenza combina copertura,
+    residuo del fit e regolarita' della larghezza; il tracker conferma dopo 3 frame e perde lo
+    stato dopo 5. La verifica undistort sulle immagini di calibrazione passa
+    (0,4392 -> 0,4287 px) ma non e' una prova indipendente. La prova su linea reale e' il
+    criterio per chiudere F0.
 
 ## Decisioni da prendere
 

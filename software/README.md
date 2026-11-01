@@ -16,7 +16,8 @@ software/
     camera_checks.py      probe e metriche frame
     camera_calibration.py calibrazione checkerboard
     checkerboard.py       target PDF a dimensione reale
-    diagnostics.py        CLI di diagnostica camera/sonar/IMU
+    line_vision.py        undistort, rilevamento linea e tracker F0
+    diagnostics.py        CLI di diagnostica camera/sonar/IMU/linea
     calibrations/         JSON delle calibrazioni telecamere
     __main__.py    demo, sessione reale e console manuale
   tests/           test host con unittest
@@ -89,6 +90,39 @@ e ammette al massimo il 5% di outlier oltre `--outlier-mm`; il test IMU `motion`
 muova l'asse indicato. Ogni telecamera e' esclusiva: non eseguire due probe in parallelo.
 
 Risultati e limiti sono in `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`.
+
+## Visione linea F0
+
+`line_vision.py` implementa il primo pipeline della linea: undistort con
+`calibrations/csi_1280x720.json`, ROI inferiore, adaptive threshold, scanline, fit
+parabolico robusto e tracker. Non invia comandi ai motori.
+
+```sh
+cd software
+
+# Verifica l'undistort sulle viste checkerboard della calibrazione
+python3 -m rcj2027.diagnostics line-undistort \
+  --images "calib/csi/*.jpg" --json-out logs/f0-undistort.json
+
+# Acquisisce una sequenza con la CSI linea
+python3 -m rcj2027.diagnostics camera-capture --csi --camera-num 0 \
+  --size 1280x720 --full-fov --warmup 2 \
+  --count 30 --interval 0.3 --output-dir calib/linea-f0-001
+
+# Analizza la sequenza e salva report, frame annotati e maschere
+python3 -m rcj2027.diagnostics line \
+  --images "calib/linea-f0-001/*.jpg" \
+  --annotated-dir logs/f0-linea-001/annotated \
+  --mask-dir logs/f0-linea-001/mask \
+  --json-out logs/f0-linea-001/report.json
+```
+
+`offset_px` positivo significa linea a destra dell'asse ottico; `heading_deg` positivo
+significa linea che piega a destra. I valori restano validi solo con `found=true`. La
+calibrazione e' legata a 1280x720 full-fov: un frame di risoluzione diversa viene rifiutato.
+Exit code del comando `line`: `0` se la frazione di frame con linea raggiunge
+`--min-found-ratio` (default 0.8), `1` se sotto soglia, `2` per errore. La prova su linea
+reale e' ancora da eseguire; dettagli e limiti in `docs/testing/F0_LINE_VISION.md`.
 
 Per una console manuale sulla porta reale, che accetta comandi in minuscolo e calcola il
 checksum:

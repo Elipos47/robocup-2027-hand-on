@@ -12,8 +12,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 
 ## Stato
 
-- Fase corrente: B1 su banco. Protocollo, logger, comandi motori e lettura di base di sonar/IMU
-  sono verificati; calibrazione, misure termiche e punti aperti di B0 restano da completare.
+- Fase corrente: F0 (visione linea) dopo B1 su banco. Protocollo, logger, comandi motori e
+  lettura di base di sonar/IMU sono verificati; calibrazione, misure termiche e punti aperti di
+  B0 restano da completare.
 - Fatto: package `software/rcj2027/` con protocollo v1.1, trasporto finto, logger e gate di
   sicurezza; test unittest verdi e demo fake disponibile. Il movimento reale resta disabilitato.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; default con
@@ -41,6 +42,10 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   accettata (RMS 0,523 px); CSI nitida con autofocus, 1280x720 full-fov verificata e
   calibrazione CSI accettata (RMS 0,542 px, copertura 16,3%); il sonar a 500 mm e' accettato
   per ostacoli piu' vicini di 0,5 m con target fermo.
+- Fatto: F0-1, primo pipeline visione linea (`docs/testing/F0_LINE_VISION.md`): undistort
+  CSI, ROI, adaptive threshold, scanline, fit robusto, confidenza, tracker e CLI. La verifica
+  undistort passa sulle immagini di calibrazione; la prova positiva su una linea reale e'
+  ancora da eseguire.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -68,7 +73,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
 | Protocollo seriale v1.1 | `docs/architecture/SERIAL_PROTOCOL.md` |
-| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md` |
+| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`, `docs/testing/F0_LINE_VISION.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
 | Decisioni aperte | `docs/DECISIONS.md` |
 | Provenienza e scelte di importazione | `docs/SOURCE_MAP.md` |
@@ -94,11 +99,12 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Verificare l'undistort della CSI e iniziare il pipeline visione della linea (F0); le
-   calibrazioni USB e CSI sono accettate.
+1. Eseguire la prima prova su linea reale con il pipeline F0 (`docs/testing/F0_LINE_VISION.md`);
+   l'undistort CSI e' verificato sulle immagini di calibrazione, non ancora su una linea.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
-4. Eseguire il primo test controllato della linea sul campo.
+4. Ripetere il test della linea con illuminazione e superfici diverse, poi collegare il
+   controller ai motori solo dopo il gate di sicurezza.
 
 La validazione e la build si eseguono con:
 

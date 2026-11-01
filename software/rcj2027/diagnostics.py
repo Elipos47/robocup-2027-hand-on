@@ -5,6 +5,8 @@ Comandi:
   python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10
   python3 -m rcj2027.diagnostics imu --port /dev/ttyACM0 --duration 10
   python3 -m rcj2027.diagnostics camera-calibrate --images "calib/*.jpg"
+  python3 -m rcj2027.diagnostics line --images "calib/linea/*.jpg"
+  python3 -m rcj2027.diagnostics line-undistort --images "calib/csi/*.jpg"
 
 La diagnostica seriale usa ``DEFAULT_CONFIG``: non abilita il movimento.
 """
@@ -38,6 +40,7 @@ from .camera_calibration import (
     save_calibration,
 )
 from .checkerboard import CheckerboardError, make_checkerboard_pdf
+from . import line_vision
 from .logger import JsonlLogger
 from .protocol import SensorReading
 from .safety import DEFAULT_CONFIG
@@ -50,6 +53,11 @@ from .sensor_checks import (
 )
 from .session import RobotSession
 from .transport import SerialTransport
+
+
+DEFAULT_LINE_CALIBRATION = (
+    Path(__file__).resolve().parent / "calibrations" / "csi_1280x720.json"
+)
 
 
 def _default_run_id(kind: str) -> str:
@@ -121,6 +129,23 @@ def _write_json(report: dict[str, Any], path: str | Path | None) -> None:
         json.dumps(report, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
+
+
+def _distribution(values: list[float]) -> dict[str, float] | None:
+    if not values:
+        return None
+    ordered = sorted(values)
+    middle = len(ordered) // 2
+    if len(ordered) % 2:
+        median = ordered[middle]
+    else:
+        median = (ordered[middle - 1] + ordered[middle]) / 2.0
+    return {
+        "min": round(ordered[0], 3),
+        "median": round(median, 3),
+        "mean": round(sum(ordered) / len(ordered), 3),
+        "max": round(ordered[-1], 3),
+    }
 
 
 def _serial_report(args: argparse.Namespace) -> int:
@@ -308,7 +333,157 @@ def _camera_calibrate_report(args: argparse.Namespace) -> int:
     return 0
 
 
-def _checkerboard_report(args: argparse.Namespace) -> int:
+def _line_report(args: argparse.Namespace) -> int:
+    if not 0 <= args.min_found_ratio <= 1:
+        raise ValueError("--min-found-ratio deve essere tra 0 e 1")
+    paths = sorted(glob.glob(args.images))
+    if not paths:
+        raise line_vision.LineVisionError(
+            f"nessuna immagine trovata: {args.images}"
+        )
+
+    camera_model = None
+    if not args.no_undistort:
+        camera_model = line_vision.load_camera_model(args.calibration)
+    config = line_vision.LineConfig(
+        roi_top=args.roi_top,
+        roi_bottom=args.roi_bottom,
+        threshold_block=args.block_size or None,
+        threshold_c=args.threshold_c,
+        min_confidence=args.min_confidence,
+        min_valid_ratio=args.min_valid_ratio,
+    )
+    detector = line_vision.LineDetector(camera_model, config)
+    tracker = line_vision.LineTracker()
+
+    annotated_dir = Path(args.annotated_dir) if args.annotated_dir else None
+    mask_dir = Path(args.mask_dir) if args.mask_dir else None
+    debug_enabled = annotated_dir is not None or mask_dir is not None
+
+    records: list[dict[str, Any]] = []
+    found = 0
+    confirmed = 0
+    max_lost = 0
+    for path in paths:
+        frame = line_vision.read_image(path)
+        if debug_enabled:
+            observation, debug = detector.detect(frame, debug=True)
+        else:
+            observation = detector.detect(frame)
+            debug = None
+        state = tracker.update(observation)
+        if observation.found:
+            found += 1
+        if state.confirmed:
+            confirmed += 1
+        max_lost = max(max_lost, state.lost_frames)
+
+        record: dict[str, Any] = {
+            "image": path,
+            **observation.to_dict(),
+            "tracker": asdict(state),
+        }
+        records.append(record)
+
+        if debug is not None:
+            stem = Path(path).stem
+            if annotated_dir is not None:
+                annotated = line_vision.annotate_frame(debug, observation)
+                record["annotated"] = str(
+                    line_vision.write_image(
+                        annotated_dir / f"{stem}-annotated.jpg", annotated
+                    )
+                )
+            if mask_dir is not None:
+                record["mask"] = str(
+                    line_vision.write_image(mask_dir / f"{stem}-mask.png", debug.mask)
+                )
+
+    recoveries = tracker.recoveries
+    offsets = [record["offset_px"] for record in records if record["found"]]
+    headings = [record["heading_deg"] for record in records if record["found"]]
+    confidences = [record["confidence"] for record in records]
+    latencies = [record["processing_ms"] for record in records]
+    found_ratio = found / len(records)
+    report = {
+        "kind": "line",
+        "images": len(records),
+        "calibration": str(args.calibration) if camera_model is not None else None,
+        "undistorted": camera_model is not None,
+        "config": {
+            "roi_top": args.roi_top,
+            "roi_bottom": args.roi_bottom,
+            "block_size": args.block_size or None,
+            "threshold_c": args.threshold_c,
+            "min_confidence": args.min_confidence,
+            "min_valid_ratio": args.min_valid_ratio,
+        },
+        "summary": {
+            "found": found,
+            "found_ratio": round(found_ratio, 4),
+            "confirmed_frames": confirmed,
+            "recoveries": recoveries,
+            "max_lost_frames": max_lost,
+            "offset_px": _distribution(offsets),
+            "heading_deg": _distribution(headings),
+            "confidence": _distribution(confidences),
+            "processing_ms": _distribution(latencies),
+        },
+        "passed": found_ratio >= args.min_found_ratio,
+        "frames": records,
+    }
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+    _write_json(report, args.json_out)
+    return 0 if report["passed"] else 1
+
+
+def _line_undistort_report(args: argparse.Namespace) -> int:
+    paths = sorted(glob.glob(args.images))
+    if not paths:
+        raise line_vision.LineVisionError(
+            f"nessuna immagine trovata: {args.images}"
+        )
+    model = line_vision.load_camera_model(args.calibration)
+    report = line_vision.validate_undistortion(
+        paths,
+        model,
+        pattern_size=_parse_pattern(args.pattern),
+        min_images=args.min_images,
+        tolerance_px=args.tolerance,
+        max_mean_residual_px=args.max_mean_residual,
+    )
+    payload = report.to_dict()
+    if args.save_dir:
+        output = Path(args.save_dir)
+        detector = line_vision.LineDetector(model)
+        saved = []
+        for path in paths:
+            try:
+                frame = line_vision.read_image(path)
+            except line_vision.LineVisionError as exc:
+                print(f"ATTENZIONE: {exc}", file=sys.stderr)
+                continue
+            if frame.shape[1::-1] != model.image_size:
+                print(
+                    f"ATTENZIONE: {path} ha risoluzione diversa dalla calibrazione",
+                    file=sys.stderr,
+                )
+                continue
+            saved.append(
+                str(
+                    line_vision.write_image(
+                        output / f"{Path(path).stem}-undistorted.jpg",
+                        detector.undistort(frame),
+                    )
+                )
+            )
+        payload["saved"] = saved
+    print(json.dumps(payload, indent=2, ensure_ascii=False))
+    _write_json(payload, args.json_out)
+    return 0 if report.passed else 1
+
+
+
     pattern = _parse_pattern(args.pattern)
     output = make_checkerboard_pdf(
         args.output,
@@ -484,6 +659,72 @@ def build_parser() -> argparse.ArgumentParser:
     capture.add_argument("--prefix", default="frame")
     capture.add_argument("--json-out", default=None)
 
+    line = subparsers.add_parser(
+        "line",
+        help="rileva la linea nera su una sequenza di immagini",
+    )
+    line.add_argument(
+        "--images",
+        required=True,
+        help="glob delle immagini, es. 'calib/linea/*.jpg'",
+    )
+    line.add_argument(
+        "--calibration",
+        default=str(DEFAULT_LINE_CALIBRATION),
+        help="calibrazione della telecamera linea (default: CSI 1280x720)",
+    )
+    line.add_argument(
+        "--no-undistort",
+        action="store_true",
+        help="analizza il frame grezzo, senza calibrazione",
+    )
+    line.add_argument("--roi-top", type=float, default=0.55)
+    line.add_argument("--roi-bottom", type=float, default=0.98)
+    line.add_argument(
+        "--block-size",
+        type=int,
+        default=0,
+        help="dimensione adattiva dispari; 0 = automatica",
+    )
+    line.add_argument("--threshold-c", type=float, default=10.0)
+    line.add_argument("--min-confidence", type=float, default=0.35)
+    line.add_argument("--min-valid-ratio", type=float, default=0.45)
+    line.add_argument(
+        "--min-found-ratio",
+        type=float,
+        default=0.8,
+        help="frazione minima di frame con linea per uscire con 0",
+    )
+    line.add_argument("--annotated-dir", default=None)
+    line.add_argument("--mask-dir", default=None)
+    line.add_argument("--json-out", default=None)
+
+    undistort = subparsers.add_parser(
+        "line-undistort",
+        help="verifica l'undistort della telecamera linea su checkerboard",
+    )
+    undistort.add_argument(
+        "--images",
+        required=True,
+        help="glob delle immagini checkerboard, es. 'calib/csi/*.jpg'",
+    )
+    undistort.add_argument(
+        "--calibration",
+        default=str(DEFAULT_LINE_CALIBRATION),
+        help="calibrazione da verificare (default: CSI 1280x720)",
+    )
+    undistort.add_argument("--pattern", default="9x6", help="corner interni")
+    undistort.add_argument("--min-images", type=int, default=3)
+    undistort.add_argument(
+        "--tolerance",
+        type=float,
+        default=0.05,
+        help="peggioramento massimo ammesso dall'undistort, in px",
+    )
+    undistort.add_argument("--max-mean-residual", type=float, default=1.0)
+    undistort.add_argument("--save-dir", default=None)
+    undistort.add_argument("--json-out", default=None)
+
     target = subparsers.add_parser(
         "checkerboard",
         help="genera un target checkerboard PDF a dimensione reale",
@@ -511,6 +752,10 @@ def main(argv: list[str] | None = None) -> int:
             return _camera_capture_report(args)
         if args.command == "camera-calibrate":
             return _camera_calibrate_report(args)
+        if args.command == "line":
+            return _line_report(args)
+        if args.command == "line-undistort":
+            return _line_undistort_report(args)
         if args.command == "checkerboard":
             return _checkerboard_report(args)
     except (CameraError, CalibrationError, RuntimeError, OSError, ValueError) as exc:

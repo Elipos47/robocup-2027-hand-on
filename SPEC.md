@@ -1,14 +1,16 @@
 # SPEC — Robocup2027HandOn
 
-**Versione:** 0.11
-**Data:** 31/10/2026
+**Versione:** 0.12
+**Data:** 01/11/2026
 **Stato:** sviluppo attivo; protocollo v1.1 implementato e verificato a banco. B0 parziale:
 rotazione a 255, stop e watchdog verificati; freno/coast e ripetizione da completare. B1-1:
 sessione reale con handshake, heartbeat, status, logger e stop. B1-2: comandi motori a 255 con
 gate, ack, stop e rotazione confermata. B1-3: HC-SR04 e BNO085 letti nello status. B1-4:
 diagnostica software per camera, sonar e IMU; camera e IMU passano, sonar valido ma instabile.
-Valori operativi `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`; gate predefinito
-chiuso. Movimento reale disabilitato di default.
+Calibrazioni USB e CSI accettate; F0-1: primo pipeline linea con undistort, rilevamento,
+tracker e CLI, verificato sui test host e sulle immagini di calibrazione. Manca la prova su
+linea reale. Valori operativi `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`; gate
+predefinito chiuso. Movimento reale disabilitato di default.
 
 ## 1. Obiettivo
 
@@ -127,6 +129,11 @@ segni IMU e misure termiche restano da completare; il gate B1 non e' ancora chiu
 
 Tracking della linea con prove su tratti reali, gap e disturbi; nessuna claim basata solo su
 unità o test sintetici.
+
+Stato 2026-11-01: pipeline F0-1 implementato in `software/rcj2027/line_vision.py` con
+undistort CSI, ROI, adaptive threshold, fit robusto, confidenza, tracker e CLI. Verifica
+undistort sulle immagini di calibrazione PASS (0,4392 -> 0,4287 px); test host verdi. La prova
+su una linea reale non e' ancora stata eseguita, quindi il gate resta aperto.
 
 ### Gate F1 — mission elements
 

@@ -42,6 +42,8 @@ della camera, IMU, sonar. Il registro non e' un inventario da completare.
 | 2026-10-31 | BNO085 | stazionario dopo correzione assi | 100/100 validi; pitch std 4.2 mdeg, roll 10.7 mdeg, yaw 7.1 mdeg | telemetria + analisi software | robot fermo, 10 s | pochi mdeg | pitch/roll scambiati corretti; PASS |
 | 2026-10-31 | BNO085 | rotazione pitch manuale | 149/151 validi; pitch -21.2..8.0 deg; asse dominante pitch | telemetria + analisi software | muso su/giu' a mano | movimento manuale | B1-4: PASS dopo swap |
 | 2026-10-31 | BNO085 | rotazione roll manuale | 150/150 validi; roll -19.8..25.6 deg; asse dominante roll | telemetria + analisi software | inclinazione destra/sinistra a mano | movimento manuale | B1-4: PASS dopo swap |
+| 2026-11-01 | Camera CSI IMX708 | verifica undistort su checkerboard | errore omografia 0.4392 -> 0.4287 px; spostamento corner 0.717 px medio, 3.622 px max | OpenCV 4.11 + `csi_1280x720.json` | 14/15 immagini di calibrazione, 1280x720 full-fov | RMS nominale | PASS tecnico; non sostituisce la prova su linea reale |
+| 2026-11-01 | Software linea F0 | tempo di elaborazione frame 1280x720 | 37.6 ms mediana (36.0-44.6), senza undistort 27.9 ms | Python + OpenCV 4.11 su Raspberry Pi 5 | frame reale, 10 ripetizioni, mappe gia' calcolate | pochi ms | sufficiente per F0 a bassa velocita'; non include l'acquisizione |
 | 2026-10-31 | Motori | PWM di banco che muove | 150: solo ronzio; 255: rotazione confermata dall'operatore | osservazione visiva + telemetria | ruote sollevate | - | 255 non e' il pwm_max definitivo |
 | TBD | Ruota | diametro effettivo | TODO | calibro | ruota montata | - | per la velocita' lineare |
 | TBD | Motori | RPM a PWM noto | TODO | conteggio giri in 10 s | ruote sollevate, PWM 255 | - | opzionale |

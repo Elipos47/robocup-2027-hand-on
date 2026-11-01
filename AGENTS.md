@@ -145,10 +145,16 @@ contiene il codice applicativo del progetto precedente.
 - Fatto: il set CSI successivo ha 14/15 viste, copertura 16,3%, pose spread 423,6 px, size
   ratio 1,93 e RMS 0,542 px; calibrazione accettata e salvata in
   `software/rcj2027/calibrations/csi_1280x720.json` (1280x720 full-fov).
-- In corso: validare l'undistort CSI in F0, completare i segni IMU e chiudere i punti aperti di
-  B0.
-- Prossimi passi: iniziare il pipeline visione della linea (F0) usando CSI 1280x720 full-fov e
-  la calibrazione `csi_1280x720.json`.
+- Fatto: F0-1, primo pipeline visione linea in `software/rcj2027/line_vision.py`
+  (`docs/testing/F0_LINE_VISION.md`): undistort CSI, ROI, adaptive threshold, scanline, fit
+  parabolico robusto, confidenza, tracker e CLI `line`/`line-undistort`. La verifica
+  undistort sulle 14 viste checkerboard passa (errore omografia 0,4392 -> 0,4287 px); un frame
+  reale senza linea viene rifiutato (confidenza 0). Test host: 175 verdi. La prova positiva su
+  una linea reale non e' ancora stata eseguita.
+- In corso: eseguire la prima prova su linea reale con la CSI 1280x720 full-fov, completare i
+  segni IMU e chiudere i punti aperti di B0.
+- Prossimi passi: acquisire 30 frame di una linea reale con `camera-capture`, analizzarli con
+  `line` e conservare report, frame annotati e maschere; solo dopo si chiude F0-1.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione
