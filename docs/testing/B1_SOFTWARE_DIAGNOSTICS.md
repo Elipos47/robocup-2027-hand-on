@@ -114,6 +114,10 @@ La misura precedente (`sharpness=9,3`) era una scena fuori fuoco, non un problem
 La IMX708 con autofocus e checkerboard e' nitida. La nitidezza viene ora normalizzata a 640 px
 di larghezza, altrimenti il valore numerico cambia con la risoluzione.
 
+Una prova con il checkerboard troppo vicino ha dato `quality_passed=true` ma
+`checkerboard_corners=0`: il pattern era tagliato dal frame. Per la calibrazione deve essere
+visibile **tutta** la scacchiera, bordo bianco compreso.
+
 Per la linea va scelta una risoluzione di lavoro (candidata: 1280x720) e la CSI va calibrata a
 quella risoluzione, non a 640x480.
 

@@ -48,7 +48,9 @@ riferimento e l'orientamento degli assi vanno dichiarati dall'operatore.
    scalatura. Il valore da passare e' sempre il lato **reale** del quadrato stampato.
 3. Fissa il target su una superficie piana e opaca; cattura 12-20 immagini con la camera
   definitiva, a distanze e angolazioni diverse, con il pattern che occupa circa il 50-80% del
-   frame. Evita riflessi, ombre e mosso. Con la USB:
+   frame. **Tutto il pattern e il bordo bianco devono essere dentro il frame**: se il bordo viene
+   tagliato, `findChessboardCorners` restituisce 0 corner anche se a occhio vedi la scacchiera.
+   Evita riflessi, ombre e mosso. Con la USB:
    ```sh
    python3 -m rcj2027.diagnostics camera-capture --device auto \
      --count 15 --interval 2 --output-dir calib/usb

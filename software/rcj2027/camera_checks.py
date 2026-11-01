@@ -60,6 +60,7 @@ class CameraProbe:
     saved_path: str | None
     error: str | None
     passed: bool
+    quality_passed: bool | None = None
     model: str | None = None
 
 
@@ -153,6 +154,7 @@ def analyze_frame(
         min_contrast=min_contrast,
         min_sharpness=min_sharpness,
     )
+    quality_passed = metrics.passed
 
     corner_count: int | None = None
     if checkerboard_size is not None:
@@ -180,6 +182,7 @@ def analyze_frame(
         saved_path=saved_path,
         error=None,
         passed=metrics.passed,
+        quality_passed=quality_passed,
     )
 
 
@@ -248,6 +251,7 @@ def probe_camera(
             saved_path=probed.saved_path,
             error=None,
             passed=probed.passed,
+            quality_passed=probed.quality_passed,
         )
     finally:
         capture.release()

@@ -114,6 +114,7 @@ class CameraChecksTests(unittest.TestCase):
         probe = analyze_frame(frame, checkerboard_size=(9, 6))
 
         self.assertEqual(probe.checkerboard_corners, 54)
+        self.assertTrue(probe.quality_passed)
         self.assertTrue(probe.passed)
 
     def test_high_resolution_sharpness_is_normalized(self) -> None:
@@ -133,6 +134,7 @@ class CameraChecksTests(unittest.TestCase):
         probe = analyze_frame(frame, checkerboard_size=(9, 6))
 
         self.assertEqual(probe.checkerboard_corners, 0)
+        self.assertTrue(probe.quality_passed)
         self.assertFalse(probe.passed)
 
     def test_analyze_frame_saves_snapshot(self) -> None:
