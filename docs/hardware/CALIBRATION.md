@@ -50,7 +50,8 @@ riferimento e l'orientamento degli assi vanno dichiarati dall'operatore.
   definitiva, a distanze e angolazioni diverse, con il pattern che occupa circa il 50-80% del
    frame. **Tutto il pattern e il bordo bianco devono essere dentro il frame**: se il bordo viene
    tagliato, `findChessboardCorners` restituisce 0 corner anche se a occhio vedi la scacchiera.
-   Evita riflessi, ombre e mosso. Con la USB:
+   Se il report dice `quality_passed: true` ma `checkerboard_corners: 0`, allontana il foglio o
+   alza la camera. Evita riflessi, ombre e mosso. Con la USB:
    ```sh
    python3 -m rcj2027.diagnostics camera-capture --device auto \
      --count 15 --interval 2 --output-dir calib/usb

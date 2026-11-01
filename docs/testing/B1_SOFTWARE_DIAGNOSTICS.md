@@ -116,7 +116,8 @@ di larghezza, altrimenti il valore numerico cambia con la risoluzione.
 
 Una prova con il checkerboard troppo vicino ha dato `quality_passed=true` ma
 `checkerboard_corners=0`: il pattern era tagliato dal frame. Per la calibrazione deve essere
-visibile **tutta** la scacchiera, bordo bianco compreso.
+visibile **tutta** la scacchiera, bordo bianco compreso. Se `quality_passed` e' vero ma i corner
+sono zero, allontanare il foglio o alzare la camera.
 
 Per la linea va scelta una risoluzione di lavoro (candidata: 1280x720) e la CSI va calibrata a
 quella risoluzione, non a 640x480.

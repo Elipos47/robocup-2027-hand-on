@@ -237,6 +237,16 @@ def _camera_report(args: argparse.Namespace) -> int:
         )
 
     report = asdict(probe)
+    if (
+        checkerboard is not None
+        and probe.checkerboard_corners == 0
+        and probe.quality_passed
+    ):
+        print(
+            "ATTENZIONE: checkerboard non rilevato nonostante la qualita' del frame "
+            "sia buona. Controlla che tutto il pattern e il bordo bianco siano nel frame.",
+            file=sys.stderr,
+        )
     print(json.dumps(report, indent=2, ensure_ascii=False))
     _write_json(report, args.json_out)
     return 0 if probe.passed else 1
