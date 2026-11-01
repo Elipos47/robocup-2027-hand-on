@@ -65,7 +65,7 @@ I test host non richiedono hardware:
 - calibrazione con viste checkerboard sintetiche;
 - raccolta status con sessione finta.
 
-La suite completa e' a **143 test**, tutti verdi.
+La suite completa e' a **144 test**, tutti verdi.
 
 ## Camera
 
@@ -126,6 +126,12 @@ sono zero, allontanare il foglio o alzare la camera.
 
 Per la linea va scelta una risoluzione di lavoro (candidata: 1280x720) e la CSI va calibrata a
 quella risoluzione, non a 640x480.
+
+La calibrazione USB a 640x480 e' accettata. Per la CSI, un set di 15 frame ha dato copertura
+14,0% ma **dispersione dei centri 0,6 px e rapporto dimensioni 1,00**: tutte le viste erano la
+stessa posa. Il calibratore ora rifiuta questo caso con `viste troppo simili`. Per una calibrazione
+utile servono 8-10 pose diverse (inclinazioni e posizioni), non 15 copie. Con copertura 14-20% e
+pose varie si puo' usare `--min-coverage 0.14`.
 
 La calibrazione intrinseca e' implementata e testata con immagini sintetiche; la CLI
 `camera-calibrate` e' stata eseguita end-to-end su 5 viste sintetiche (RMS 0,045) per verificare

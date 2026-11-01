@@ -62,7 +62,10 @@ riferimento e l'orientamento degli assi vanno dichiarati dall'operatore.
 4. Salva le immagini in una cartella, ad esempio `calib/`.
 5. Esegui `camera-calibrate` con lo stesso pattern e lato usati per la stampa.
 6. Il calibratore rifiuta se il pattern occupa in media meno del **20%** del frame. Punta al
-   50-80%: avvicina la camera o usa un target piu' grande.
+   50-80%: avvicina la camera o usa un target piu' grande. Se sei vincolato dalla quota, con
+   **pose diverse** puoi accettare 14-20% usando `--min-coverage 0.14`. Il calibratore rifiuta
+   anche viste quasi identiche: inclina e sposta il target tra i frame
+   (`--min-pose-spread`, default 40 px).
 7. Conserva il JSON prodotto e verifica l'RMS: sotto 1 px e' accettabile, sotto 0,5 px e' buono.
 
 La calibrazione reale usa la lente e il montaggio veri; le viste sintetiche verificano solo il

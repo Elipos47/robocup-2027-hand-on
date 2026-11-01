@@ -82,6 +82,10 @@
     still perche' 1280x720 usa il modo 1536x864 con crop 2x; `--full-fov` forza il sensore
     intero 2304x1296 e con checkerboard completo da' 54 corner e `passed=true`. La nitidezza e'
     normalizzata a 640 px per confrontare risoluzioni diverse.
+22. **Diversita' delle pose per la calibrazione (2026-11-01):** il calibratore rifiuta set con
+    dispersione dei centri < 40 px e rapporto dimensioni < 1,05, perche' viste quasi identiche
+    non vincolano focale e distorsione. Con copertura 14-20% e pose diverse si puo' usare
+    `--min-coverage 0.14`; il set CSI con 15 frame identici (spread 0,6 px) e' stato rifiutato.
 
 ## Decisioni da prendere
 

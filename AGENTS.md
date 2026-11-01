@@ -140,6 +140,8 @@ contiene il codice applicativo del progetto precedente.
   con nitidezza normalizzata 149,3. La nitidezza e' normalizzata a 640 px per confrontare
   risoluzioni diverse. `--full-fov` forza il sensore intero 2304x1296: con checkerboard completo
   la probe da' 54 corner e `passed=true`; senza, 1280x720 usa un crop 1536x864.
+- Nota: il set CSI da 15 frame aveva copertura 14,0% ma pose identiche (spread 0,6 px, size
+  ratio 1,00); il calibratore lo rifiuta. Servono 8-10 pose diverse, non 15 copie.
 - In corso: calibrare la CSI alla risoluzione di linea (candidata 1280x720) e definire il
   montaggio; validare i segni IMU e chiudere i punti aperti di B0.
 - Prossimi passi: usare `camera-capture --csi --size 1280x720 --full-fov` e

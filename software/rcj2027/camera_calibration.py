@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -31,6 +32,8 @@ class CameraCalibration:
     rms: float
     coverage_min: float
     coverage_mean: float
+    pose_spread_px: float
+    size_ratio: float
     camera_matrix: list[list[float]]
     distortion: list[float]
 
@@ -56,11 +59,13 @@ def calibrate_camera(
     square_size_mm: float = 25.0,
     min_images: int = 3,
     min_coverage: float = 0.2,
+    min_pose_spread_px: float = 40.0,
 ) -> CameraCalibration:
     """Calcola matrice intrinseca e distorsione da immagini checkerboard.
 
     ``pattern_size`` e' il numero di corner interni, non il numero di quadrati.
     ``min_coverage`` e' la frazione minima media del frame occupata dal pattern.
+    ``min_pose_spread_px`` richiede che il target cambi posizione tra le viste.
     """
     if not HAS_CV2:
         raise CalibrationError(
@@ -72,6 +77,8 @@ def calibrate_camera(
         raise ValueError("min_images deve essere positivo")
     if not 0 < min_coverage <= 1:
         raise ValueError("min_coverage deve essere tra 0 e 1")
+    if min_pose_spread_px < 0:
+        raise ValueError("min_pose_spread_px non puo' essere negativo")
 
     object_template = np.zeros(
         (pattern_size[0] * pattern_size[1], 3),
@@ -83,6 +90,8 @@ def calibrate_camera(
     object_points: list[Any] = []
     image_points: list[Any] = []
     coverages: list[float] = []
+    centers: list[tuple[float, float]] = []
+    box_areas: list[float] = []
     image_size: tuple[int, int] | None = None
     rejected = 0
 
@@ -125,6 +134,9 @@ def calibrate_camera(
         coverages.append(
             (box_width * box_height) / (size[0] * size[1])
         )
+        center = corners.reshape(-1, 2).mean(axis=0)
+        centers.append((float(center[0]), float(center[1])))
+        box_areas.append(float(box_width * box_height))
 
     if image_size is None or len(object_points) < min_images:
         raise CalibrationError(
@@ -138,6 +150,23 @@ def calibrate_camera(
         raise CalibrationError(
             f"pattern troppo piccolo: copertura media {coverage_mean:.1%}, "
             f"minimo {min_coverage:.0%}; avvicinare la camera o ingrandire il target"
+        )
+
+    pose_spread = 0.0
+    for index, first in enumerate(centers):
+        for second in centers[index + 1 :]:
+            pose_spread = max(
+                pose_spread,
+                math.hypot(first[0] - second[0], first[1] - second[1]),
+            )
+    size_ratio = (
+        max(box_areas) / min(box_areas) if min(box_areas) > 0 else float("inf")
+    )
+    if pose_spread < min_pose_spread_px and size_ratio < 1.05:
+        raise CalibrationError(
+            f"viste troppo simili: dispersione centri {pose_spread:.1f} px, "
+            f"rapporto dimensioni {size_ratio:.2f}; inclina e sposta il target "
+            f"tra le viste"
         )
 
     rms, camera_matrix, distortion, _, _ = cv2.calibrateCamera(
@@ -156,6 +185,8 @@ def calibrate_camera(
         rms=round(float(rms), 6),
         coverage_min=round(coverage_min, 4),
         coverage_mean=round(coverage_mean, 4),
+        pose_spread_px=round(pose_spread, 2),
+        size_ratio=round(size_ratio, 4),
         camera_matrix=[[float(value) for value in row] for row in camera_matrix],
         distortion=[float(value) for value in distortion.reshape(-1)],
     )

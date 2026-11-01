@@ -92,9 +92,17 @@ class CameraCalibrationTests(unittest.TestCase):
         self.assertGreater(calibration.rms, 0)
         self.assertGreater(calibration.coverage_min, 0.2)
         self.assertGreater(calibration.coverage_mean, 0.2)
+        self.assertGreater(calibration.pose_spread_px, 40)
+        self.assertGreater(calibration.size_ratio, 1.05)
         self.assertEqual(len(calibration.camera_matrix), 3)
         self.assertEqual(len(calibration.camera_matrix[0]), 3)
         self.assertTrue(calibration.distortion)
+
+    def test_identical_views_rejected(self) -> None:
+        frame = synthetic_views()[0]
+
+        with self.assertRaises(CalibrationError):
+            calibrate_camera([frame, frame, frame], min_images=3)
 
     def test_small_board_rejected(self) -> None:
         small = checkerboard(square_px=10, margin=10)

@@ -298,6 +298,7 @@ def _camera_calibrate_report(args: argparse.Namespace) -> int:
         square_size_mm=args.square_mm,
         min_images=args.min_images,
         min_coverage=args.min_coverage,
+        min_pose_spread_px=args.min_pose_spread,
     )
     output = save_calibration(calibration, args.output)
     report = calibration.to_dict()
@@ -441,6 +442,12 @@ def build_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.2,
         help="frazione minima media del frame occupata dal pattern",
+    )
+    calibration.add_argument(
+        "--min-pose-spread",
+        type=float,
+        default=40.0,
+        help="spostamento minimo del centro del pattern tra le viste, in px",
     )
     calibration.add_argument("--output", default="camera_calibration.json")
     calibration.add_argument("--json-out", default=None)
