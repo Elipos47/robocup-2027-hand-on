@@ -31,7 +31,7 @@ cd software
 python3 -m rcj2027.diagnostics camera --list
 python3 -m rcj2027.diagnostics camera --device auto --save /tmp/camera0.jpg
 python3 -m rcj2027.diagnostics camera --csi --camera-num 0 \
-  --size 1280x720 --warmup 2 --save /tmp/csi0.jpg
+  --size 1280x720 --full-fov --warmup 2 --save /tmp/csi0.jpg
 
 # Sonar: raccolta e analisi
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10
@@ -114,6 +114,11 @@ La misura precedente (`sharpness=9,3`) era una scena fuori fuoco, non un problem
 La IMX708 con autofocus e checkerboard e' nitida. La nitidezza viene ora normalizzata a 640 px
 di larghezza, altrimenti il valore numerico cambia con la risoluzione.
 
+La preview puo' mostrare piu' campo dello still perche' libcamera sceglie un modo sensore diverso:
+1280x720 usa di default 1536x864, che e' un crop 2x. Con `--full-fov` si forza il sensore intero
+2304x1296 mantenendo l'output 1280x720. Verificato: checkerboard completo, 54 corner,
+`quality_passed=true`, `passed=true`.
+
 Una prova con il checkerboard troppo vicino ha dato `quality_passed=true` ma
 `checkerboard_corners=0`: il pattern era tagliato dal frame. Per la calibrazione deve essere
 visibile **tutta** la scacchiera, bordo bianco compreso. Se `quality_passed` e' vero ma i corner
@@ -139,8 +144,8 @@ python3 -m rcj2027.diagnostics camera-capture --device auto \
   --count 15 --interval 2 --output-dir calib/usb
 ```
 
-Per la CSI si usa `--csi --camera-num 0 --size 1280x720` (o la risoluzione scelta per la
-linea); la calibrazione va rifatta a quella risoluzione.
+Per la CSI si usa `--csi --camera-num 0 --size 1280x720 --full-fov` (o la risoluzione scelta
+per la linea); la calibrazione va rifatta a quella risoluzione e con lo stesso campo visivo.
 
 ## Sonar
 

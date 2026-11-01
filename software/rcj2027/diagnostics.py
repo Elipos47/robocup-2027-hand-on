@@ -223,6 +223,7 @@ def _camera_report(args: argparse.Namespace) -> int:
             args.camera_num,
             size=_parse_size(args.size),
             warmup_s=args.warmup,
+            full_fov=args.full_fov,
             save_path=args.save,
             checkerboard_size=checkerboard,
             **metric_kwargs,
@@ -262,6 +263,7 @@ def _camera_capture_report(args: argparse.Namespace) -> int:
             prefix=args.prefix,
             size=_parse_size(args.size),
             warmup_s=args.warmup,
+            full_fov=args.full_fov,
         )
     else:
         device = _resolve_device(args.device)
@@ -409,6 +411,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="risoluzione libcamera, es. 1280x720 o 1536x864",
     )
     camera.add_argument(
+        "--full-fov",
+        action="store_true",
+        help="usa il sensore intero 2304x1296 invece del crop 1536x864",
+    )
+    camera.add_argument(
         "--warmup",
         type=float,
         default=1.0,
@@ -457,6 +464,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--size",
         default="640x480",
         help="risoluzione libcamera, es. 1280x720 o 1536x864",
+    )
+    capture.add_argument(
+        "--full-fov",
+        action="store_true",
+        help="usa il sensore intero 2304x1296 invece del crop 1536x864",
     )
     capture.add_argument("--warmup", type=float, default=1.0)
     capture.add_argument("--count", type=int, default=15)

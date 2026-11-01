@@ -138,11 +138,12 @@ contiene il codice applicativo del progetto precedente.
 - Fatto: ruoli telecamere confermati: USB 5MP = stanza/vittime/palline, CSI IMX708 = linea.
   La CSI con autofocus e checkerboard e' nitida a 640x480-2304x1296; a 1280x720 la probe passa
   con nitidezza normalizzata 149,3. La nitidezza e' normalizzata a 640 px per confrontare
-  risoluzioni diverse.
+  risoluzioni diverse. `--full-fov` forza il sensore intero 2304x1296: con checkerboard completo
+  la probe da' 54 corner e `passed=true`; senza, 1280x720 usa un crop 1536x864.
 - In corso: calibrare la CSI alla risoluzione di linea (candidata 1280x720) e definire il
   montaggio; validare i segni IMU e chiudere i punti aperti di B0.
-- Prossimi passi: usare `camera-capture --csi --size 1280x720` e `camera-calibrate`, poi
-  iniziare il pipeline visione della linea (F0).
+- Prossimi passi: usare `camera-capture --csi --size 1280x720 --full-fov` e
+  `camera-calibrate`, poi iniziare il pipeline visione della linea (F0).
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

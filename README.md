@@ -38,9 +38,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   probe camera USB e CSI via Picamera2, metriche, target checkerboard PDF, calibrazione,
   analisi sonar/IMU e test IMU in movimento. Ruoli camera: USB = stanza/vittime/palline, CSI =
   linea. USB e IMU passano; pitch/roll scambiati sul montaggio e corretti; calibrazione USB
-  accettata (RMS 0,523 px); CSI nitida con autofocus e 1280x720 verificata, calibrazione di
-  linea ancora da fare; il sonar a 500 mm e' accettato per ostacoli piu' vicini di 0,5 m con
-  target fermo.
+  accettata (RMS 0,523 px); CSI nitida con autofocus, 1280x720 verificata e `--full-fov` per il
+  sensore intero; calibrazione di linea ancora da fare; il sonar a 500 mm e' accettato per
+  ostacoli piu' vicini di 0,5 m con target fermo.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.

@@ -14,10 +14,11 @@ La CLI `python3 -m rcj2027.diagnostics` (dalla cartella `software/`) supporta:
 ```sh
 python3 -m rcj2027.diagnostics camera --list
 python3 -m rcj2027.diagnostics camera --device auto --save /tmp/camera0.jpg
-python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --warmup 2 \
-  --save /tmp/csi0.jpg
+python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --size 1280x720 \
+  --full-fov --warmup 2 --save /tmp/csi0.jpg
 python3 -m rcj2027.diagnostics camera --device auto --checkerboard 9x6
-python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --checkerboard 9x6
+python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --size 1280x720 \
+  --full-fov --checkerboard 9x6
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10 \
   --reference-mm 500 --reference-tolerance 50
 python3 -m rcj2027.diagnostics imu --port /dev/ttyACM0 --duration 10 \
@@ -56,8 +57,8 @@ riferimento e l'orientamento degli assi vanno dichiarati dall'operatore.
    python3 -m rcj2027.diagnostics camera-capture --device auto \
      --count 15 --interval 2 --output-dir calib/usb
    ```
-   Per la CSI usare `--csi --camera-num 0 --size 1280x720`; la calibrazione va fatta alla
-   stessa risoluzione usata dal pipeline della linea.
+   Per la CSI usare `--csi --camera-num 0 --size 1280x720 --full-fov`; la calibrazione va fatta
+   alla stessa risoluzione e con lo stesso campo visivo del pipeline della linea.
 4. Salva le immagini in una cartella, ad esempio `calib/`.
 5. Esegui `camera-calibrate` con lo stesso pattern e lato usati per la stampa.
 6. Il calibratore rifiuta se il pattern occupa in media meno del **20%** del frame. Punta al

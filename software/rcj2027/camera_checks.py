@@ -269,6 +269,7 @@ def probe_libcamera_camera(
     *,
     size: tuple[int, int] = (640, 480),
     warmup_s: float = 1.0,
+    full_fov: bool = False,
     save_path: str | Path | None = None,
     checkerboard_size: tuple[int, int] | None = None,
     **metric_kwargs: float,
@@ -306,7 +307,12 @@ def probe_libcamera_camera(
             model = str(properties["Model"])
 
         config = camera.create_still_configuration(
-            main={"size": size, "format": "RGB888"}
+            main={"size": size, "format": "RGB888"},
+            **(
+                {"sensor": {"output_size": (2304, 1296)}}
+                if full_fov
+                else {}
+            ),
         )
         camera.configure(config)
         camera.start()
@@ -407,6 +413,7 @@ def capture_sequence_libcamera(
     prefix: str = "frame",
     size: tuple[int, int] = (640, 480),
     warmup_s: float = 1.0,
+    full_fov: bool = False,
 ) -> list[Path]:
     """Acquisisce una sequenza da Picamera2 (CSI o USB libcamera)."""
     if not HAS_PICAMERA2:
@@ -427,7 +434,12 @@ def capture_sequence_libcamera(
     paths: list[Path] = []
     try:
         config = camera.create_still_configuration(
-            main={"size": size, "format": "RGB888"}
+            main={"size": size, "format": "RGB888"},
+            **(
+                {"sensor": {"output_size": (2304, 1296)}}
+                if full_fov
+                else {}
+            ),
         )
         camera.configure(config)
         camera.start()

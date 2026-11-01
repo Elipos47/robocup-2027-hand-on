@@ -78,9 +78,10 @@
 21. **Ruoli telecamere (2026-11-01):** la **USB 5MP** e' la camera stanza/vittime e palline;
     la **CSI IMX708** e' la camera linea. La calibrazione USB a 640x480 vale solo per la stanza.
     La CSI va calibrata alla risoluzione di lavoro della linea; **1280x720** e' la candidata e
-    la probe passa con nitidezza normalizzata 149,3. La nitidezza e' normalizzata a 640 px per
-    confrontare risoluzioni diverse. Con autofocus e checkerboard la CSI e' risultata nitida;
-    la precedente sfocatura era la scena.
+    la probe passa con nitidezza normalizzata 149,3. La preview puo' mostrare piu' campo dello
+    still perche' 1280x720 usa il modo 1536x864 con crop 2x; `--full-fov` forza il sensore
+    intero 2304x1296 e con checkerboard completo da' 54 corner e `passed=true`. La nitidezza e'
+    normalizzata a 640 px per confrontare risoluzioni diverse.
 
 ## Decisioni da prendere
 

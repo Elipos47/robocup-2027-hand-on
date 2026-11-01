@@ -109,10 +109,11 @@ class DiagnosticsTests(unittest.TestCase):
         parser = build_parser()
 
         args = parser.parse_args(
-            ["camera", "--csi", "--size", "1280x720"]
+            ["camera", "--csi", "--size", "1280x720", "--full-fov"]
         )
 
         self.assertEqual(args.size, "1280x720")
+        self.assertTrue(args.full_fov)
 
     def test_parser_builds_checkerboard_command(self) -> None:
         parser = build_parser()
