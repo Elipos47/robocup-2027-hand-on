@@ -187,19 +187,22 @@ offset, heading, confidenza e stato del tracker.
 
 | Voce | Valore |
 |---|---:|
-| Durata | 5,03 s |
+| Durata | 5,04 s |
 | Frame elaborati | 100 |
-| FPS | 19,9 |
+| FPS | 19,8 |
 | Frame con linea | 100/100 |
 | Frame confermati | 98/100 (i primi 2 non ancora) |
 | Perdite | 0 |
-| Offset | mediana -46,53 px (-47,62..-46,42) |
-| Heading | mediana 4,17 deg (4,05..4,66) |
-| Confidenza | mediana 0,954 (0,917..0,963) |
-| Tempo di elaborazione | mediana 39,9 ms (35,3..95,5) |
+| Offset | mediana -46,52 px (-47,61..-46,41) |
+| Heading | mediana 4,14 deg (4,06..4,66) |
+| Confidenza | mediana 0,955 (0,919..0,962) |
+| Tempo di elaborazione | mediana 39,9 ms (35,7..56,7) |
 | Frame annotati salvati | 7 |
 
-Il loop live e' quindi utilizzabile per prove a bassa velocita'. Il limite di 19,9 FPS e' il
+Report locale: `software/logs/f0-live-001/report.json`; log JSONL:
+`software/logs/f0-live-001/f0-live-001.jsonl`.
+
+Il loop live e' quindi utilizzabile per prove a bassa velocita'. Il limite di 19,8 FPS e' il
 risultato di acquisizione (circa 30 FPS) piu' elaborazione (circa 40 ms); non e' ancora un
 requisito del controller.
 

@@ -45,8 +45,8 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 - Fatto: F0-1, primo pipeline visione linea (`docs/testing/F0_LINE_VISION.md`): undistort
   CSI, ROI, adaptive threshold, scanline top-down, fit robusto, confidenza e tracker. Prova
   reale su linea retta con robot fermo: 30/30 frame trovati, offset stabile -46,0 px, heading
-  ~3,95 deg, confidenza ~0,95, 0 perdite. Loop `line-live` dalla CSI: 100 frame in 5,03 s,
-  19,9 FPS, 100/100 trovati. Curvature, gap, ombre e movimento restano da provare.
+  ~3,95 deg, confidenza ~0,95, 0 perdite. Loop `line-live` dalla CSI: 100 frame in 5,04 s,
+  19,8 FPS, 100/100 trovati. Curvature, gap, ombre e movimento restano da provare.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -101,7 +101,7 @@ L'inventario, il contratto minimo e le limitazioni sono in
 ## Prossimo lavoro
 
 1. Eseguire `line-live` con linea inclinata/curva, ombra e movimento a bassa velocita'; la
-   linea retta e' gia' stata rilevata 30/30 e in live a 19,9 FPS con robot fermo.
+   linea retta e' gia' stata rilevata 30/30 e in live a 19,8 FPS con robot fermo.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Ripetere il test della linea con illuminazione e superfici diverse, poi collegare il

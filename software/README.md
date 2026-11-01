@@ -129,8 +129,8 @@ calibrazione e' legata a 1280x720 full-fov: un frame di risoluzione diversa vien
 Exit code del comando `line`: `0` se la frazione di frame con linea raggiunge
 `--min-found-ratio` (default 0.8), `1` se sotto soglia, `2` per errore. La sequenza reale
 F0-1 (`calib/linea-f0-001`, 30 frame) ha dato 30/30 frame trovati, offset -46,0 px,
-heading 3,95 deg e confidenza 0,95. Il loop `line-live` ha elaborato 100 frame in 5,03 s
-(19,9 FPS) con 100/100 frame trovati. Il report e' in `logs/f0-linea-001/report.json`; dettagli
+heading 3,95 deg e confidenza 0,95. Il loop `line-live` ha elaborato 100 frame in 5,04 s
+(19,8 FPS) con 100/100 frame trovati. Il report e' in `logs/f0-linea-001/report.json`; dettagli
 e limiti in `docs/testing/F0_LINE_VISION.md`.
 
 Per una console manuale sulla porta reale, che accetta comandi in minuscolo e calcola il
