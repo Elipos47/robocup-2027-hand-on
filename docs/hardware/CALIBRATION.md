@@ -13,10 +13,10 @@ La CLI `python3 -m rcj2027.diagnostics` (dalla cartella `software/`) supporta:
 
 ```sh
 python3 -m rcj2027.diagnostics camera --list
-python3 -m rcj2027.diagnostics camera --device 0 --save /tmp/camera0.jpg
+python3 -m rcj2027.diagnostics camera --device auto --save /tmp/camera0.jpg
 python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --warmup 2 \
   --save /tmp/csi0.jpg
-python3 -m rcj2027.diagnostics camera --device 0 --checkerboard 9x6
+python3 -m rcj2027.diagnostics camera --device auto --checkerboard 9x6
 python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --checkerboard 9x6
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10 \
   --reference-mm 500 --reference-tolerance 50
@@ -50,7 +50,7 @@ riferimento e l'orientamento degli assi vanno dichiarati dall'operatore.
   definitiva, a distanze e angolazioni diverse, con il pattern che occupa circa il 50-80% del
    frame. Evita riflessi, ombre e mosso. Con la USB:
    ```sh
-   python3 -m rcj2027.diagnostics camera-capture --device 0 \
+   python3 -m rcj2027.diagnostics camera-capture --device auto \
      --count 15 --interval 2 --output-dir calib/usb
    ```
    Per la CSI usare `--csi --camera-num 0`; prima va risolta la sfocatura.

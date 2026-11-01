@@ -27,7 +27,7 @@ from .camera_checks import (
     CameraProbe,
     capture_sequence_libcamera,
     capture_sequence_opencv,
-    list_cameras,
+    find_usb_camera,
     list_libcamera_cameras,
     probe_camera,
     probe_libcamera_camera,
@@ -66,6 +66,14 @@ def _parse_pattern(text: str) -> tuple[int, int]:
     if pattern[0] < 2 or pattern[1] < 2:
         raise ValueError("pattern deve avere almeno 2x2 corner")
     return pattern
+
+
+def _resolve_device(text: str) -> int | str:
+    if text == "auto":
+        return find_usb_camera()
+    if text.isdigit():
+        return int(text)
+    return text
 
 
 def collect_readings(
@@ -178,11 +186,17 @@ def _camera_report(args: argparse.Namespace) -> int:
     if args.list:
         if args.save:
             raise ValueError("--save non e' compatibile con --list")
-        usb_probes = list_cameras(
-            range(0, args.max_index + 1),
-            checkerboard_size=None,
-            **metric_kwargs,
-        )
+        usb_probes: list[CameraProbe] = []
+        try:
+            usb_probes.append(
+                probe_camera(
+                    find_usb_camera(),
+                    checkerboard_size=None,
+                    **metric_kwargs,
+                )
+            )
+        except CameraError:
+            pass
         libcamera = list_libcamera_cameras() if HAS_PICAMERA2 else []
         report = {
             "opencv": [asdict(probe) for probe in usb_probes],
@@ -202,7 +216,7 @@ def _camera_report(args: argparse.Namespace) -> int:
             **metric_kwargs,
         )
     else:
-        device: int | str = int(args.device) if args.device.isdigit() else args.device
+        device = _resolve_device(args.device)
         probe = probe_camera(
             device,
             save_path=args.save,
@@ -227,7 +241,7 @@ def _camera_capture_report(args: argparse.Namespace) -> int:
             warmup_s=args.warmup,
         )
     else:
-        device: int | str = int(args.device) if args.device.isdigit() else args.device
+        device = _resolve_device(args.device)
         paths = capture_sequence_opencv(
             device,
             args.output_dir,
@@ -355,7 +369,11 @@ def build_parser() -> argparse.ArgumentParser:
     imu.add_argument("--settle-samples", type=int, default=5)
 
     camera = subparsers.add_parser("camera", help="probe di una o piu' telecamere")
-    camera.add_argument("--device", default="0", help="indice o path OpenCV, es. 0 o /dev/video0")
+    camera.add_argument(
+        "--device",
+        default="auto",
+        help="auto, indice o path OpenCV (es. 8 o /dev/video8)",
+    )
     camera.add_argument(
         "--csi",
         action="store_true",
@@ -368,8 +386,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=1.0,
         help="attesa AF/esposizione prima dello scatto libcamera",
     )
-    camera.add_argument("--list", action="store_true", help="prova gli indici 0..max-index")
-    camera.add_argument("--max-index", type=int, default=3)
+    camera.add_argument("--list", action="store_true", help="elenca USB e camere libcamera")
     camera.add_argument("--save", default=None, help="salva il frame analizzato")
     camera.add_argument("--checkerboard", default=None, help="pattern interno, es. 9x6")
     camera.add_argument("--min-sharpness", type=float, default=50.0)
@@ -397,7 +414,11 @@ def build_parser() -> argparse.ArgumentParser:
         "camera-capture",
         help="acquisisce una sequenza di frame per la calibrazione",
     )
-    capture.add_argument("--device", default="0", help="indice o path OpenCV")
+    capture.add_argument(
+        "--device",
+        default="auto",
+        help="auto, indice o path OpenCV (es. 8 o /dev/video8)",
+    )
     capture.add_argument(
         "--csi",
         action="store_true",

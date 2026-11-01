@@ -451,6 +451,25 @@ def capture_sequence_libcamera(
     return paths
 
 
+def find_usb_camera(
+    sysfs_root: str | Path = "/sys/class/video4linux",
+) -> str:
+    """Trova il primo nodo video di una telecamera USB reale."""
+    root = Path(sysfs_root)
+    for entry in sorted(root.glob("video*")):
+        name_file = entry / "name"
+        try:
+            name = name_file.read_text(encoding="utf-8", errors="replace").strip()
+        except OSError:
+            continue
+        lowered = name.lower()
+        if "rp1-cfe" in lowered or "pispbe" in lowered or "hevc" in lowered:
+            continue
+        if "usb" in lowered or "camera" in lowered:
+            return f"/dev/{entry.name}"
+    raise CameraError("nessuna telecamera USB trovata")
+
+
 def list_cameras(indices: range = range(0, 4), **kwargs: object) -> list[CameraProbe]:
     """Prova una serie di indici OpenCV e restituisce un report per ciascuno."""
     return [probe_camera(index, **kwargs) for index in indices]

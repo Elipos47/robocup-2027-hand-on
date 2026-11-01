@@ -123,6 +123,8 @@ contiene il codice applicativo del progetto precedente.
   rifiutate: RMS 0,896 px ma copertura media 7,2%, sotto il minimo 20%; rifare piu' vicino. Un
   secondo set ha rilevato 8/15 frame con copertura media 11,0% e solo 3 viste >=20%: distanza
   incoerente, rifare con target grande e fermo.
+- Fatto: la CLI camera usa `--device auto`: dopo il riavvio la USB e' passata a `/dev/video8`
+  e `/dev/video0` e' diventato un nodo CSI; la numerazione non e' piu' stabile.
 - Fatto: firmware Arduino del protocollo v1.1 in `firmware/rcj2027/`, compilato; movimento
   disabilitato di default.
 - Fatto: protocollo verificato a banco senza movimento (test P1 in

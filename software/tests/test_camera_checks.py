@@ -9,8 +9,10 @@ import numpy as np
 
 from rcj2027.camera_checks import (
     HAS_CV2,
+    CameraError,
     analyze_frame,
     capture_sequence_opencv,
+    find_usb_camera,
     frame_metrics,
 )
 
@@ -149,6 +151,25 @@ class CameraChecksTests(unittest.TestCase):
 
             self.assertEqual(len(paths), 2)
             self.assertTrue(all(path.exists() for path in paths))
+
+    def test_find_usb_camera_skips_platform_nodes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name, label in (
+                ("video0", "rp1-cfe"),
+                ("video1", "pispbe"),
+                ("video8", "5MP USB Camera"),
+            ):
+                node = root / name
+                node.mkdir()
+                (node / "name").write_text(label, encoding="utf-8")
+
+            self.assertEqual(find_usb_camera(root), "/dev/video8")
+
+    def test_find_usb_camera_missing_raises(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(CameraError):
+                find_usb_camera(tmp)
 
     def test_frame_metrics_shape(self) -> None:
         metrics = frame_metrics(np.zeros((10, 20, 3), np.uint8))

@@ -29,7 +29,7 @@ cd software
 
 # Telecamera: elenco, probe USB e probe CSI
 python3 -m rcj2027.diagnostics camera --list
-python3 -m rcj2027.diagnostics camera --device 0 --save /tmp/camera0.jpg
+python3 -m rcj2027.diagnostics camera --device auto --save /tmp/camera0.jpg
 python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --warmup 2 \
   --save /tmp/csi0.jpg
 
@@ -65,14 +65,14 @@ I test host non richiedono hardware:
 - calibrazione con viste checkerboard sintetiche;
 - raccolta status con sessione finta.
 
-La suite completa e' a **135 test**, tutti verdi.
+La suite completa e' a **138 test**, tutti verdi.
 
 ## Camera
 
 Sono presenti due sorgenti distinte:
 
 ```text
-5MP USB Camera (USB):  /dev/video0, /dev/video1
+5MP USB Camera (USB):  /dev/video8, /dev/video9 (la numerazione cambia al boot)
 IMX708 (CSI):          camera libcamera 0, /base/.../imx708@1a
 ```
 
@@ -88,6 +88,9 @@ La probe USB (OpenCV) ha prodotto:
 | 1 | no | - | - | - | - | device assente |
 | 2 | si | non leggibile | - | - | - | nodo piattaforma, non camera |
 | 3 | no | - | - | - | - | device assente |
+
+Dopo il riavvio la numerazione e' cambiata: la USB e' passata a `/dev/video8` e `/dev/video0` e'
+diventato un nodo CSI. Per questo la CLI usa `--device auto`, che trova la USB tramite sysfs.
 
 La probe CSI (Picamera2, camera 0, warm-up 2 s) ha prodotto:
 
@@ -111,7 +114,7 @@ Un secondo set di 15 foto ha rilevato il pattern in 8 immagini, con copertura 3,
 almeno 8-10 viste con il pattern grande e interamente visibile. La sequenza si acquisisce con:
 
 ```sh
-python3 -m rcj2027.diagnostics camera-capture --device 0 \
+python3 -m rcj2027.diagnostics camera-capture --device auto \
   --count 15 --interval 2 --output-dir calib/usb
 ```
 

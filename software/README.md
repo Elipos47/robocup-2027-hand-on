@@ -49,7 +49,7 @@ La CLI `diagnostics` verifica i dati di camera, sonar e IMU senza abilitare il m
 ```sh
 cd software
 python3 -m rcj2027.diagnostics camera --list
-python3 -m rcj2027.diagnostics camera --device 0 --save /tmp/camera0.jpg
+python3 -m rcj2027.diagnostics camera --device auto --save /tmp/camera0.jpg
 python3 -m rcj2027.diagnostics camera --csi --camera-num 0 --warmup 2 \
   --save /tmp/csi0.jpg
 python3 -m rcj2027.diagnostics sonar --port /dev/ttyACM0 --duration 10
@@ -61,21 +61,21 @@ python3 -m rcj2027.diagnostics imu --port /dev/ttyACM0 --duration 10 \
   --imu-mode motion --expected-axis yaw --countdown 5
 python3 -m rcj2027.diagnostics camera-calibrate \
   --images "calib/*.jpg" --pattern 9x6 --square-mm 25 --output calib.json
-python3 -m rcj2027.diagnostics camera-capture --device 0 \
+python3 -m rcj2027.diagnostics camera-capture --device auto \
   --count 15 --interval 2 --output-dir calib/usb
 python3 -m rcj2027.diagnostics checkerboard \
   --pattern 9x6 --square-mm 25 --output checkerboard.pdf
 ```
 
 Exit code `0` = test superato, `1` = test fallito, `2` = errore di configurazione o dispositivo.
-I report si salvano con `--json-out`. `camera --list` mostra sia gli indici OpenCV sia le camere
-libcamera; la CSI IMX708 si prova con `--csi` (Picamera2), non con un indice OpenCV. Il target
+I report si salvano con `--json-out`. La numerazione `/dev/videoN` cambia al riavvio:
+`--device auto` trova la USB tramite sysfs, mentre `--csi` usa Picamera2 per la CSI. Il target
 `checkerboard` e' pronto in `docs/hardware/checkerboard-a4.pdf`: PDF A4 con quadrati da 25 mm e
 barra da 100 mm, da stampare al 100%. Se la barra misura 95 mm, usa `--square-mm 23.75` o
 ristampa. `camera-capture` salva una sequenza di frame mentre sposti il target; `camera-calibrate`
-rifiuta una copertura media del pattern sotto il 20% (puntare al 50-80%). Il test sonar usa la mediana e ammette al massimo il 5% di outlier oltre
-`--outlier-mm`; il test IMU `motion` richiede che si muova l'asse indicato. Ogni telecamera e'
-esclusiva: non eseguire due probe in parallelo.
+rifiuta una copertura media del pattern sotto il 20% (puntare al 50-80%). Il test sonar usa la
+mediana e ammette al massimo il 5% di outlier oltre `--outlier-mm`; il test IMU `motion` richiede
+che si muova l'asse indicato. Ogni telecamera e' esclusiva: non eseguire due probe in parallelo.
 
 Risultati e limiti sono in `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`.
 

@@ -118,6 +118,12 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertEqual(args.count, 12)
         self.assertEqual(args.interval, 2.0)
 
+    def test_camera_commands_default_to_auto_device(self) -> None:
+        parser = build_parser()
+
+        self.assertEqual(parser.parse_args(["camera"]).device, "auto")
+        self.assertEqual(parser.parse_args(["camera-capture"]).device, "auto")
+
 
 if __name__ == "__main__":
     unittest.main()
