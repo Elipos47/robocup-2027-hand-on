@@ -90,6 +90,11 @@ trovati, 266 confermati, 6 riprese, FOUND sui segmenti e LOST nel vuoto. Corrett
 isolato e filtro di larghezza. Terza run 182854: 487 frame, 284/487 trovati, 304 confermati,
 6 riprese, frame 120 FOUND. **F0-4 chiuso sul banco**; l'attraversamento resta F1.
 
+Stato 2026-11-03: F0-5 controller dry-run (`docs/testing/F0_DRY_RUN.md`). `line_control.py`
+produce comandi FOLLOW/STOP senza seriale; replay: retta 98/100, curva 872/1584, gap 270/487,
+ombra parziale 578/608, ombra totale 416/900. Configurazione provvisoria. Restano PWM minimo,
+cm/s e movimento reale.
+
 ### F1 — Elementi di missione
 
 ostacolo, marker, salite/discese, velocita' variabile, linea argentata, stanza, vittime e uscita.

@@ -16,8 +16,9 @@ restano ombra netta e occlusione totale. Nella prova di bassa luce il rilevatore
 bordo sottile (10-31 px contro 188-190) con offset errato; aggiunto il guard di continuita' di
 larghezza, da validare live. F0-4 gap da 7 cm: FOUND sui segmenti, LOST nel vuoto, 6 riprese;
 terza run con correzioni, frame 120 FOUND, **F0-4 chiuso sul banco**. L'attraversamento del
-gap resta F1. Movimento e disturbi restano da provare.
-Valori operativi
+gap resta F1. F0-5 controller dry-run: `line_control.py` con FOLLOW/STOP, replay dei log
+senza comandi ai motori; restano PWM minimo/cm/s e movimento reale. Disturbi restano da
+provare. Valori operativi
 `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`; gate predefinito chiuso. Movimento
 reale disabilitato di default.
 

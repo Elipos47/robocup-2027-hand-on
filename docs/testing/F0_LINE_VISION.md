@@ -151,7 +151,7 @@ I test host coprono:
 - server MJPEG: indice HTML, aggiornamento frame e validazione parametri.
 
 I frame sintetici verificano il codice, non sostituiscono la prova su una linea reale.
-La suite completa e' a **188 test**, tutti verdi.
+La suite completa e' a **199 test**, tutti verdi.
 
 ## Risultato disponibile
 
@@ -337,6 +337,12 @@ della larghezza, tipico di un bordo agganciato al posto della linea.
 Il tentativo con gap da 7 cm e' in `docs/testing/F0_GAP_TEST.md`: comportamento corretto
 (FOUND sui segmenti, LOST nel vuoto, 6 riprese), con il fix del seme e del filtro di larghezza
 validato nella terza run. **F0-4 e' chiuso sul banco**; l'attraversamento del gap resta F1.
+
+### F0-5 controller dry-run
+
+`line_control.py` propone comandi `FOLLOW`/`STOP` senza seriale. Dettagli e replay in
+`docs/testing/F0_DRY_RUN.md`. Configurazione provvisoria: cruise 200, k_offset 0.35,
+k_heading 1.5, max correction 80. Restano PWM minimo, cm/s e movimento reale.
 
 Per ogni run vanno registrati data, condizione, misura geometrica, illuminazione e posizione
 della telecamera. Se la telecamera viene spostata, la calibrazione `csi_1280x720.json` va

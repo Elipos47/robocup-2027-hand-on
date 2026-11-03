@@ -67,6 +67,10 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   6 riprese, nessun falso evidente. Corretti un seme isolato e il filtro di larghezza; terza
   run con 487 frame, 284 trovati, 304 confermati e frame 120 FOUND: **F0-4 chiuso sul banco**.
   L'attraversamento del gap resta F1.
+- Fatto: F0-5 controller dry-run (`docs/testing/F0_DRY_RUN.md`): `line_control.py` con stati
+  `FOLLOW`/`STOP`, nessun comando ai motori. Replay: retta 98/100 follow, curva 872/1584, gap
+  270/487, ombra parziale 578/608, ombra totale 416/900; comandi entro 0..255 e
+  `motor_output=false`.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -94,7 +98,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
 | Protocollo seriale v1.1 | `docs/architecture/SERIAL_PROTOCOL.md` |
-| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`, `docs/testing/F0_LINE_VISION.md`, `docs/testing/F0_CURVE_TEST.md`, `docs/testing/F0_SHADOW_TEST.md`, `docs/testing/F0_GAP_TEST.md` |
+| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`, `docs/testing/F0_LINE_VISION.md`, `docs/testing/F0_CURVE_TEST.md`, `docs/testing/F0_SHADOW_TEST.md`, `docs/testing/F0_GAP_TEST.md`, `docs/testing/F0_DRY_RUN.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
 | Decisioni aperte | `docs/DECISIONS.md` |
 | Provenienza e scelte di importazione | `docs/SOURCE_MAP.md` |
@@ -120,12 +124,12 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. F0-5: movimento a bassa velocita' e controller dry-run; poi, quando disponibile,
-   compatibilita' con la linea 1-2 cm. Curva e gap sono coperti sul banco.
+1. F0-5: misurare PWM minimo e cm/s a PWM noto, tarare `cruise`/guadagni e provare il
+   controller a ruote sollevate; poi collegare i motori solo dopo il gate di sicurezza.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
-4. Ripetere il test della linea con illuminazione e superfici diverse, poi collegare il
-   controller ai motori solo dopo il gate di sicurezza.
+4. Ripetere con illuminazione e superfici diverse; implementare `GAP_CROSS` F1 con timeout e
+   riacquisizione.
 
 La validazione e la build si eseguono con:
 

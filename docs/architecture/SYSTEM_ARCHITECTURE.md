@@ -51,7 +51,8 @@ firmware/
   test/<nome>/<nome>.ino   sketch di banco con README
 software/
   rcj2027/                 protocollo, trasporto, logger, safety, sessione, diagnostica,
-                           visione linea (line_vision.py), stream live (live_view.py)
+                           visione linea (line_vision.py), controller dry-run
+                           (line_control.py), stream live (live_view.py)
   tests/                   test host (unittest)
 scripts/                   build, test e validazione
 ```

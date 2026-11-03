@@ -32,6 +32,7 @@ required=(
   docs/testing/F0_CURVE_TEST.md
   docs/testing/F0_SHADOW_TEST.md
   docs/testing/F0_GAP_TEST.md
+  docs/testing/F0_DRY_RUN.md
   docs/MEASUREMENT_LOG.md
   docs/DECISIONS.md
   docs/SOURCE_MAP.md
@@ -55,6 +56,7 @@ required=(
   software/rcj2027/camera_checks.py
   software/rcj2027/camera_calibration.py
   software/rcj2027/checkerboard.py
+  software/rcj2027/line_control.py
   software/rcj2027/line_vision.py
   software/rcj2027/live_view.py
   software/rcj2027/sensor_checks.py
@@ -73,6 +75,7 @@ required=(
   software/tests/test_camera_calibration.py
   software/tests/test_checkerboard.py
   software/tests/test_line_vision.py
+  software/tests/test_line_control.py
   software/tests/test_live_view.py
   software/tests/test_diagnostics.py
   software/tests/test_main.py

@@ -17,6 +17,7 @@ software/
     camera_calibration.py calibrazione checkerboard
     checkerboard.py       target PDF a dimensione reale
     line_vision.py        undistort, rilevamento linea e tracker F0
+    line_control.py       controller dry-run FOLLOW/STOP
     live_view.py          stream MJPEG per la vista live
     diagnostics.py        CLI di diagnostica camera/sonar/IMU/linea
     calibrations/         JSON delle calibrazioni telecamere
@@ -169,6 +170,24 @@ Esempi di payload: `v,1`, `h,1`, `x,2`, `d,1,100,100`. Scrivi `quit` per uscire.
 
 La demo usa il trasporto finto: non apre la porta seriale e non muove il robot. I log finiscono
 in `logs/` (ignorata da git) oppure nella directory indicata con `--log-dir`.
+
+## Controller dry-run F0-5
+
+`line_control.py` trasforma lo stato del tracker in comandi PWM differenziali
+`FOLLOW`/`STOP`. Non apre la seriale e non muove i motori.
+
+```sh
+cd software
+python3 -m rcj2027.diagnostics line-control \
+  --log logs/f0-gap-7/f0-gap-7-20261103T182854.jsonl \
+  --commands-out /tmp/f0-gap-commands.jsonl \
+  --json-out /tmp/f0-gap-control.json
+```
+
+Parametri provvisori: `--cruise 200`, `--k-offset 0.35`, `--k-heading 1.5`,
+`--max-correction 80`, `--pwm-max 255`. Il controller si ferma se `found` o `confirmed`
+sono falsi. I guadagni e il PWM di crociera non sono ancora tarati sul campo; servono prima
+misure di cm/s e PWM minimo.
 
 ## Comandi motori
 

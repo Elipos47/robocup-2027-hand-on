@@ -158,7 +158,7 @@ contiene il codice applicativo del progetto precedente.
   stream MJPEG `--http-port`; `--debug-overlay` mostra la maschera, `--duration 0` va fino a
   q/ESC, il browser ha un pulsante di stop e `software/line_live.py` e' l'avvio rapido da
   Thonny.
-  Test host: 188 verdi. Disturbi e movimento non sono ancora provati, quindi
+  Test host: 199 verdi. Disturbi e movimento reale non sono ancora provati, quindi
   il gate F0 resta aperto.
 - Fatto: F0-2 tentativo 1 su curva reale (`docs/testing/F0_CURVE_TEST.md`): 1584 frame,
   89,29 s, 17,7 FPS; 899/1584 trovati (56,8%) ma con 317 frame iniziali vuoti e 223 di
@@ -185,10 +185,14 @@ contiene il codice applicativo del progetto precedente.
   riprese; al frame 120 un seme lontano bloccava la linea. Aggiunto reset del tratto corto e
   test `far_speck`. Terza run 182854: 487 frame, 284/487 trovati, 304 confermati, 6 riprese,
   frame 120 FOUND; **F0-4 chiuso sul banco**. L'attraversamento resta F1.
-- In corso: F0-5 movimento a bassa velocita' e controller dry-run; completare i segni IMU e
-  chiudere i punti aperti di B0.
-- Prossimi passi: implementare la macchina a stati FOLLOW/LOST senza motori, provarla sui log,
-  poi misurare cm/s a PWM noto e solo dopo collegare i motori.
+- Fatto: F0-5 controller dry-run (`docs/testing/F0_DRY_RUN.md`): `line_control.py` con stati
+  `FOLLOW`/`STOP`, nessuna seriale. Replay: retta 98/100 follow, curva 872/1584, gap 270/487,
+  ombra parziale 578/608, ombra totale 416/900; comandi entro 0..255 e `motor_output=false`.
+  Configurazione provvisoria: cruise 200, k_offset 0.35, k_heading 1.5, max correction 80.
+- In corso: F0-5 movimento a bassa velocita': misurare PWM minimo e cm/s, poi collegare i
+  motori solo dopo gate di sicurezza. Completare i segni IMU e chiudere i punti aperti di B0.
+- Prossimi passi: misurare cm/s a PWM noto, tarare `cruise`/guadagni, implementare
+  `GAP_CROSS` F1 con timeout e riacquisizione, poi prova a ruote sollevate e bassa velocita'.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

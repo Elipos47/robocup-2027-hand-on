@@ -42,6 +42,7 @@ from .camera_calibration import (
 )
 from .checkerboard import CheckerboardError, make_checkerboard_pdf
 from . import line_vision
+from .line_control import LineControlConfig, LineController
 from .live_view import LiveViewError, MjpegServer
 from .logger import JsonlLogger
 from .protocol import SensorReading
@@ -858,6 +859,133 @@ def _line_undistort_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def _line_control_report(args: argparse.Namespace) -> int:
+    log_path = Path(args.log)
+    try:
+        lines = log_path.read_text(encoding="utf-8").splitlines()
+    except OSError as exc:
+        raise line_vision.LineVisionError(
+            f"log non leggibile: {log_path}"
+        ) from exc
+
+    keys = (
+        "found",
+        "offset_px",
+        "offset_ratio",
+        "heading_deg",
+        "confidence",
+        "valid_rows",
+        "scan_rows",
+        "line_width_px",
+        "residual_px",
+        "line_x_bottom_px",
+        "optical_x_px",
+        "roi",
+        "processing_ms",
+        "undistorted",
+        "reason",
+    )
+    config = LineControlConfig(
+        pwm_max=args.pwm_max,
+        cruise=args.cruise,
+        k_offset=args.k_offset,
+        k_heading=args.k_heading,
+        max_correction=args.max_correction,
+        offset_deadband_px=args.offset_deadband,
+        heading_deadband_deg=args.heading_deadband,
+    )
+    tracker = line_vision.LineTracker()
+    controller = LineController(config)
+    follow = 0
+    stop_not_found = 0
+    stop_not_confirmed = 0
+    left_values: list[float] = []
+    right_values: list[float] = []
+    corrections: list[float] = []
+    commands: list[dict[str, Any]] = []
+    reasons: dict[str, int] = {}
+
+    for raw in lines:
+        if not raw.strip():
+            continue
+        try:
+            record = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"riga JSON non valida in {log_path}") from exc
+        if record.get("event") != "line":
+            continue
+        missing = [key for key in keys if key not in record]
+        if missing:
+            raise ValueError(
+                f"record linea incompleto in {log_path}: mancano {missing}"
+            )
+        values = {key: record[key] for key in keys}
+        values["roi"] = tuple(values["roi"])
+        observation = line_vision.LineObservation(**values)
+        state = tracker.update(observation)
+        command = controller.update(state)
+        if command.state == "FOLLOW":
+            follow += 1
+            left_values.append(command.left)
+            right_values.append(command.right)
+            corrections.append(command.correction)
+        elif command.reason == "not_found":
+            stop_not_found += 1
+        else:
+            stop_not_confirmed += 1
+        reasons[command.reason] = reasons.get(command.reason, 0) + 1
+        commands.append(
+            {
+                "frame": record.get("frame"),
+                "found": state.found,
+                "confirmed": state.confirmed,
+                "offset_px": round(observation.offset_px, 2),
+                "heading_deg": round(observation.heading_deg, 2),
+                **command.to_dict(),
+            }
+        )
+
+    if not commands:
+        raise ValueError(f"nessun record 'line' in {log_path}")
+
+    report = {
+        "kind": "line-control",
+        "log": str(log_path),
+        "motor_output": False,
+        "config": {
+            "pwm_max": config.pwm_max,
+            "cruise": config.cruise,
+            "k_offset": config.k_offset,
+            "k_heading": config.k_heading,
+            "max_correction": config.max_correction,
+            "offset_deadband_px": config.offset_deadband_px,
+            "heading_deadband_deg": config.heading_deadband_deg,
+        },
+        "summary": {
+            "frames": len(commands),
+            "follow": follow,
+            "stop_not_found": stop_not_found,
+            "stop_not_confirmed": stop_not_confirmed,
+            "recoveries": tracker.recoveries,
+            "left": _distribution(left_values),
+            "right": _distribution(right_values),
+            "correction": _distribution(corrections),
+            "reasons": reasons,
+        },
+    }
+    if args.commands_out:
+        output = Path(args.commands_out)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with output.open("w", encoding="utf-8") as handle:
+            for command in commands:
+                handle.write(json.dumps(command, sort_keys=True) + "\n")
+        report["commands_out"] = str(output)
+
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+    _write_json(report, args.json_out)
+    return 0
+
+
 def _add_serial_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--port", required=True, help="porta seriale, es. /dev/ttyACM0")
     parser.add_argument("--baud", type=int, default=115200)
@@ -1059,6 +1187,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     line.add_argument("--json-out", default=None)
 
+    control = subparsers.add_parser(
+        "line-control",
+        help="dry-run del controller su un log line-live, senza motori",
+    )
+    control.add_argument("--log", required=True, help="JSONL di una run line-live")
+    control.add_argument("--json-out", default=None)
+    control.add_argument("--commands-out", default=None)
+    control.add_argument("--pwm-max", type=int, default=255)
+    control.add_argument("--cruise", type=int, default=200)
+    control.add_argument("--k-offset", type=float, default=0.35)
+    control.add_argument("--k-heading", type=float, default=1.5)
+    control.add_argument("--max-correction", type=int, default=80)
+    control.add_argument("--offset-deadband", type=float, default=3.0)
+    control.add_argument("--heading-deadband", type=float, default=1.0)
+
     live = subparsers.add_parser(
         "line-live",
         help="rileva la linea in tempo reale dalla CSI, senza comandi motori",
@@ -1172,6 +1315,8 @@ def main(argv: list[str] | None = None) -> int:
             return _camera_calibrate_report(args)
         if args.command == "line":
             return _line_report(args)
+        if args.command == "line-control":
+            return _line_control_report(args)
         if args.command == "line-live":
             return _line_live_report(args)
         if args.command == "line-undistort":

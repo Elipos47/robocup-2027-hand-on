@@ -131,6 +131,13 @@
     larghezza ammette l'aumento graduale e rifiuta il restringimento brusco. La terza run
     (182854) conferma il fix: 487 frame, 284 trovati, 304 confermati, 6 riprese, frame 120
     FOUND. **F0-4 e' chiuso sul banco**; l'attraversamento resta F1.
+29. **Controller dry-run F0-5 (2026-11-03):** `line_control.py` converte `TrackState` in PWM
+    differenziali `FOLLOW`/`STOP`, senza seriale. Offset/heading positivi producono una
+    correzione positiva (sinistra accelera, destra rallenta). Se `found` o `confirmed` sono
+    falsi, il comando e' zero. Configurazione provvisoria: cruise 200, k_offset 0.35,
+    k_heading 1.5, max correction 80. Replay sui log reali: retta 98/100 follow, curva
+    872/1584, gap 270/487, ombra parziale 578/608, ombra totale 416/900; comandi entro 0..255.
+    Restano PWM minimo, cm/s, taratura e integrazione motori.
 
 ## Decisioni da prendere
 
