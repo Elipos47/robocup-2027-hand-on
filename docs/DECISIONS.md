@@ -138,6 +138,12 @@
     k_heading 1.5, max correction 80. Replay sui log reali: retta 98/100 follow, curva
     872/1584, gap 270/487, ombra parziale 578/608, ombra totale 416/900; comandi entro 0..255.
     Restano PWM minimo, cm/s, taratura e integrazione motori.
+30. **Sweep PWM PWM-1 (2026-11-03):** 150/175/200/225/255 per 4 s, ruote sollevate, stop e
+    pausa tra i gradini. Il software invia e il firmware accetta tutti i `D`; lo status riporta
+    `motors_active=true`, 0 errori, stop ack. Nessuna rotazione a nessun PWM. La frequenza del
+    ronzio e' quella PWM (~490 Hz) e non cambia col duty. Il percorso software arriva a
+    `analogWrite` sugli stessi pin del test di direzione; la causa va isolata su
+    alimentazione/enable/L298N. Firmware sicuro ripristinato.
 
 ## Decisioni da prendere
 

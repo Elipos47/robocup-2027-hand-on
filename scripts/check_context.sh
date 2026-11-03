@@ -33,6 +33,7 @@ required=(
   docs/testing/F0_SHADOW_TEST.md
   docs/testing/F0_GAP_TEST.md
   docs/testing/F0_DRY_RUN.md
+  docs/testing/PWM_SWEEP_TEST.md
   docs/MEASUREMENT_LOG.md
   docs/DECISIONS.md
   docs/SOURCE_MAP.md
@@ -46,6 +47,7 @@ required=(
   software/README.md
   software/requirements.txt
   software/line_live.py
+  software/pwm_sweep.py
   software/rcj2027/__init__.py
   software/rcj2027/__main__.py
   software/rcj2027/protocol.py
@@ -77,6 +79,7 @@ required=(
   software/tests/test_line_vision.py
   software/tests/test_line_control.py
   software/tests/test_live_view.py
+  software/tests/test_pwm_sweep.py
   software/tests/test_diagnostics.py
   software/tests/test_main.py
   scripts/build.sh

@@ -71,6 +71,10 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   `FOLLOW`/`STOP`, nessun comando ai motori. Replay: retta 98/100 follow, curva 872/1584, gap
   270/487, ombra parziale 578/608, ombra totale 416/900; comandi entro 0..255 e
   `motor_output=false`.
+- Fatto: PWM-1 (`docs/testing/PWM_SWEEP_TEST.md`): sweep 150/175/200/225/255 a ruote sollevate,
+  4 s per gradino. Tutti i `D` accettati e `motors_active=true`, ma nessuna rotazione; il
+  percorso software arriva ai pin. Firmware sicuro ripristinato; causa da isolare su
+  alimentazione/enable/L298N.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -124,8 +128,9 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. F0-5: misurare PWM minimo e cm/s a PWM noto, tarare `cruise`/guadagni e provare il
-   controller a ruote sollevate; poi collegare i motori solo dopo il gate di sicurezza.
+1. F0-5: isolare il problema PWM (un solo canale a 255, tensione batteria/L298N e pin
+   ENA/ENB); poi misurare PWM minimo e cm/s e tarare `cruise`/guadagni. Il firmware sicuro è
+   già ripristinato.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Ripetere con illuminazione e superfici diverse; implementare `GAP_CROSS` F1 con timeout e

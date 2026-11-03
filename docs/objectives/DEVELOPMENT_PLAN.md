@@ -95,6 +95,11 @@ produce comandi FOLLOW/STOP senza seriale; replay: retta 98/100, curva 872/1584,
 ombra parziale 578/608, ombra totale 416/900. Configurazione provvisoria. Restano PWM minimo,
 cm/s e movimento reale.
 
+PWM-1 (`docs/testing/PWM_SWEEP_TEST.md`): sweep 150/175/200/225/255 a ruote sollevate, 4 s
+per gradino. Tutti i `D` accettati e `motors_active=true`, ma nessuna rotazione. Il percorso
+software arriva ai pin; causa da isolare su alimentazione/enable/L298N. Firmware sicuro
+ripristinato; misura di PWM minimo e cm/s bloccata.
+
 ### F1 — Elementi di missione
 
 ostacolo, marker, salite/discese, velocita' variabile, linea argentata, stanza, vittime e uscita.
