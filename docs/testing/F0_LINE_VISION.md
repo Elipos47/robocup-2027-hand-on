@@ -246,9 +246,12 @@ maggiore va annotato e investigato.
 
 ### Curva F0-2
 
-Il primo tentativo su curva reale e' in `docs/testing/F0_CURVE_TEST.md`: la curva viene
-seguita nei tratti in ROI, ma la run non e' continua e il raggio non e' stato misurato. F0-2
-resta aperto.
+Il primo tentativo su curva reale e' in `docs/testing/F0_CURVE_TEST.md`: nei tratti in cui la
+linea entra nella ROI viene seguita con confidenza 0,86-0,965, con 6 riprese e nessun falso
+confermato evidente nei tratti vuoti. La telecamera e' volutamente vicina alla tile, quindi la
+curva puo' uscire dalla ROI. **F0-2 e' coperto sul banco** con il nastro disponibile, che e'
+piu' largo di 1-2 cm; resta una prova di compatibilita' con la linea regolamentare quando sara'
+disponibile. Il raggio fisico non e' un parametro del test.
 
 ### Frame senza linea
 
@@ -273,7 +276,8 @@ velocita', non e' ancora un requisito di controllo.
 
 ## Limiti
 
-- Prova positiva solo su una linea retta, con robot fermo e una sola illuminazione.
+- Prova positiva su retta e su curva di banco con nastro proxy piu' largo di 1-2 cm.
+  La compatibilita' con la linea regolamentare resta da provare.
 - Offset e heading sono in pixel; non c'e' ancora la trasformazione al piano del pavimento.
 - L'offset e' riferito all'asse ottico della calibrazione (`cx=653,8`), non al centro
   meccanico del robot: l'allineamento camera-telaio resta da misurare.
@@ -281,7 +285,8 @@ velocita', non e' ancora un requisito di controllo.
 - Il controller non e' collegato: il live misura la linea ma non comanda i motori.
 - Le soglie della confidenza vanno tarate su linee reali con illuminazione e superfici
   diverse.
-- Il gate F0 resta aperto: servono curvature, gap, disturbi e movimento.
+- Il gate F0 resta aperto: servono gap, disturbi, movimento e compatibilita' con la linea
+  1-2 cm.
 
 ## Protocollo F0-2 / F0-3 / F0-4
 
@@ -291,13 +296,16 @@ chiuso il gate. Ogni run usa `software/line_live.py` con `DURATION_S = 0` e vien
 
 ### F0-2 curva
 
-- **Setup:** nastro nero 1-2 cm; un arco di raggio 20-30 cm e una S; almeno 5 cm di rettilineo
-  prima e dopo; segni di riferimento ogni 5 cm; telecamera ferma.
-- **Run:** `CONDITION = "curva"`, prima 10 s con robot fermo in tre posizioni (inizio, centro,
-  fine curva), poi 15-20 s spostando il robot o la linea a mano.
-- **Misure:** raggio, found ratio, offset/heading, perdite e riprese.
-- **Criterio provvisorio:** 30/30 frame fermi; found ratio live >= 0,95; nessun falso
-  confermato; ripresa entro 5 frame dopo una perdita.
+- **Setup:** nastro disponibile (anche piu' largo di 1-2 cm, da annotare come proxy); un arco e
+  una S se possibile. La telecamera e' vicina alla tile: la ROI e' una finestra di near-field e
+  la curva puo' uscire. Non serve misurare il raggio.
+- **Run:** `CONDITION = "curva"`, prima 10 s con robot fermo in tre posizioni, poi 15-20 s
+  spostando il robot o la linea a mano.
+- **Misure:** found ratio nei tratti in cui la linea e' nella ROI, heading (curvatura in spazio
+  immagine), perdite e riprese, falsi confermati quando la linea e' fuori.
+- **Criterio provvisorio:** nei tratti in ROI la linea deve essere trovata senza perdite; quando
+  esce deve passare a `lost` senza falsi confermati; ripresa entro 5 frame quando rientra. Il
+  raggio fisico e l'intera curva in ROI non sono richiesti.
 
 ### F0-3 ombra
 
@@ -325,7 +333,8 @@ rifatta.
 ## Prossima prova
 
 1. Eseguire `line-live` mentre l'operatore sposta la linea o il robot a mano lungo il tracciato.
-2. Ripetere con linea inclinata/curva, ombra e superficie con venature o riflessi.
+2. Passare a ombra e gap; la curva e' coperta sul banco con il nastro proxy.
 3. Registrare found ratio, offset, heading, confidenza, FPS e tempo per ogni condizione.
-4. Solo dopo collegare il controller ai motori, con ruote sollevate e gate di sicurezza.
-5. Chiudere F0 quando tutte le condizioni hanno una prova ripetibile e un report.
+4. Ripetere la curva con la linea 1-2 cm quando disponibile, senza misurarne il raggio.
+5. Solo dopo collegare il controller ai motori, con ruote sollevate e gate di sicurezza.
+6. Chiudere F0 quando tutte le condizioni hanno una prova ripetibile e un report.

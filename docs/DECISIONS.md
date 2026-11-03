@@ -110,6 +110,12 @@
     autenticazione: solo rete locale. `--debug-overlay` aggiunge la maschera di segmentazione,
     `--duration 0` acquisisce fino a `q`/ESC, il browser ha un pulsante di stop e
     `software/line_live.py` e' l'avvio da Thonny.
+26. **ROI near-field e test curva (2026-11-03):** la telecamera linea e' montata vicino alla
+    tile per non comandare in anticipo; la ROI e' una finestra sul near-field e la curva puo'
+    uscire dall'inquadratura. Il test F0-2 non richiede che l'intera curva resti nella ROI ne'
+    un raggio fisico noto: valuta il rilevamento nei tratti in ROI, l'assenza di falsi quando
+    la linea esce e la ripresa quando rientra. Il nastro disponibile e' piu' largo di 1-2 cm:
+    e' un proxy di banco, non una prova regolamentare.
 
 ## Decisioni da prendere
 

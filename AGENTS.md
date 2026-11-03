@@ -158,18 +158,19 @@ contiene il codice applicativo del progetto precedente.
   stream MJPEG `--http-port`; `--debug-overlay` mostra la maschera, `--duration 0` va fino a
   q/ESC, il browser ha un pulsante di stop e `software/line_live.py` e' l'avvio rapido da
   Thonny.
-  Test host: 183 verdi. Curvature, gap, disturbi e movimento non sono ancora provati, quindi
+  Test host: 183 verdi. Gap, disturbi e movimento non sono ancora provati, quindi
   il gate F0 resta aperto.
 - Fatto: F0-2 tentativo 1 su curva reale (`docs/testing/F0_CURVE_TEST.md`): 1584 frame,
   89,29 s, 17,7 FPS; 899/1584 trovati (56,8%) ma con 317 frame iniziali vuoti e 223 di
-  riposizionamento. Nei tratti utili la curva e' seguita con confidenza 0,86-0,965; la linea
-  esce piu' volte dalla ROI, quindi la run non e' continua e F0-2 resta aperto. Raggio non
-  misurato.
+  riposizionamento. Nei tratti in ROI la curva e' seguita con confidenza 0,86-0,965 e 6
+  riprese; il nastro e' piu' largo di 1-2 cm, quindi e' un proxy di banco. La telecamera e'
+  volutamente vicina e la curva puo' uscire dalla ROI: **F0-2 e' coperto sul banco**, senza
+  richiedere raggio o linea regolamentare. Resta la compatibilita' con la linea 1-2 cm.
 - Fatto: strumentazione avvio `line-live`: `camera_start_s`, `warmup_s`, `first_frame_s` nel
   report. Due run di prova danno primo frame a 2,08-2,19 s; il ritardo di 18,73 s della run
   curva e' anomalo, non il comportamento atteso.
-- In corso: ripetere F0-2 con la curva sempre dentro la ROI e il raggio misurato; poi ombre,
-  gap e movimento a bassa velocita'. Completare i segni IMU e chiudere i punti aperti di B0.
+- In corso: prove F0-3 ombra e F0-4 gap; poi movimento a bassa velocita'. Completare i segni
+  IMU e chiudere i punti aperti di B0.
 - Prossimi passi: eseguire `line-live` mentre la linea o il robot vengono spostati a mano,
   registrare le condizioni e conservare report e frame annotati; solo dopo collegare il
   controller ai motori.

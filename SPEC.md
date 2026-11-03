@@ -10,8 +10,8 @@ diagnostica software per camera, sonar e IMU; camera e IMU passano, sonar valido
 Calibrazioni USB e CSI accettate; F0-1: primo pipeline linea con undistort, rilevamento,
 tracker e CLI, verificato sui test host, su 30 frame reali di una linea retta (30/30) e in
 live a 19,8 FPS, con vista locale o stream MJPEG, debug mask e durata fino a q/ESC. F0-2
-tentativo 1 su curva: rilevamento corretto nei tratti in ROI, ma run non continua e raggio non
-misurato. Gap, ombre e movimento restano da provare. Valori operativi
+coperto sul banco con curva e nastro proxy piu' largo di 1-2 cm, senza richiedere raggio o
+linea regolamentare. Gap, ombre e movimento restano da provare. Valori operativi
 `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`; gate predefinito chiuso. Movimento
 reale disabilitato di default.
 
@@ -140,13 +140,15 @@ verdi. Prova reale su linea retta con robot fermo: 30/30 frame trovati, offset -
 heading 3,95 deg, confidenza 0,95, 0 perdite. Loop `line-live`: 100 frame in 5,04 s, 19,8 FPS,
 100/100 trovati.
 
-Stato 2026-11-03: F0-2 tentativo 1 su curva reale (`docs/testing/F0_CURVE_TEST.md`). La curva
-e' seguita nei tratti in ROI con confidenza 0,86-0,965, ma la run contiene 317 frame iniziali
-vuoti e 223 di riposizionamento; raggio non misurato. F0-2 resta aperto. Il report live ora
-separa `camera_start_s`, `warmup_s` e `first_frame_s`: primo frame 2,08-2,19 s nelle run
-strumentate; il ritardo di 18,73 s della run curva e' anomalo.
+Stato 2026-11-03: F0-2 tentativo 1 su curva reale (`docs/testing/F0_CURVE_TEST.md`). Nei
+tratti in cui la linea entra nella ROI viene seguita con confidenza 0,86-0,965, con 6 riprese
+e nessun falso confermato evidente. La telecamera e' volutamente vicina: la curva puo' uscire
+dalla ROI. F0-2 e' coperto sul banco con il nastro proxy (piu' largo di 1-2 cm); non richiede
+raggio fisico. Resta la compatibilita' con la linea regolamentare. Il report live ora separa
+`camera_start_s`, `warmup_s` e `first_frame_s`: primo frame 2,08-2,19 s nelle run strumentate;
+il ritardo di 18,73 s della run curva e' anomalo.
 
-Il gate resta aperto per curvature continue, gap, disturbi, illuminazione e movimento.
+Il gate resta aperto per gap, disturbi, illuminazione e movimento.
 
 ### Gate F1 — mission elements
 

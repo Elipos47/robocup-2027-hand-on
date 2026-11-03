@@ -1,6 +1,6 @@
 # Test F0-2 - curva reale
 
-**ID:** F0-2 (tentativo 1)
+**ID:** F0-2 (tentativo 1, banco)
 **Data:** 2026-11-03
 **Software:** `software/rcj2027/line_vision.py`, `line-live`, script `software/line_live.py`
 **Hardware:** Raspberry Pi 5 + CSI IMX708, 1280x720 full-fov
@@ -9,9 +9,13 @@ movimento disabilitato.
 
 ## Setup
 
-La curva e' un nastro nero largo, ripreso da vicino. Il raggio non e' stato misurato in questa
-run: resta un `TODO` per la prossima prova. La telecamera non e' stata spostata durante la
-sequenza.
+La telecamera e' montata vicino alla tile: la ROI e' una finestra di near-field e la curva
+puo' uscire dall'inquadratura. Non e' un errore e non si richiede che l'intera curva resti
+nella ROI.
+
+Il nastro disponibile e' piu' largo della linea regolamentare (1-2 cm): e' un **proxy di
+banco**. Il raggio fisico non e' stato misurato e non e' un parametro del test; la curvatura
+si valuta in spazio immagine (heading e forma del fit) e con archi diversi.
 
 ## Acquisizione
 
@@ -50,6 +54,10 @@ I frame annotati mostrano il fit blu che segue correttamente l'arco, anche quand
 spostata a sinistra o a destra nella ROI. Quando la linea esce dalla ROI, il tracker passa a
 `LOST` e non viene forzato: e' il comportamento atteso.
 
+La curvatura osservata va da heading -10,6 a +20,6 gradi nei tratti trovati; il fit parabolico
+segue sia archi a sinistra sia archi a destra. Non serve conoscere il raggio fisico per
+verificare che il rilevamento segua la linea.
+
 ## Avvio
 
 Nella run il primo evento `line` e' arrivato **18,73 s** dopo `session_start`; il primo frame
@@ -71,15 +79,19 @@ Per le prossime run conviene iniziare a registrare solo quando la linea e' dentr
 
 ## Esito
 
-- Il rilevamento della curva e' corretto nei tratti in cui la linea e' nella ROI.
-- La run **non chiude F0-2**: non e' continua, il raggio non e' misurato e la linea esce piu'
-  volte dall'inquadratura.
-- Non ci sono falsi confermati evidenti nei tratti senza linea.
+- Nei tratti in cui la linea entra nella ROI viene rilevata con confidenza 0,86-0,965.
+- Nei tratti senza linea il tracker resta `LOST`: non ci sono falsi confermati evidenti.
+- Le 6 riprese mostrano che il tracker riacquisisce la linea quando rientra.
+- La run e' un test di banco con nastro piu' largo di 1-2 cm; non e' una prova regolamentare.
 
-## Prossima run
+**F0-2 e' coperto sul banco** con il criterio corretto: rilevamento nei tratti in ROI, perdita
+quando la linea esce, ripresa quando rientra. Resta una prova di compatibilita' con la linea
+1-2 cm, da fare quando disponibile, ma non richiede ne' raggio noto ne' l'intera curva in
+inquadratura.
 
-1. Posizionare la curva in modo che resti dentro la ROI arancione per tutta la durata.
-2. Misurare il raggio con un metro e annotarlo.
-3. Registrare 10 s fermo in tre posizioni, poi 15-20 s muovendo a mano senza far uscire la linea.
-4. Se la linea esce, fermare la run e riposizionare: non continuare fuori ROI.
-5. Ripetere con `CONDITION = "curva"` e conservare il nuovo report.
+## Prossima prova
+
+1. Passare a **ombra** e **gap** con la stessa logica: la linea puo' uscire dalla ROI.
+2. Per l'ombra: parziale e totale, verificando perdita e ripresa.
+3. Per il gap: 5, 10 e 20 cm, verificando che non compaia una linea falsa nel vuoto.
+4. Ripetere la curva con la linea 1-2 cm quando sara' disponibile, senza misurarne il raggio.

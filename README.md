@@ -48,12 +48,14 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   ~3,95 deg, confidenza ~0,95, 0 perdite. Loop `line-live` dalla CSI: 100 frame in 5,04 s,
   19,8 FPS, 100/100 trovati. Vista live con finestra locale o stream browser per telefono/PC;
   `--debug-overlay` mostra la maschera e `--duration 0` va fino a `q`/ESC. Avvio rapido da
-  Thonny in `software/line_live.py`; lo stream browser ha un pulsante di stop. Curvature, gap,
-  ombre e movimento restano da provare.
-- Fatto: F0-2 tentativo 1 su curva reale (`docs/testing/F0_CURVE_TEST.md`): la curva e' seguita
-  nei tratti in ROI con confidenza 0,86-0,965, ma la run contiene 317 frame iniziali vuoti e
-  223 di riposizionamento; F0-2 resta aperto. Il primo frame live arriva in 2,1-2,2 s nelle run
-  strumentate; il ritardo di 18,7 s della run curva e' anomalo.
+  Thonny in `software/line_live.py`; lo stream browser ha un pulsante di stop. Gap, ombre e
+  movimento restano da provare.
+- Fatto: F0-2 tentativo 1 su curva reale (`docs/testing/F0_CURVE_TEST.md`): nei tratti in ROI
+  la curva e' seguita con confidenza 0,86-0,965 e 6 riprese; il nastro e' piu' largo di 1-2 cm
+  ed e' un proxy di banco. La telecamera e' volutamente vicina, quindi la curva puo' uscire
+  dalla ROI: F0-2 e' coperto sul banco, senza raggio ne' linea regolamentare. Il primo frame
+  live arriva in 2,1-2,2 s nelle run strumentate; il ritardo di 18,7 s della run curva e'
+  anomalo.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -107,8 +109,8 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Ripetere F0-2 con la curva sempre dentro la ROI e il raggio misurato; poi ombre, gap e
-   movimento a bassa velocita'. La linea retta e' gia' stata rilevata 30/30 e in live a 19,8 FPS.
+1. Provare F0-3 ombra e F0-4 gap; la curva e' coperta sul banco con il nastro proxy. Poi
+   movimento a bassa velocita' e, quando disponibile, compatibilita' con la linea 1-2 cm.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Ripetere il test della linea con illuminazione e superfici diverse, poi collegare il

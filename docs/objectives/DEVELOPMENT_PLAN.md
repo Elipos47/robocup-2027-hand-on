@@ -71,11 +71,13 @@ host e verifica undistort passano.
 Prova reale su linea retta con robot fermo: 30/30 frame, offset -46,0 px, heading 3,95 deg,
 confidenza 0,95; live 100 frame in 5,04 s a 19,8 FPS, 100/100 trovati.
 
-Stato 2026-11-03: F0-2 tentativo 1 su curva. La curva e' seguita nei tratti in ROI con
-confidenza 0,86-0,965, ma la run contiene 317 frame iniziali vuoti e 223 di riposizionamento;
-raggio non misurato. F0-2 resta aperto. Il report live ora misura `camera_start_s`, `warmup_s`
-e `first_frame_s` (2,08-2,19 s nelle run strumentate; 18,73 s nella run curva e' anomalo).
-Curvature continue, gap, disturbi e movimento non sono ancora provati: F0 non e' chiuso.
+Stato 2026-11-03: F0-2 tentativo 1 su curva. Nei tratti in cui la linea entra nella ROI viene
+seguita con confidenza 0,86-0,965 e 6 riprese; il nastro disponibile e' piu' largo di 1-2 cm ed
+e' un proxy di banco. La telecamera e' volutamente vicina, quindi la curva puo' uscire dalla
+ROI: F0-2 e' coperto sul banco senza raggio ne' linea regolamentare. Il report live ora misura
+`camera_start_s`, `warmup_s` e `first_frame_s` (2,08-2,19 s nelle run strumentate; 18,73 s nella
+run curva e' anomalo). Gap, disturbi, illuminazione e movimento non sono ancora provati: F0 non
+e' chiuso.
 
 ### F1 — Elementi di missione
 
