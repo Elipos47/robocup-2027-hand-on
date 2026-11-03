@@ -194,6 +194,10 @@ contiene il codice applicativo del progetto precedente.
   rotazione. La frequenza del ronzio e' quella PWM (~490 Hz) e non cambia col duty. Il percorso
   software arriva ai pin; causa da isolare su alimentazione/enable/L298N. Firmware sicuro
   ripristinato. Bloccata la misura di PWM minimo/cm/s.
+- Fatto: test entrambi i canali a 255 (`firmware/test/pwm_both_test/`): ruota sinistra gira,
+  ruota destra ferma; velocita' lenta. Con un solo motore attivo non si puo' misurare la
+  velocita' massima. Pronto `firmware/test/pwm_channel_test/` per provare A e B separatamente
+  e isolare canale A/motore destro.
 - In corso: F0-5 movimento a bassa velocita': misurare PWM minimo e cm/s, poi collegare i
   motori solo dopo gate di sicurezza. Completare i segni IMU e chiudere i punti aperti di B0.
 - Prossimi passi: misurare cm/s a PWM noto, tarare `cruise`/guadagni, implementare

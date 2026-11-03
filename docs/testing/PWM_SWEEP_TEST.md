@@ -72,7 +72,18 @@ E' pronto lo sketch `firmware/test/pwm_both_test/`:
 - indietro entrambi a 255 per 4 s, stop 2 s;
 - due cicli e stop finale.
 
-Il file e' compilato ma non e' stato caricato. Dopo il test va ricaricato il
-firmware operativo sicuro `firmware/rcj2027/`. Se una sola ruota gira, il
-problema e' nel canale; se nessuna gira, restano alimentazione, ENA/ENB, GND
-comune o L298N.
+Risultato della prova: **la ruota sinistra gira, la destra no**. La velocita'
+osservata e' lenta, ma con un solo motore attivo non e' una misura valida di
+velocita' massima.
+
+## Test canali separati
+
+Per isolare il guasto e' pronto `firmware/test/pwm_channel_test/`:
+
+- A avanti 255, stop;
+- B avanti 255, stop;
+- A indietro 255, stop;
+- B indietro 255, stop.
+
+Serve a capire se il canale A (atteso destro) o il motore destro e' il problema.
+Il file e' compilato ma non caricato.
