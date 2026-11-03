@@ -77,6 +77,28 @@ troppo corto per essere una linea, ma il salto verso la linea vera veniva rifiut
 se il tratto agganciato e' piu' corto di `min_valid_rows`, viene scartato e la scansione
 riparte dal candidato piu' centrale. Aggiunto il test `far_speck_then_line`.
 
+## Terza run - 182854 (con le correzioni)
+
+| Voce | Valore |
+|---|---:|
+| Frame | 487 |
+| Durata | 27,86 s |
+| FPS | 17,5 |
+| Frame grezzi trovati | 284/487 (58,3%) |
+| Frame confermati | 304 (62,4%) |
+| Riprese | 6 |
+| Perdita massima | 54 frame |
+| Offset | -94,4..19,4 px |
+| Heading | -1,1..3,5 deg |
+| `width_rejected_frames` | 0 |
+| Confidenza mediana | 0,961 |
+| Startup | 2,32 s |
+
+Questa run e' stata eseguita con il reset del tratto corto. Il frame 120, che nella run
+precedente veniva perso nonostante la linea visibile, ora e' **FOUND**. I frame 150, 210 e 390
+sono LOST con la linea fuori dalla ROI: comportamento atteso. La sequenza mostra FOUND sui
+segmenti, LOST nel vuoto e 6 riprese, senza falsi confermati evidenti.
+
 ## Anomalia trovata
 
 Al frame 150 la linea era visibile nella ROI ma il rilevatore ha dato `few_rows` con
@@ -90,21 +112,20 @@ Correzioni:
 - il filtro di larghezza ammette un aumento graduale e rifiuta solo un restringimento brusco;
 - aggiunto il test sintetico `speck_then_line_frame`.
 
-Queste correzioni non sono ancora state provate in una nuova run live sul gap.
+Queste correzioni sono state validate nella terza run: il frame 120 e' tornato FOUND e non ci
+sono falsi confermati nei tratti senza linea.
 
 ## Esito
 
-- Il comportamento qualitativo del gap e' corretto: FOUND sui segmenti, LOST nel vuoto, nessun
-  falso, ripresa dopo.
-- La run non chiude F0-4 per le anomalie di aggancio (frame 150 e 120) e perche' le nuove
-  correzioni vanno validate live.
-- Il gap da 7 cm e' dentro il limite 2026 (massimo 20 cm); non servono altre misure se non
-  disponibili.
+- Il comportamento del gap e' corretto: FOUND sui segmenti, LOST nel vuoto, nessun falso,
+  6 riprese e riacquisizione.
+- La terza run con le correzioni conferma il fix del seme e il frame 120 torna FOUND.
+- Il gap da 7 cm e' dentro il limite 2026 (massimo 20 cm).
+- **F0-4 e' chiuso sul banco** con il gap disponibile. L'attraversamento del gap resta F1.
 
-## Prossima run
+## Prossima prova
 
-1. Ripetere con lo stesso gap da 7 cm e il codice aggiornato.
-2. Registrare un passaggio pulito: linea prima del gap, gap in ROI, linea dopo.
-3. Verificare che non ci siano FOUND dentro il vuoto e che la ripresa avvenga quando il
-   segmento rientra.
-4. Conservare il report e gli annotati.
+1. Non serve ripetere il gap da 7 cm per F0.
+2. Se compaiono altri gap, registrare la misura e ripetere la sequenza.
+3. Passare a F0-5: movimento a bassa velocita' e comportamento del controller.
+4. L'attraversamento del gap e' un test F1 separato, con timeout e riacquisizione.

@@ -64,9 +64,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   larghezza: replay 765 trovati -> 433 accettati, 332 rifiutati, 426 confermati. Serve una
   run live con il nuovo guard e una vera occlusione opaca.
 - Fatto: F0-4 gap da 7 cm (`docs/testing/F0_GAP_TEST.md`): FOUND sui segmenti, LOST nel vuoto,
-  6 riprese, nessun falso evidente. Al frame 150 la linea era visibile ma veniva persa per un
-  seme isolato e per il filtro di larghezza; corretti stop sul gap e aumento di larghezza.
-  Serve una nuova run live per chiudere F0-4.
+  6 riprese, nessun falso evidente. Corretti un seme isolato e il filtro di larghezza; terza
+  run con 487 frame, 284 trovati, 304 confermati e frame 120 FOUND: **F0-4 chiuso sul banco**.
+  L'attraversamento del gap resta F1.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -120,8 +120,8 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Provare F0-3 ombra e F0-4 gap; la curva e' coperta sul banco con il nastro proxy. Poi
-   movimento a bassa velocita' e, quando disponibile, compatibilita' con la linea 1-2 cm.
+1. F0-5: movimento a bassa velocita' e controller dry-run; poi, quando disponibile,
+   compatibilita' con la linea 1-2 cm. Curva e gap sono coperti sul banco.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Ripetere il test della linea con illuminazione e superfici diverse, poi collegare il

@@ -334,9 +334,9 @@ della larghezza, tipico di un bordo agganciato al posto della linea.
 - **Criterio provvisorio:** nessun falso confermato nel gap; `lost` entro 5 frame; ripresa
   entro 5 frame dopo la linea. L'attraversamento del gap e' F1, non F0.
 
-Il tentativo con gap da 7 cm e' in `docs/testing/F0_GAP_TEST.md`: comportamento qualitativo
-corretto (FOUND sui segmenti, LOST nel vuoto, 6 riprese), con un'anomalia di aggancio al
-frame 150 corretta nel frattempo. Serve una nuova run live per chiudere F0-4.
+Il tentativo con gap da 7 cm e' in `docs/testing/F0_GAP_TEST.md`: comportamento corretto
+(FOUND sui segmenti, LOST nel vuoto, 6 riprese), con il fix del seme e del filtro di larghezza
+validato nella terza run. **F0-4 e' chiuso sul banco**; l'attraversamento del gap resta F1.
 
 Per ogni run vanno registrati data, condizione, misura geometrica, illuminazione e posizione
 della telecamera. Se la telecamera viene spostata, la calibrazione `csi_1280x720.json` va

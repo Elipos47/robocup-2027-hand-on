@@ -85,10 +85,10 @@ su 1/3-2/3 e l'occlusione totale. Nella prova di bassa luce il rilevatore agganc
 sottile (10-31 px contro 188-190) con offset errato; aggiunto il guard di continuita' di
 larghezza, da validare live. F0-3 non e' chiuso.
 
-Stato 2026-11-03: F0-4 gap da 7 cm, tentativo 1 (`docs/testing/F0_GAP_TEST.md`): 513 frame,
-251/513 trovati, 266 confermati, 6 riprese, FOUND sui segmenti e LOST nel vuoto. Al frame 150
-la linea era visibile ma veniva persa per un seme isolato e per il filtro di larghezza;
-corretti stop sul gap e aumento di larghezza. Serve una nuova run live per chiudere F0-4.
+Stato 2026-11-03: F0-4 gap da 7 cm (`docs/testing/F0_GAP_TEST.md`): 513 frame, 251/513
+trovati, 266 confermati, 6 riprese, FOUND sui segmenti e LOST nel vuoto. Corretti seme
+isolato e filtro di larghezza. Terza run 182854: 487 frame, 284/487 trovati, 304 confermati,
+6 riprese, frame 120 FOUND. **F0-4 chiuso sul banco**; l'attraversamento resta F1.
 
 ### F1 — Elementi di missione
 

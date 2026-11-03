@@ -183,12 +183,12 @@ contiene il codice applicativo del progetto precedente.
   seme isolato e per il filtro di larghezza; corretti stop sul gap e aumento di larghezza,
   con test sintetico. Seconda run 181848: 479 frame, 288/479 trovati, 320 confermati, 6
   riprese; al frame 120 un seme lontano bloccava la linea. Aggiunto reset del tratto corto e
-  test `far_speck`. Serve una nuova run live per chiudere F0-4.
-- In corso: prove F0-3 ombra e F0-4 gap; poi movimento a bassa velocita'. Completare i segni
-  IMU e chiudere i punti aperti di B0.
-- Prossimi passi: eseguire `line-live` mentre la linea o il robot vengono spostati a mano,
-  registrare le condizioni e conservare report e frame annotati; solo dopo collegare il
-  controller ai motori.
+  test `far_speck`. Terza run 182854: 487 frame, 284/487 trovati, 304 confermati, 6 riprese,
+  frame 120 FOUND; **F0-4 chiuso sul banco**. L'attraversamento resta F1.
+- In corso: F0-5 movimento a bassa velocita' e controller dry-run; completare i segni IMU e
+  chiudere i punti aperti di B0.
+- Prossimi passi: implementare la macchina a stati FOLLOW/LOST senza motori, provarla sui log,
+  poi misurare cm/s a PWM noto e solo dopo collegare i motori.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

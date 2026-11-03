@@ -128,8 +128,9 @@
     agganciato almeno `min_valid_rows` righe; un seme isolato non deve fermare la scansione.
     Se il tratto agganciato e' piu' corto di `min_valid_rows` e compare un candidato lontano,
     il tratto viene scartato e la scansione riparte dal candidato piu' centrale. Il filtro di
-    larghezza ammette l'aumento graduale e rifiuta il restringimento brusco. Serve una nuova
-    run live per validare la correzione.
+    larghezza ammette l'aumento graduale e rifiuta il restringimento brusco. La terza run
+    (182854) conferma il fix: 487 frame, 284 trovati, 304 confermati, 6 riprese, frame 120
+    FOUND. **F0-4 e' chiuso sul banco**; l'attraversamento resta F1.
 
 ## Decisioni da prendere
 
