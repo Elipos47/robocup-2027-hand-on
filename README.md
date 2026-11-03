@@ -56,6 +56,9 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   dalla ROI: F0-2 e' coperto sul banco, senza raggio ne' linea regolamentare. Il primo frame
   live arriva in 2,1-2,2 s nelle run strumentate; il ritardo di 18,7 s della run curva e'
   anomalo.
+- Fatto: F0-3 ombra parziale, tentativo 1: 608/608 frame trovati, 0 perdite, confidenza
+  0,663-0,978. L'ombra era probabilmente leggera; resta da provare un'ombra netta su 1/3-2/3
+  della linea e l'occlusione totale.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.

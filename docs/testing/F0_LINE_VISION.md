@@ -309,8 +309,11 @@ chiuso il gate. Ogni run usa `software/line_live.py` con `DURATION_S = 0` e vien
 
 ### F0-3 ombra
 
-- **Setup:** ombra parziale su circa 1/3 e 2/3 della linea, bordo netto; poi occlusione totale;
-  luce ambiente e flash/LED.
+- **Parziale:** un'ombra con bordo netto che copre circa 1/3 e poi 2/3 della larghezza della
+  linea, lasciando la linea visibile. Non basta scurire genericamente la scena: serve un'ombra
+  che tolga contrasto a una parte della linea.
+- **Totale:** un oggetto opaco o un'ombra che rende la linea non distinguibile dal fondo. Se la
+  linea resta visibile, e' una prova di illuminazione, non di occlusione.
 - **Run:** `CONDITION = "ombra-parziale"` e `"ombra-totale"`.
 - **Misure:** copertura dell'ombra, found ratio, confidenza, falsi positivi, frame di perdita e
   ripresa.

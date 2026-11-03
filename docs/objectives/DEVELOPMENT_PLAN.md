@@ -79,6 +79,10 @@ ROI: F0-2 e' coperto sul banco senza raggio ne' linea regolamentare. Il report l
 run curva e' anomalo). Gap, disturbi, illuminazione e movimento non sono ancora provati: F0 non
 e' chiuso.
 
+Stato 2026-11-03: F0-3 ombra parziale, tentativo 1: 608/608 frame trovati, 0 perdite,
+confidenza 0,663-0,978. L'ombra era probabilmente leggera; restano da provare un'ombra netta
+su 1/3-2/3 e l'occlusione totale. F0-3 non e' chiuso.
+
 ### F1 — Elementi di missione
 
 ostacolo, marker, salite/discese, velocita' variabile, linea argentata, stanza, vittime e uscita.

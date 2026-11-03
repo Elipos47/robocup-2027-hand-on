@@ -169,6 +169,9 @@ contiene il codice applicativo del progetto precedente.
 - Fatto: strumentazione avvio `line-live`: `camera_start_s`, `warmup_s`, `first_frame_s` nel
   report. Due run di prova danno primo frame a 2,08-2,19 s; il ritardo di 18,73 s della run
   curva e' anomalo, non il comportamento atteso.
+- Fatto: F0-3 ombra parziale, tentativo 1: 608/608 frame trovati, 606 confermati, 0 perdite,
+  confidenza 0,663-0,978, startup 5,6 s. L'ombra era probabilmente leggera: ripetere con
+  un'ombra netta su 1/3 e 2/3 della linea; l'occlusione totale non e' ancora provata.
 - In corso: prove F0-3 ombra e F0-4 gap; poi movimento a bassa velocita'. Completare i segni
   IMU e chiudere i punti aperti di B0.
 - Prossimi passi: eseguire `line-live` mentre la linea o il robot vengono spostati a mano,
