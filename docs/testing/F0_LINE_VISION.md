@@ -240,6 +240,16 @@ Raspberry (`--preview`, 18 frame in 1 s) e stream MJPEG via browser (`--http-por
 e flusso JPEG valido). Verificata anche la combinazione `--preview --debug-overlay --http-port`
 con 26 frame in 2 s. Lo stream non ha autenticazione: va usato solo sulla rete locale.
 
+Il report `line-live` ora include `startup.camera_start_s`, `startup.warmup_s` e
+`startup.first_frame_s`. Due run strumentate danno primo frame a 2,08-2,19 s; un ritardo molto
+maggiore va annotato e investigato.
+
+### Curva F0-2
+
+Il primo tentativo su curva reale e' in `docs/testing/F0_CURVE_TEST.md`: la curva viene
+seguita nei tratti in ROI, ma la run non e' continua e il raggio non e' stato misurato. F0-2
+resta aperto.
+
 ### Frame senza linea
 
 Un frame reale della scrivania, senza linea, e' stato analizzato con la calibrazione CSI:

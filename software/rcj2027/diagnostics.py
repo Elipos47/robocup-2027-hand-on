@@ -495,8 +495,12 @@ def _line_live_report(args: argparse.Namespace) -> int:
 
     run_id = args.run_id or _default_run_id("line-live")
     log_path = Path(args.log_dir) / f"{run_id}.jsonl"
+    process_started = time.monotonic()
     camera = Picamera2(camera_num=args.camera_num)
     started = False
+    camera_start_s: float | None = None
+    warmup_s: float | None = None
+    first_frame_s: float | None = None
     http_server: MjpegServer | None = None
     preview_cv2 = None
     frames = 0
@@ -568,12 +572,29 @@ def _line_live_report(args: argparse.Namespace) -> int:
             camera.configure(video_config)
             camera.start()
             started = True
+            camera_start_s = time.monotonic() - process_started
+            logger.log(
+                "camera_started",
+                elapsed_s=round(camera_start_s, 2),
+            )
             try:
-                camera.set_controls({"AfMode": controls.AfModeEnum.Continuous})
+                camera.set_controls(
+                    {
+                        "AfMode": controls.AfModeEnum.Continuous,
+                        "AfSpeed": controls.AfSpeedEnum.Fast,
+                    }
+                )
             except Exception:
-                pass
+                try:
+                    camera.set_controls(
+                        {"AfMode": controls.AfModeEnum.Continuous}
+                    )
+                except Exception:
+                    pass
             if args.warmup:
                 time.sleep(args.warmup)
+            warmup_s = time.monotonic() - process_started
+            logger.log("warmup_done", elapsed_s=round(warmup_s, 2))
 
             started_at = time.monotonic()
             while (
@@ -591,6 +612,12 @@ def _line_live_report(args: argparse.Namespace) -> int:
                 frame = camera.capture_array("main")
                 if frame.ndim == 3 and frame.shape[2] == 3:
                     frame = frame[:, :, ::-1].copy()
+                if first_frame_s is None:
+                    first_frame_s = time.monotonic() - process_started
+                    logger.log(
+                        "first_frame",
+                        elapsed_s=round(first_frame_s, 2),
+                    )
                 if need_debug:
                     observation, debug = detector.detect(frame, debug=True)
                     annotated = line_vision.annotate_frame(
@@ -687,6 +714,23 @@ def _line_live_report(args: argparse.Namespace) -> int:
                         if http_server is not None
                         else False
                     ),
+                    "startup": {
+                        "camera_start_s": (
+                            round(camera_start_s, 2)
+                            if camera_start_s is not None
+                            else None
+                        ),
+                        "warmup_s": (
+                            round(warmup_s, 2)
+                            if warmup_s is not None
+                            else None
+                        ),
+                        "first_frame_s": (
+                            round(first_frame_s, 2)
+                            if first_frame_s is not None
+                            else None
+                        ),
+                    },
                 },
                 "passed": bool(frames) and found_ratio >= args.min_found_ratio,
             }

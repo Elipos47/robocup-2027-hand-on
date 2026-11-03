@@ -50,6 +50,10 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   `--debug-overlay` mostra la maschera e `--duration 0` va fino a `q`/ESC. Avvio rapido da
   Thonny in `software/line_live.py`; lo stream browser ha un pulsante di stop. Curvature, gap,
   ombre e movimento restano da provare.
+- Fatto: F0-2 tentativo 1 su curva reale (`docs/testing/F0_CURVE_TEST.md`): la curva e' seguita
+  nei tratti in ROI con confidenza 0,86-0,965, ma la run contiene 317 frame iniziali vuoti e
+  223 di riposizionamento; F0-2 resta aperto. Il primo frame live arriva in 2,1-2,2 s nelle run
+  strumentate; il ritardo di 18,7 s della run curva e' anomalo.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -77,7 +81,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
 | Protocollo seriale v1.1 | `docs/architecture/SERIAL_PROTOCOL.md` |
-| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`, `docs/testing/F0_LINE_VISION.md` |
+| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`, `docs/testing/F0_LINE_VISION.md`, `docs/testing/F0_CURVE_TEST.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
 | Decisioni aperte | `docs/DECISIONS.md` |
 | Provenienza e scelte di importazione | `docs/SOURCE_MAP.md` |
@@ -103,8 +107,8 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. Eseguire `line-live` con linea inclinata/curva, ombra e movimento a bassa velocita'; la
-   linea retta e' gia' stata rilevata 30/30 e in live a 19,8 FPS con robot fermo.
+1. Ripetere F0-2 con la curva sempre dentro la ROI e il raggio misurato; poi ombre, gap e
+   movimento a bassa velocita'. La linea retta e' gia' stata rilevata 30/30 e in live a 19,8 FPS.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Ripetere il test della linea con illuminazione e superfici diverse, poi collegare il

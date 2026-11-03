@@ -69,8 +69,13 @@ adattiva, scanline top-down, fit parabolico, confidenza e tracker; la CLI `line`
 sequenze e `line-live` elabora la CSI in tempo reale con vista locale o stream MJPEG. Test
 host e verifica undistort passano.
 Prova reale su linea retta con robot fermo: 30/30 frame, offset -46,0 px, heading 3,95 deg,
-confidenza 0,95; live 100 frame in 5,04 s a 19,8 FPS, 100/100 trovati. Curvature, gap,
-disturbi e movimento non sono ancora provati: F0 non e' chiuso.
+confidenza 0,95; live 100 frame in 5,04 s a 19,8 FPS, 100/100 trovati.
+
+Stato 2026-11-03: F0-2 tentativo 1 su curva. La curva e' seguita nei tratti in ROI con
+confidenza 0,86-0,965, ma la run contiene 317 frame iniziali vuoti e 223 di riposizionamento;
+raggio non misurato. F0-2 resta aperto. Il report live ora misura `camera_start_s`, `warmup_s`
+e `first_frame_s` (2,08-2,19 s nelle run strumentate; 18,73 s nella run curva e' anomalo).
+Curvature continue, gap, disturbi e movimento non sono ancora provati: F0 non e' chiuso.
 
 ### F1 — Elementi di missione
 
