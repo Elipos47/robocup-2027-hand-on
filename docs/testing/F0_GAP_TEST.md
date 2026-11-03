@@ -55,6 +55,28 @@ Nei tratti FOUND offset, heading e larghezza sono stabili; non ci sono falsi con
 evidenti nei tratti LOST. Le 6 riprese mostrano che il tracker riacquisisce la linea dopo il
 gap.
 
+## Seconda run - 181848
+
+| Voce | Valore |
+|---|---:|
+| Frame | 479 |
+| Durata | 27,82 s |
+| FPS | 17,2 |
+| Frame grezzi trovati | 288/479 (60,1%) |
+| Frame confermati | 320 (66,8%) |
+| Riprese | 6 |
+| Perdita massima | 51 frame |
+| Offset | -104,0..67,8 px |
+| Heading | -4,0..3,2 deg |
+| `width_rejected_frames` | 0 |
+| Startup | 2,19 s |
+
+La sequenza e' simile: FOUND sui segmenti, LOST nel vuoto, 6 riprese. Al frame 120 la linea
+era visibile ma un **seme isolato lontano** (x≈1094) bloccava la scansione: il tratto era
+troppo corto per essere una linea, ma il salto verso la linea vera veniva rifiutato. Corretto:
+se il tratto agganciato e' piu' corto di `min_valid_rows`, viene scartato e la scansione
+riparte dal candidato piu' centrale. Aggiunto il test `far_speck_then_line`.
+
 ## Anomalia trovata
 
 Al frame 150 la linea era visibile nella ROI ma il rilevatore ha dato `few_rows` con
@@ -74,8 +96,8 @@ Queste correzioni non sono ancora state provate in una nuova run live sul gap.
 
 - Il comportamento qualitativo del gap e' corretto: FOUND sui segmenti, LOST nel vuoto, nessun
   falso, ripresa dopo.
-- La run non chiude F0-4 per l'anomalia di frame 150 e perche' la nuova correzione va validata
-  live.
+- La run non chiude F0-4 per le anomalie di aggancio (frame 150 e 120) e perche' le nuove
+  correzioni vanno validate live.
 - Il gap da 7 cm e' dentro il limite 2026 (massimo 20 cm); non servono altre misure se non
   disponibili.
 

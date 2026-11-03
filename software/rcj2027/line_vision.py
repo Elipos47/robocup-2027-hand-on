@@ -537,7 +537,23 @@ class LineDetector:
                     center, line_width = min(
                         candidates, key=lambda item: abs(item[0] - previous_x)
                     )
-                    if not points or abs(center - previous_x) <= max_jump:
+                    if points and abs(center - previous_x) > max_jump:
+                        if len(points) < self.config.min_valid_rows:
+                            # Il tratto agganciato e' troppo corto per essere la
+                            # linea: era un seme isolato. Riparti dal candidato
+                            # piu' centrale invece di seguire il seme.
+                            center, line_width = min(
+                                candidates,
+                                key=lambda item: abs(item[0] - roi_width / 2.0),
+                            )
+                            points.clear()
+                            point_scan_indices.clear()
+                            recent_widths.clear()
+                            gap_rows = 0
+                            selected = (center, line_width)
+                        else:
+                            selected = None
+                    else:
                         selected = (center, line_width)
             if selected is None:
                 # Un segmento troppo corto non basta per fermare la scansione:

@@ -151,7 +151,7 @@ I test host coprono:
 - server MJPEG: indice HTML, aggiornamento frame e validazione parametri.
 
 I frame sintetici verificano il codice, non sostituiscono la prova su una linea reale.
-La suite completa e' a **187 test**, tutti verdi.
+La suite completa e' a **188 test**, tutti verdi.
 
 ## Risultato disponibile
 

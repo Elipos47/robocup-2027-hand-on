@@ -126,8 +126,10 @@
 28. **Gap F0 (2026-11-03):** il gap disponibile e' 7 cm, entro il limite 2026 di 20 cm. F0
     valuta perdita e ripresa, non l'attraversamento (F1). Lo stop sul gap scatta solo dopo aver
     agganciato almeno `min_valid_rows` righe; un seme isolato non deve fermare la scansione.
-    Il filtro di larghezza ammette l'aumento graduale e rifiuta il restringimento brusco.
-    Serve una nuova run live per validare la correzione.
+    Se il tratto agganciato e' piu' corto di `min_valid_rows` e compare un candidato lontano,
+    il tratto viene scartato e la scansione riparte dal candidato piu' centrale. Il filtro di
+    larghezza ammette l'aumento graduale e rifiuta il restringimento brusco. Serve una nuova
+    run live per validare la correzione.
 
 ## Decisioni da prendere
 
