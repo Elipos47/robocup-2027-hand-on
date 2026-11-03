@@ -46,6 +46,8 @@ required=(
   firmware/test/pwm_both_test/README.md
   firmware/test/pwm_channel_test/pwm_channel_test.ino
   firmware/test/pwm_channel_test/README.md
+  firmware/test/pwm_staggered_test/pwm_staggered_test.ino
+  firmware/test/pwm_staggered_test/README.md
   firmware/rcj2027/rcj2027.ino
   firmware/rcj2027/README.md
   software/README.md

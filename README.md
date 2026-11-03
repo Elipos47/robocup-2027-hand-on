@@ -76,8 +76,8 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   percorso software arriva ai pin. Firmware sicuro ripristinato; causa da isolare su
   alimentazione/enable/L298N.
 - Fatto: test entrambi i canali a 255 (`firmware/test/pwm_both_test/`): ruota sinistra gira,
-  destra ferma; velocita' lenta. Pronto `firmware/test/pwm_channel_test/` per isolare il canale
-  A/motore destro.
+  destra ferma. Con `pwm_channel_test` entrambi i canali funzionano separatamente; il problema
+  compare con entrambi attivi. Pronto `pwm_staggered_test` per alimentazione/corrente.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.

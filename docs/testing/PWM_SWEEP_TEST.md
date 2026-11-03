@@ -85,5 +85,19 @@ Per isolare il guasto e' pronto `firmware/test/pwm_channel_test/`:
 - A indietro 255, stop;
 - B indietro 255, stop.
 
-Serve a capire se il canale A (atteso destro) o il motore destro e' il problema.
-Il file e' compilato ma non caricato.
+Risultato: **entrambi i canali funzionano separatamente**. Quindi motori e
+canali A/B sono singolarmente ok; il problema compare quando sono attivi
+insieme. La velocita' massima non e' ancora misurabile in modo valido.
+
+## Test avvio scaglionato
+
+E' pronto `firmware/test/pwm_staggered_test/`:
+
+- A da solo per 2 s, poi aggiungo B per 4 s;
+- stop 2 s;
+- B da solo per 2 s, poi aggiungo A per 4 s;
+- stop finale.
+
+Serve a distinguere un limite di alimentazione/corrente (fallisce il secondo
+motore aggiunto) da un canale/motore che fallisce sempre. Il file e' compilato
+ma non caricato.
