@@ -273,6 +273,45 @@ velocita', non e' ancora un requisito di controllo.
   diverse.
 - Il gate F0 resta aperto: servono curvature, gap, disturbi e movimento.
 
+## Protocollo F0-2 / F0-3 / F0-4
+
+I criteri seguenti sono provvisori: vanno confermati con l'operatore prima di dichiarare
+chiuso il gate. Ogni run usa `software/line_live.py` con `DURATION_S = 0` e viene fermata con
+`q`/`ESC` o con il pulsante nel browser.
+
+### F0-2 curva
+
+- **Setup:** nastro nero 1-2 cm; un arco di raggio 20-30 cm e una S; almeno 5 cm di rettilineo
+  prima e dopo; segni di riferimento ogni 5 cm; telecamera ferma.
+- **Run:** `CONDITION = "curva"`, prima 10 s con robot fermo in tre posizioni (inizio, centro,
+  fine curva), poi 15-20 s spostando il robot o la linea a mano.
+- **Misure:** raggio, found ratio, offset/heading, perdite e riprese.
+- **Criterio provvisorio:** 30/30 frame fermi; found ratio live >= 0,95; nessun falso
+  confermato; ripresa entro 5 frame dopo una perdita.
+
+### F0-3 ombra
+
+- **Setup:** ombra parziale su circa 1/3 e 2/3 della linea, bordo netto; poi occlusione totale;
+  luce ambiente e flash/LED.
+- **Run:** `CONDITION = "ombra-parziale"` e `"ombra-totale"`.
+- **Misure:** copertura dell'ombra, found ratio, confidenza, falsi positivi, frame di perdita e
+  ripresa.
+- **Criterio provvisorio:** parziale >= 0,95; totale → `lost` entro 5 frame, zero falsi
+  confermati, ripresa entro 5 frame.
+
+### F0-4 gap
+
+- **Setup:** gap di 5, 10 e 20 cm, con almeno 5 cm di linea prima e dopo; misura con righello.
+- **Run:** `CONDITION = "gap-05"`, `"gap-10"`, `"gap-20"`; prima fermo davanti/al gap/dopo,
+  poi passaggio a mano.
+- **Misure:** found ratio prima/dopo, frame di perdita, falsi positivi dentro il gap, ripresa.
+- **Criterio provvisorio:** nessun falso confermato nel gap; `lost` entro 5 frame; ripresa
+  entro 5 frame dopo la linea. L'attraversamento del gap e' F1, non F0.
+
+Per ogni run vanno registrati data, condizione, misura geometrica, illuminazione e posizione
+della telecamera. Se la telecamera viene spostata, la calibrazione `csi_1280x720.json` va
+rifatta.
+
 ## Prossima prova
 
 1. Eseguire `line-live` mentre l'operatore sposta la linea o il robot a mano lungo il tracciato.
