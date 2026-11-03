@@ -505,6 +505,8 @@ def _line_live_report(args: argparse.Namespace) -> int:
     preview_cv2 = None
     frames = 0
     found = 0
+    tracked_found = 0
+    width_rejected = 0
     confirmed = 0
     max_lost = 0
     offsets: list[float] = []
@@ -635,6 +637,10 @@ def _line_live_report(args: argparse.Namespace) -> int:
                     found += 1
                     offsets.append(observation.offset_px)
                     headings.append(observation.heading_deg)
+                if state.found:
+                    tracked_found += 1
+                elif observation.found:
+                    width_rejected += 1
                 if state.confirmed:
                     confirmed += 1
                 max_lost = max(max_lost, state.lost_frames)
@@ -698,7 +704,15 @@ def _line_live_report(args: argparse.Namespace) -> int:
                     "frames": frames,
                     "found": found,
                     "found_ratio": round(found_ratio, 4),
+                    "tracked_found": tracked_found,
+                    "tracked_found_ratio": round(
+                        tracked_found / frames if frames else 0.0, 4
+                    ),
+                    "width_rejected_frames": width_rejected,
                     "confirmed_frames": confirmed,
+                    "confirmed_ratio": round(
+                        confirmed / frames if frames else 0.0, 4
+                    ),
                     "recoveries": tracker.recoveries,
                     "max_lost_frames": max_lost,
                     "offset_px": _distribution(offsets),
@@ -733,6 +747,10 @@ def _line_live_report(args: argparse.Namespace) -> int:
                     },
                 },
                 "passed": bool(frames) and found_ratio >= args.min_found_ratio,
+                "control_passed": bool(frames)
+                and (
+                    confirmed / frames if frames else 0.0
+                ) >= args.min_found_ratio,
             }
             logger.log(
                 "session_end",

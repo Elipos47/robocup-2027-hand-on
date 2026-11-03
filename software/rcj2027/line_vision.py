@@ -774,6 +774,9 @@ class TrackState:
     lost_frames: int
     found_streak: int
     recoveries: int
+    width_px: float = 0.0
+    expected_width_px: float | None = None
+    width_ok: bool = True
 
 
 class LineTracker:
@@ -789,6 +792,7 @@ class LineTracker:
         alpha: float = 0.35,
         confirm_frames: int = 3,
         max_lost_frames: int = 5,
+        width_tolerance_ratio: float = 0.5,
     ) -> None:
         if not 0 < alpha <= 1:
             raise ValueError("alpha deve essere tra 0 e 1")
@@ -796,9 +800,12 @@ class LineTracker:
             raise ValueError("confirm_frames deve essere positivo")
         if max_lost_frames < 0:
             raise ValueError("max_lost_frames non puo' essere negativo")
+        if not 0 < width_tolerance_ratio <= 1:
+            raise ValueError("width_tolerance_ratio deve essere tra 0 e 1")
         self.alpha = alpha
         self.confirm_frames = confirm_frames
         self.max_lost_frames = max_lost_frames
+        self.width_tolerance_ratio = width_tolerance_ratio
         self.offset_px = 0.0
         self.heading_deg = 0.0
         self.confidence = 0.0
@@ -806,11 +813,25 @@ class LineTracker:
         self.found_streak = 0
         self.recoveries = 0
         self.confirmed = False
+        self.expected_width_px: float | None = None
+        self.width_ok = True
         self._ever_confirmed = False
         self._initialized = False
 
     def update(self, observation: LineObservation) -> TrackState:
-        if observation.found:
+        self.width_ok = True
+        if observation.found and self.expected_width_px is not None:
+            tolerance = max(
+                8.0,
+                self.expected_width_px * self.width_tolerance_ratio,
+            )
+            # Una diminuzione brusca e' tipica di un bordo o di una linea che
+            # esce; un aumento graduale e' normale quando la linea entra nel
+            # campo o si avvicina. Rifiutiamo solo il restringimento improvviso.
+            if observation.line_width_px < self.expected_width_px - tolerance:
+                self.width_ok = False
+
+        if observation.found and self.width_ok:
             if not self._initialized:
                 self.offset_px = observation.offset_px
                 self.heading_deg = observation.heading_deg
@@ -829,6 +850,13 @@ class LineTracker:
                     alpha * observation.confidence
                     + (1 - alpha) * self.confidence
                 )
+            if self.expected_width_px is None:
+                self.expected_width_px = observation.line_width_px
+            else:
+                self.expected_width_px = (
+                    0.9 * self.expected_width_px
+                    + 0.1 * observation.line_width_px
+                )
             self.lost_frames = 0
             self.found_streak += 1
             if self.found_streak >= self.confirm_frames:
@@ -839,12 +867,16 @@ class LineTracker:
         else:
             self.lost_frames += 1
             self.found_streak = 0
+            if observation.found and not self.width_ok:
+                # Un bordo sottile o una larghezza incompatibile non e' la linea:
+                # non aggiornare offset/heading e togli subito la conferma.
+                self.confirmed = False
             if self.lost_frames > self.max_lost_frames:
                 self.confirmed = False
                 self._initialized = False
 
         return TrackState(
-            found=observation.found,
+            found=observation.found and self.width_ok,
             confirmed=self.confirmed,
             offset_px=self.offset_px,
             heading_deg=self.heading_deg,
@@ -852,6 +884,9 @@ class LineTracker:
             lost_frames=self.lost_frames,
             found_streak=self.found_streak,
             recoveries=self.recoveries,
+            width_px=observation.line_width_px,
+            expected_width_px=self.expected_width_px,
+            width_ok=self.width_ok,
         )
 
 

@@ -59,6 +59,10 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 - Fatto: F0-3 ombra parziale, tentativo 1: 608/608 frame trovati, 0 perdite, confidenza
   0,663-0,978. L'ombra era probabilmente leggera; resta da provare un'ombra netta su 1/3-2/3
   della linea e l'occlusione totale.
+- Fatto: F0-3 ombra totale/bassa luce: il rilevatore agganciava un bordo sottile (10-31 px
+  contro 188-190) con offset sbagliato di ~48 px. Aggiunto il guard di continuita' di
+  larghezza: replay 765 trovati -> 433 accettati, 332 rifiutati, 426 confermati. Serve una
+  run live con il nuovo guard e una vera occlusione opaca.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -86,7 +90,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
 | Protocollo seriale v1.1 | `docs/architecture/SERIAL_PROTOCOL.md` |
-| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`, `docs/testing/F0_LINE_VISION.md`, `docs/testing/F0_CURVE_TEST.md` |
+| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`, `docs/testing/F0_LINE_VISION.md`, `docs/testing/F0_CURVE_TEST.md`, `docs/testing/F0_SHADOW_TEST.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
 | Decisioni aperte | `docs/DECISIONS.md` |
 | Provenienza e scelte di importazione | `docs/SOURCE_MAP.md` |

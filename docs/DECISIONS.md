@@ -116,6 +116,13 @@
     un raggio fisico noto: valuta il rilevamento nei tratti in ROI, l'assenza di falsi quando
     la linea esce e la ripresa quando rientra. Il nastro disponibile e' piu' largo di 1-2 cm:
     e' un proxy di banco, non una prova regolamentare.
+27. **Continuita' di larghezza nel tracker (2026-11-03):** in bassa luce il rilevatore puo'
+    agganciare un bordo sottile della linea (10-31 px contro 188-190 px) e produrre un offset
+    sbagliato. `LineTracker` rifiuta un restringimento brusco rispetto alla larghezza attesa;
+    un aumento graduale e' ammesso quando la linea entra nel campo o si avvicina. Il report
+    live distingue `found`, `tracked_found`, `width_rejected_frames` e `confirmed_frames`;
+    `control_passed` usa i frame confermati, non il found ratio grezzo. Da validare con una
+    run live e una vera occlusione.
 
 ## Decisioni da prendere
 

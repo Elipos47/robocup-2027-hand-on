@@ -151,7 +151,7 @@ I test host coprono:
 - server MJPEG: indice HTML, aggiornamento frame e validazione parametri.
 
 I frame sintetici verificano il codice, non sostituiscono la prova su una linea reale.
-La suite completa e' a **183 test**, tutti verdi.
+La suite completa e' a **186 test**, tutti verdi.
 
 ## Risultato disponibile
 
@@ -319,6 +319,11 @@ chiuso il gate. Ogni run usa `software/line_live.py` con `DURATION_S = 0` e vien
   ripresa.
 - **Criterio provvisorio:** parziale >= 0,95; totale → `lost` entro 5 frame, zero falsi
   confermati, ripresa entro 5 frame.
+
+Il dettaglio delle run e' in `docs/testing/F0_SHADOW_TEST.md`. Il report live distingue
+`found` (grezzo), `tracked_found` (larghezza compatibile) e `confirmed_frames`; per
+l'occlusione conta `confirmed_ratio`, non `passed`. Il tracker rifiuta un restringimento brusco
+della larghezza, tipico di un bordo agganciato al posto della linea.
 
 ### F0-4 gap
 

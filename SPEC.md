@@ -12,7 +12,9 @@ tracker e CLI, verificato sui test host, su 30 frame reali di una linea retta (3
 live a 19,8 FPS, con vista locale o stream MJPEG, debug mask e durata fino a q/ESC. F0-2
 coperto sul banco con curva e nastro proxy piu' largo di 1-2 cm, senza richiedere raggio o
 linea regolamentare. F0-3 ombra parziale: 608/608 trovati, ma ombra probabilmente leggera;
-restano ombra netta, occlusione totale, gap e movimento. Valori operativi
+restano ombra netta, occlusione totale, gap e movimento. Nella prova di bassa luce il
+rilevatore agganciava un bordo sottile (10-31 px contro 188-190) con offset errato; aggiunto
+il guard di continuita' di larghezza, da validare live. Valori operativi
 `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`; gate predefinito chiuso. Movimento
 reale disabilitato di default.
 

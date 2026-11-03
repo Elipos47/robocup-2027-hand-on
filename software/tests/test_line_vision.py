@@ -129,7 +129,9 @@ def identity_model(width: int = 640, height: int = 360) -> line_vision.CameraMod
     )
 
 
-def observation(found: bool, offset: float = 0.0) -> line_vision.LineObservation:
+def observation(
+    found: bool, offset: float = 0.0, width: float = 30.0
+) -> line_vision.LineObservation:
     return line_vision.LineObservation(
         found=found,
         offset_px=offset,
@@ -138,7 +140,7 @@ def observation(found: bool, offset: float = 0.0) -> line_vision.LineObservation
         confidence=1.0 if found else 0.0,
         valid_rows=60 if found else 0,
         scan_rows=60,
-        line_width_px=30.0 if found else 0.0,
+        line_width_px=width if found else 0.0,
         residual_px=0.0 if found else 0.0,
         line_x_bottom_px=320.0 + offset,
         optical_x_px=320.0,
@@ -371,6 +373,52 @@ class LineTrackerTests(unittest.TestCase):
 
         self.assertTrue(state.confirmed)
         self.assertEqual(state.lost_frames, 1)
+
+    def test_width_jump_is_not_confirmed(self) -> None:
+        tracker = line_vision.LineTracker(
+            confirm_frames=3,
+            max_lost_frames=5,
+            width_tolerance_ratio=0.5,
+        )
+        for _ in range(3):
+            tracker.update(observation(True, 0.0, width=100.0))
+
+        state = tracker.update(observation(True, 50.0, width=10.0))
+
+        self.assertFalse(state.confirmed)
+        self.assertFalse(state.width_ok)
+        self.assertFalse(state.found)
+        self.assertAlmostEqual(state.offset_px, 0.0)
+
+    def test_width_returns_after_anomaly(self) -> None:
+        tracker = line_vision.LineTracker(
+            confirm_frames=3,
+            max_lost_frames=5,
+            width_tolerance_ratio=0.5,
+        )
+        for _ in range(3):
+            tracker.update(observation(True, 0.0, width=100.0))
+        tracker.update(observation(True, 50.0, width=10.0))
+        for _ in range(3):
+            state = tracker.update(observation(True, 0.0, width=100.0))
+
+        self.assertTrue(state.confirmed)
+        self.assertTrue(state.width_ok)
+        self.assertEqual(tracker.recoveries, 1)
+
+    def test_width_increase_is_allowed(self) -> None:
+        tracker = line_vision.LineTracker(
+            confirm_frames=3,
+            max_lost_frames=5,
+            width_tolerance_ratio=0.5,
+        )
+        for _ in range(3):
+            tracker.update(observation(True, 0.0, width=20.0))
+        for _ in range(3):
+            state = tracker.update(observation(True, 0.0, width=100.0))
+
+        self.assertTrue(state.confirmed)
+        self.assertTrue(state.width_ok)
 
     def test_confirmation_is_lost_after_timeout(self) -> None:
         tracker = line_vision.LineTracker(confirm_frames=3, max_lost_frames=5)

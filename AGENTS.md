@@ -158,7 +158,7 @@ contiene il codice applicativo del progetto precedente.
   stream MJPEG `--http-port`; `--debug-overlay` mostra la maschera, `--duration 0` va fino a
   q/ESC, il browser ha un pulsante di stop e `software/line_live.py` e' l'avvio rapido da
   Thonny.
-  Test host: 183 verdi. Gap, disturbi e movimento non sono ancora provati, quindi
+  Test host: 186 verdi. Gap, disturbi e movimento non sono ancora provati, quindi
   il gate F0 resta aperto.
 - Fatto: F0-2 tentativo 1 su curva reale (`docs/testing/F0_CURVE_TEST.md`): 1584 frame,
   89,29 s, 17,7 FPS; 899/1584 trovati (56,8%) ma con 317 frame iniziali vuoti e 223 di
@@ -172,6 +172,11 @@ contiene il codice applicativo del progetto precedente.
 - Fatto: F0-3 ombra parziale, tentativo 1: 608/608 frame trovati, 606 confermati, 0 perdite,
   confidenza 0,663-0,978, startup 5,6 s. L'ombra era probabilmente leggera: ripetere con
   un'ombra netta su 1/3 e 2/3 della linea; l'occlusione totale non e' ancora provata.
+- Fatto: F0-3 ombra totale/bassa luce, tentativo 1 (`docs/testing/F0_SHADOW_TEST.md`): nella
+  fase buia il rilevatore agganciava un bordo sottile (10-31 px contro 188-190 px) con offset
+  sbagliato di circa +48 px. Aggiunto il guard di continuita' di larghezza: replay della run
+  765 trovati -> 433 accettati, 332 rifiutati, 426 confermati, `control_passed=false`. Serve
+  una run live con il nuovo guard e una vera occlusione opaca.
 - In corso: prove F0-3 ombra e F0-4 gap; poi movimento a bassa velocita'. Completare i segni
   IMU e chiudere i punti aperti di B0.
 - Prossimi passi: eseguire `line-live` mentre la linea o il robot vengono spostati a mano,

@@ -81,7 +81,9 @@ e' chiuso.
 
 Stato 2026-11-03: F0-3 ombra parziale, tentativo 1: 608/608 frame trovati, 0 perdite,
 confidenza 0,663-0,978. L'ombra era probabilmente leggera; restano da provare un'ombra netta
-su 1/3-2/3 e l'occlusione totale. F0-3 non e' chiuso.
+su 1/3-2/3 e l'occlusione totale. Nella prova di bassa luce il rilevatore agganciava un bordo
+sottile (10-31 px contro 188-190) con offset errato; aggiunto il guard di continuita' di
+larghezza, da validare live. F0-3 non e' chiuso.
 
 ### F1 — Elementi di missione
 
