@@ -31,6 +31,7 @@ required=(
   docs/testing/F0_LINE_VISION.md
   docs/testing/F0_CURVE_TEST.md
   docs/testing/F0_SHADOW_TEST.md
+  docs/testing/F0_GAP_TEST.md
   docs/MEASUREMENT_LOG.md
   docs/DECISIONS.md
   docs/SOURCE_MAP.md

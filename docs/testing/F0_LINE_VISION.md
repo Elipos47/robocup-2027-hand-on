@@ -151,7 +151,7 @@ I test host coprono:
 - server MJPEG: indice HTML, aggiornamento frame e validazione parametri.
 
 I frame sintetici verificano il codice, non sostituiscono la prova su una linea reale.
-La suite completa e' a **186 test**, tutti verdi.
+La suite completa e' a **187 test**, tutti verdi.
 
 ## Risultato disponibile
 
@@ -327,12 +327,16 @@ della larghezza, tipico di un bordo agganciato al posto della linea.
 
 ### F0-4 gap
 
-- **Setup:** gap di 5, 10 e 20 cm, con almeno 5 cm di linea prima e dopo; misura con righello.
-- **Run:** `CONDITION = "gap-05"`, `"gap-10"`, `"gap-20"`; prima fermo davanti/al gap/dopo,
-  poi passaggio a mano.
+- **Setup:** gap disponibili, misurati con righello (es. 7 cm); la regola 2026 ammette fino a
+  20 cm. Non servono tutte le misure 5/10/20 se il gap disponibile e' uno solo.
+- **Run:** `CONDITION = "gap-<cm>"`; prima fermo davanti/al gap/dopo, poi passaggio a mano.
 - **Misure:** found ratio prima/dopo, frame di perdita, falsi positivi dentro il gap, ripresa.
 - **Criterio provvisorio:** nessun falso confermato nel gap; `lost` entro 5 frame; ripresa
   entro 5 frame dopo la linea. L'attraversamento del gap e' F1, non F0.
+
+Il tentativo con gap da 7 cm e' in `docs/testing/F0_GAP_TEST.md`: comportamento qualitativo
+corretto (FOUND sui segmenti, LOST nel vuoto, 6 riprese), con un'anomalia di aggancio al
+frame 150 corretta nel frattempo. Serve una nuova run live per chiudere F0-4.
 
 Per ogni run vanno registrati data, condizione, misura geometrica, illuminazione e posizione
 della telecamera. Se la telecamera viene spostata, la calibrazione `csi_1280x720.json` va

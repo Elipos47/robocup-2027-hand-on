@@ -158,7 +158,7 @@ contiene il codice applicativo del progetto precedente.
   stream MJPEG `--http-port`; `--debug-overlay` mostra la maschera, `--duration 0` va fino a
   q/ESC, il browser ha un pulsante di stop e `software/line_live.py` e' l'avvio rapido da
   Thonny.
-  Test host: 186 verdi. Gap, disturbi e movimento non sono ancora provati, quindi
+  Test host: 187 verdi. Disturbi e movimento non sono ancora provati, quindi
   il gate F0 resta aperto.
 - Fatto: F0-2 tentativo 1 su curva reale (`docs/testing/F0_CURVE_TEST.md`): 1584 frame,
   89,29 s, 17,7 FPS; 899/1584 trovati (56,8%) ma con 317 frame iniziali vuoti e 223 di
@@ -177,6 +177,11 @@ contiene il codice applicativo del progetto precedente.
   sbagliato di circa +48 px. Aggiunto il guard di continuita' di larghezza: replay della run
   765 trovati -> 433 accettati, 332 rifiutati, 426 confermati, `control_passed=false`. Serve
   una run live con il nuovo guard e una vera occlusione opaca.
+- Fatto: F0-4 gap da 7 cm, tentativo 1 (`docs/testing/F0_GAP_TEST.md`): 513 frame, 28,47 s,
+  251/513 trovati, 266 confermati, 6 riprese, nessun falso evidente. FOUND sui segmenti,
+  LOST nel vuoto, ripresa dopo. Al frame 150 la linea era visibile ma veniva persa per un
+  seme isolato e per il filtro di larghezza; corretti stop sul gap e aumento di larghezza,
+  con test sintetico. Serve una nuova run live per chiudere F0-4.
 - In corso: prove F0-3 ombra e F0-4 gap; poi movimento a bassa velocita'. Completare i segni
   IMU e chiudere i punti aperti di B0.
 - Prossimi passi: eseguire `line-live` mentre la linea o il robot vengono spostati a mano,

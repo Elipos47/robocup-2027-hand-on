@@ -134,7 +134,7 @@ python3 -m rcj2027.diagnostics line-live --preview --debug-overlay --duration 0
 
 ## Uso da Thonny
 
-Apri `software/line_live.py` in Thonny, modifica `CONDITION` (`curva`, `ombra`, `gap-05`, ...)
+Apri `software/line_live.py` in Thonny, modifica `CONDITION` (`curva`, `ombra`, `gap-7`, ...)
 e premi Run. Lo script:
 
 - avvia `line-live` con la CSI 1280x720 full-fov;

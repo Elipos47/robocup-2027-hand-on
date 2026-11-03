@@ -68,6 +68,14 @@ def tabletop_frame(width: int = 1280, height: int = 720) -> np.ndarray:
     return image
 
 
+def speck_then_line_frame() -> np.ndarray:
+    """Disturbo isolato in cima alla ROI e linea che rientra piu' in basso."""
+    image = np.full((360, 640), 200, np.uint8)
+    cv2.rectangle(image, (313, 200), (327, 214), 30, -1)
+    cv2.line(image, (320, 359), (320, 240), 30, 28)
+    return image
+
+
 def checkerboard(
     squares_x: int = 10,
     squares_y: int = 7,
@@ -243,6 +251,14 @@ class LineDetectionTests(unittest.TestCase):
         self.assertLess(observation.residual_px, 1.0)
         self.assertAlmostEqual(observation.offset_px, -19.5, delta=5.0)
         self.assertLess(observation.valid_rows, observation.scan_rows)
+
+    def test_speck_above_line_does_not_block_acquisition(self) -> None:
+        detector = line_vision.LineDetector()
+
+        observation = detector.detect(speck_then_line_frame())
+
+        self.assertTrue(observation.found)
+        self.assertGreater(observation.valid_rows, 20)
 
     def test_line_on_the_right_has_positive_offset(self) -> None:
         observation = self.detector.detect(line_frame(bottom_x=380))

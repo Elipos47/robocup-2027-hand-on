@@ -123,6 +123,11 @@
     live distingue `found`, `tracked_found`, `width_rejected_frames` e `confirmed_frames`;
     `control_passed` usa i frame confermati, non il found ratio grezzo. Da validare con una
     run live e una vera occlusione.
+28. **Gap F0 (2026-11-03):** il gap disponibile e' 7 cm, entro il limite 2026 di 20 cm. F0
+    valuta perdita e ripresa, non l'attraversamento (F1). Lo stop sul gap scatta solo dopo aver
+    agganciato almeno `min_valid_rows` righe; un seme isolato non deve fermare la scansione.
+    Il filtro di larghezza ammette l'aumento graduale e rifiuta il restringimento brusco.
+    Serve una nuova run live per validare la correzione.
 
 ## Decisioni da prendere
 

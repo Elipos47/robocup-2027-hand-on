@@ -531,7 +531,7 @@ class LineDetector:
                     candidates = [
                         candidate
                         for candidate in candidates
-                        if abs(candidate[1] - expected_width) <= tolerance
+                        if candidate[1] >= expected_width - tolerance
                     ]
                 if candidates:
                     center, line_width = min(
@@ -540,7 +540,11 @@ class LineDetector:
                     if not points or abs(center - previous_x) <= max_jump:
                         selected = (center, line_width)
             if selected is None:
-                if points:
+                # Un segmento troppo corto non basta per fermare la scansione:
+                # potrebbe essere un disturbo sopra la linea che rientra dopo
+                # un gap. Lo stop scatta solo dopo aver agganciato almeno
+                # ``min_valid_rows`` righe.
+                if len(points) >= self.config.min_valid_rows:
                     gap_rows += 1
                     if gap_rows > max_gap_rows:
                         break

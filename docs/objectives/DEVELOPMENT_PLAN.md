@@ -76,7 +76,7 @@ seguita con confidenza 0,86-0,965 e 6 riprese; il nastro disponibile e' piu' lar
 e' un proxy di banco. La telecamera e' volutamente vicina, quindi la curva puo' uscire dalla
 ROI: F0-2 e' coperto sul banco senza raggio ne' linea regolamentare. Il report live ora misura
 `camera_start_s`, `warmup_s` e `first_frame_s` (2,08-2,19 s nelle run strumentate; 18,73 s nella
-run curva e' anomalo). Gap, disturbi, illuminazione e movimento non sono ancora provati: F0 non
+run curva e' anomalo). Disturbi, illuminazione e movimento non sono ancora provati: F0 non
 e' chiuso.
 
 Stato 2026-11-03: F0-3 ombra parziale, tentativo 1: 608/608 frame trovati, 0 perdite,
@@ -84,6 +84,11 @@ confidenza 0,663-0,978. L'ombra era probabilmente leggera; restano da provare un
 su 1/3-2/3 e l'occlusione totale. Nella prova di bassa luce il rilevatore agganciava un bordo
 sottile (10-31 px contro 188-190) con offset errato; aggiunto il guard di continuita' di
 larghezza, da validare live. F0-3 non e' chiuso.
+
+Stato 2026-11-03: F0-4 gap da 7 cm, tentativo 1 (`docs/testing/F0_GAP_TEST.md`): 513 frame,
+251/513 trovati, 266 confermati, 6 riprese, FOUND sui segmenti e LOST nel vuoto. Al frame 150
+la linea era visibile ma veniva persa per un seme isolato e per il filtro di larghezza;
+corretti stop sul gap e aumento di larghezza. Serve una nuova run live per chiudere F0-4.
 
 ### F1 — Elementi di missione
 

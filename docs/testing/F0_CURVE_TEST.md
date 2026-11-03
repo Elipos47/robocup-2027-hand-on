@@ -93,5 +93,6 @@ inquadratura.
 
 1. Passare a **ombra** e **gap** con la stessa logica: la linea puo' uscire dalla ROI.
 2. Per l'ombra: parziale e totale, verificando perdita e ripresa.
-3. Per il gap: 5, 10 e 20 cm, verificando che non compaia una linea falsa nel vuoto.
+3. Per il gap: usare il gap disponibile (7 cm), verificando che non compaia una linea falsa
+   nel vuoto.
 4. Ripetere la curva con la linea 1-2 cm quando sara' disponibile, senza misurarne il raggio.

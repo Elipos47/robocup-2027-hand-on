@@ -63,6 +63,10 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   contro 188-190) con offset sbagliato di ~48 px. Aggiunto il guard di continuita' di
   larghezza: replay 765 trovati -> 433 accettati, 332 rifiutati, 426 confermati. Serve una
   run live con il nuovo guard e una vera occlusione opaca.
+- Fatto: F0-4 gap da 7 cm (`docs/testing/F0_GAP_TEST.md`): FOUND sui segmenti, LOST nel vuoto,
+  6 riprese, nessun falso evidente. Al frame 150 la linea era visibile ma veniva persa per un
+  seme isolato e per il filtro di larghezza; corretti stop sul gap e aumento di larghezza.
+  Serve una nuova run live per chiudere F0-4.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -90,7 +94,7 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
 | Bring-up e calibrazione | `docs/hardware/BRINGUP_CHECKLIST.md`, `docs/hardware/CALIBRATION.md` |
 | Architettura | `docs/architecture/SYSTEM_ARCHITECTURE.md` |
 | Protocollo seriale v1.1 | `docs/architecture/SERIAL_PROTOCOL.md` |
-| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`, `docs/testing/F0_LINE_VISION.md`, `docs/testing/F0_CURVE_TEST.md`, `docs/testing/F0_SHADOW_TEST.md` |
+| Test di banco | `docs/testing/PROTOCOL_BENCH_TEST.md`, `docs/testing/B0_BENCH_TEST.md`, `docs/testing/B1_INTEGRATION_TEST.md`, `docs/testing/B1_SENSORS_TEST.md`, `docs/testing/B1_SOFTWARE_DIAGNOSTICS.md`, `docs/testing/F0_LINE_VISION.md`, `docs/testing/F0_CURVE_TEST.md`, `docs/testing/F0_SHADOW_TEST.md`, `docs/testing/F0_GAP_TEST.md` |
 | Test sul campo | `docs/testing/FIELD_TEST_PLAN.md` |
 | Decisioni aperte | `docs/DECISIONS.md` |
 | Provenienza e scelte di importazione | `docs/SOURCE_MAP.md` |
