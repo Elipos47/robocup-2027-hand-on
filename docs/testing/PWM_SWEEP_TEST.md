@@ -62,3 +62,17 @@ neanche da solo, e' nel cablaggio/alimentazione del L298N.
 - F0-5 dry-run: coperto.
 - Misura PWM minimo / cm/s: **bloccata** da questo risultato.
 - Movimento reale e integrazione motori: non abilitati.
+
+## Test entrambi i canali a 255
+
+E' pronto lo sketch `firmware/test/pwm_both_test/`:
+
+- attende 3 s dal reset;
+- avanti entrambi a 255 per 4 s, stop 2 s;
+- indietro entrambi a 255 per 4 s, stop 2 s;
+- due cicli e stop finale.
+
+Il file e' compilato ma non e' stato caricato. Dopo il test va ricaricato il
+firmware operativo sicuro `firmware/rcj2027/`. Se una sola ruota gira, il
+problema e' nel canale; se nessuna gira, restano alimentazione, ENA/ENB, GND
+comune o L298N.
