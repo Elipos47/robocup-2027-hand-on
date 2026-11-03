@@ -143,7 +143,10 @@
     `motors_active=true`, 0 errori, stop ack. Nessuna rotazione a nessun PWM. La frequenza del
     ronzio e' quella PWM (~490 Hz) e non cambia col duty. Il percorso software arriva a
     `analogWrite` sugli stessi pin del test di direzione; la causa va isolata su
-    alimentazione/enable/L298N. Firmware sicuro ripristinato.
+    alimentazione/enable/L298N. Firmware sicuro ripristinato. Dopo il controllo dei
+    collegamenti i canali funzionano separatamente e poi entrambi insieme a 255; il guasto
+    precedente non si e' ripetuto e la causa non e' identificata. Resta un rischio di
+    affidabilita' da verificare con ripetizioni e controllo dei serraggi.
 
 ## Decisioni da prendere
 

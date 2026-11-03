@@ -57,11 +57,22 @@ La prova a un canale e' il passo successivo: se un motore gira da solo, il
 problema e' di alimentazione/corrente con entrambi i canali; se non gira
 neanche da solo, e' nel cablaggio/alimentazione del L298N.
 
-## Stato
+## Esito finale della sessione
 
-- F0-5 dry-run: coperto.
-- Misura PWM minimo / cm/s: **bloccata** da questo risultato.
-- Movimento reale e integrazione motori: non abilitati.
+Dopo il controllo dei collegamenti, **entrambi i motori funzionano sia singolarmente sia in
+coppia a 255**. Il guasto precedente non si e' ripetuto e la causa non e' stata identificata:
+il sospetto resta un connettore o un contatto instabile su ENA/ENB, IN o uscite motore.
+
+Questo e' un rischio di affidabilita': prima della gara vanno ripetuti piu' cicli a coppia e
+controllati i serraggi. La velocita' massima non e' ancora misurata.
+
+## Prossimo passo
+
+1. Ripetere il test a coppia 3 volte dopo aver controllato i connettori.
+2. Misurare PWM minimo e cm/s a PWM noto, con ruote sollevate/prima a bassa velocita'.
+3. Tarare `cruise` e guadagni del controller dry-run.
+4. Ripetere la prova del controller prima di collegare i motori al firmware operativo.
+5. Implementare `GAP_CROSS` F1 solo dopo la misura di velocita' e i test di ripresa.
 
 ## Test entrambi i canali a 255
 

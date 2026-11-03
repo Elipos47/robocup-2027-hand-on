@@ -75,9 +75,11 @@ del progetto precedente, niente log di simulazione e niente codice funzionale gi
   4 s per gradino. Tutti i `D` accettati e `motors_active=true`, ma nessuna rotazione; il
   percorso software arriva ai pin. Firmware sicuro ripristinato; causa da isolare su
   alimentazione/enable/L298N.
-- Fatto: test entrambi i canali a 255 (`firmware/test/pwm_both_test/`): ruota sinistra gira,
-  destra ferma. Con `pwm_channel_test` entrambi i canali funzionano separatamente; il problema
-  compare con entrambi attivi. Pronto `pwm_staggered_test` per alimentazione/corrente.
+- Fatto: test entrambi i canali a 255 (`firmware/test/pwm_both_test/`): primo tentativo con
+  ruota sinistra attiva e destra ferma; `pwm_channel_test` ha mostrato entrambi i canali
+  funzionanti separatamente. Dopo il controllo dei collegamenti, entrambi funzionano sia
+  singolarmente sia in coppia a 255. Il guasto non si e' ripetuto, causa non identificata
+  (sospetto connettore); resta un rischio di affidabilita' da verificare.
 - Contratto minimo completo: batteria 11.1 V da etichetta; A = ruota destra, B = ruota
   sinistra; polarita' invertita corretta nel software. La mappa dei pin e' in
   `docs/hardware/MINIMUM_HARDWARE_DATA.md`.
@@ -131,9 +133,9 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. F0-5: isolare il problema PWM (un solo canale a 255, tensione batteria/L298N e pin
-   ENA/ENB); poi misurare PWM minimo e cm/s e tarare `cruise`/guadagni. Il firmware sicuro è
-   già ripristinato.
+1. F0-5: ripetere 3 volte il test a coppia a 255 e controllare i serraggi dei connettori;
+   poi misurare PWM minimo e cm/s e tarare `cruise`/guadagni. Il firmware sicuro è già
+   ripristinato.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Ripetere con illuminazione e superfici diverse; implementare `GAP_CROSS` F1 con timeout e

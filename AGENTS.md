@@ -194,15 +194,17 @@ contiene il codice applicativo del progetto precedente.
   rotazione. La frequenza del ronzio e' quella PWM (~490 Hz) e non cambia col duty. Il percorso
   software arriva ai pin; causa da isolare su alimentazione/enable/L298N. Firmware sicuro
   ripristinato. Bloccata la misura di PWM minimo/cm/s.
-- Fatto: test entrambi i canali a 255 (`firmware/test/pwm_both_test/`): ruota sinistra gira,
-  ruota destra ferma; velocita' lenta. Con un solo motore attivo non si puo' misurare la
-  velocita' massima. `pwm_channel_test`: entrambi i canali funzionano separatamente. Il
-  problema compare con entrambi attivi; pronto `pwm_staggered_test` per distinguere
-  alimentazione/corrente da canale/motore.
-- In corso: F0-5 movimento a bassa velocita': misurare PWM minimo e cm/s, poi collegare i
-  motori solo dopo gate di sicurezza. Completare i segni IMU e chiudere i punti aperti di B0.
-- Prossimi passi: misurare cm/s a PWM noto, tarare `cruise`/guadagni, implementare
-  `GAP_CROSS` F1 con timeout e riacquisizione, poi prova a ruote sollevate e bassa velocita'.
+- Fatto: test entrambi i canali a 255 (`firmware/test/pwm_both_test/`): primo tentativo con
+  ruota sinistra attiva e destra ferma. `pwm_channel_test`: entrambi i canali funzionano
+  separatamente. Dopo il controllo dei collegamenti, **entrambi funzionano sia singolarmente
+  sia in coppia a 255**; il guasto precedente non si e' ripetuto e la causa non e' stata
+  identificata (sospetto connettore). Resta un rischio di affidabilita' da verificare con
+  ripetizioni e controllo dei serraggi. La velocita' massima non e' ancora misurata.
+- In corso: F0-5 movimento a bassa velocita': ripetere il test a coppia, misurare PWM minimo e
+  cm/s, poi tarare il controller. Completare i segni IMU e chiudere i punti aperti di B0.
+- Prossimi passi: ripetere 3 volte il test a coppia, misurare cm/s a PWM noto, tarare
+  `cruise`/guadagni, implementare `GAP_CROSS` F1 con timeout e riacquisizione, poi prova a
+  ruote sollevate e bassa velocita'.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

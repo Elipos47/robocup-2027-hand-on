@@ -17,10 +17,11 @@ bordo sottile (10-31 px contro 188-190) con offset errato; aggiunto il guard di 
 larghezza, da validare live. F0-4 gap da 7 cm: FOUND sui segmenti, LOST nel vuoto, 6 riprese;
 terza run con correzioni, frame 120 FOUND, **F0-4 chiuso sul banco**. L'attraversamento del
 gap resta F1. F0-5 controller dry-run: `line_control.py` con FOLLOW/STOP, replay dei log
-senza comandi ai motori. PWM-1: sweep 150-255 senza rotazione nonostante `D` accettati e
-`motors_active=true`; percorso software ai pin verificato, causa da isolare su
-alimentazione/enable/L298N. Firmware sicuro ripristinato. Restano PWM minimo/cm/s, movimento
-reale e disturbi. Valori operativi
+senza comandi ai motori. PWM-1: sweep 150-255 inizialmente senza rotazione; i canali
+funzionavano separatamente, poi dopo il controllo dei collegamenti entrambi i motori
+funzionano sia singolarmente sia in coppia a 255. Il guasto non si e' ripetuto e la causa non
+e' identificata (sospetto connettore): resta un rischio di affidabilita'. Firmware sicuro
+ripristinato. Restano PWM minimo/cm/s, movimento reale e disturbi. Valori operativi
 `pwm_max=255` e watchdog 1.0 s in `OPERATIONAL_CONFIG`; gate predefinito chiuso. Movimento
 reale disabilitato di default.
 
