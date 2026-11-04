@@ -5,7 +5,8 @@
 **Contesto:** due run del test a coppia 255
 (`software/logs/pwm-pair-repeat-001.jsonl`, `software/logs/pwm-pair-repeat-002.jsonl`).
 **Stato:** seconda run eseguita con multimetro; alimentazione stabile, misura A da solo 3 V e
-A+B 0-1 V. In corso l'isolamento tra L298N, motore destro e connettori.
+A+B 0-1 V. Confronto con l'archivio fatto: mappa pin diversa, da verificare sul cablaggio
+prima di cambiare i cavi.
 **Obiettivo:** isolare la causa del guasto sotto carico prima di riprendere le misure di PWM
 minimo e cm/s.
 
@@ -52,6 +53,32 @@ Misure successive, in ordine:
 3. temperatura del L298N dopo A da solo: se molto caldo, e' protezione termica;
 4. scambio dei due connettori motore su `OUT1`/`OUT2` e `OUT3`/`OUT4`, a motori spenti e con
    approvazione: se il guasto segue il motore A e' il motore, se resta sul canale A e' l'L298N.
+
+## Confronto con il codice 2025-2026
+
+| Progetto | EN destra (A) | IN destra (A) | EN sinistra (B) | IN sinistra (B) | Note |
+|---|---:|---|---:|---|---|
+| Attuale `firmware/rcj2027` | 12 (`ENA`) | 22/23 | 13 (`ENB`) | 24/25 | PWM su 12/13, IN digitali |
+| Archivio `Final/robo_arduino` | 45 | 25/26 | 44 | 23/24 | commento nel sorgente: 22-27 non sono PWM, enable spostati su 44/45 |
+| Archivio `nogyro/robo_arduino` | 27 | 25/26 | 22 | 23/24 | usa `analogWrite` anche su 22/27, che non sono PWM |
+| Archivio `Arduino.ino` | jumper | 2/3 | jumper | 4/5 | nessun pin enable pilotato |
+
+La legge di comando e' la stessa: due pin di direzione per canale, enable PWM, stop con
+`EN=0` e `IN` bassi. La differenza e' la **mappa dei pin**. Se il robot e' ancora cablato come
+l'anno scorso, il firmware attuale pilota pin diversi e i sintomi osservati (un motore che va,
+l'altro no, scatti, tensione bassa) sono attesi.
+
+Prima di cambiare i cavi, verificare a motori spenti con il multimetro in continuita':
+
+- `ENA`/`ENB`: sono su 12/13, su 44/45 o su 22/27?
+- `IN1`..`IN4`: sono su 22-25 o su 23-26?
+- i jumper `ENA`/`ENB` sul L298N sono presenti o rimossi?
+- il jumper `5V` del L298N e' inserito e il suo 5V e' collegato al 5V dell'Arduino?
+
+Se il cablaggio corrisponde alla mappa attuale, la legge di comando e' equivalente a quella
+dell'anno scorso e il sospetto torna su cavi, connettori, L298N o motore. Se non corrisponde,
+non serve cambiare i cavi: vanno spostati sui pin del firmware attuale, oppure va cambiata la
+mappa nel firmware.
 
 ## Ipotesi
 

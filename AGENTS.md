@@ -212,8 +212,10 @@ contiene il codice applicativo del progetto precedente.
   del L298N stabile 10-12 V. Batteria/BMS e caduta di alimentazione esclusi come causa
   primaria; restano L298N canale A o protezione termica, motore destro e connettori.
 - In corso: diagnosi del guasto del 2026-11-04 (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`):
-  test canali separati con misura di `OUT1`/`OUT2` e `OUT3`/`OUT4`, temperatura L298N,
-  connettori. Completare i segni IMU e chiudere i punti aperti di B0.
+  verificare prima la mappa dei pin contro l'archivio 2025-2026 (attuale `EN 12/13` +
+  `IN 22-25`; archivio `EN 44/45` + `IN 23-26` oppure `EN 22/27` + `IN 23-26`), poi test
+  canali separati con misura di `OUT1`/`OUT2` e `OUT3`/`OUT4`, temperatura L298N, connettori.
+  Completare i segni IMU e chiudere i punti aperti di B0.
 - Prossimi passi: isolare la causa, ripetere 3 volte il test a coppia a ruote sollevate,
   misurare cm/s a PWM noto, tarare `cruise`/guadagni, implementare `GAP_CROSS` F1 con timeout
   e riacquisizione, poi prova a ruote sollevate e bassa velocita'.
