@@ -200,11 +200,20 @@ contiene il codice applicativo del progetto precedente.
   sia in coppia a 255**; il guasto precedente non si e' ripetuto e la causa non e' stata
   identificata (sospetto connettore). Resta un rischio di affidabilita' da verificare con
   ripetizioni e controllo dei serraggi. La velocita' massima non e' ancora misurata.
-- In corso: F0-5 movimento a bassa velocita': ripetere il test a coppia, misurare PWM minimo e
-  cm/s, poi tarare il controller. Completare i segni IMU e chiudere i punti aperti di B0.
-- Prossimi passi: ripetere 3 volte il test a coppia, misurare cm/s a PWM noto, tarare
-  `cruise`/guadagni, implementare `GAP_CROSS` F1 con timeout e riacquisizione, poi prova a
-  ruote sollevate e bassa velocita'.
+- Fatto: F0-5/PWM-2, 3 cicli a coppia 255 con `pwm_sweep.py` esteso ai PWM negativi
+  (`software/logs/pwm-pair-repeat-001.jsonl`): 6/6 `D` accettati, ack 6-7 ms, 6/6 stop ack,
+  0 errori. La prova e' stata eseguita con il robot appoggiato al tavolo, quindi **sotto
+  carico** e non a ruote sollevate: primo avanti con entrambe le ruote, in retromarcia la ruota
+  destra non gira, poi tutte le fasi fanno solo uno scatto iniziale. **FAIL sotto carico**;
+  software sano, causa a valle dei pin (batteria/BMS, L298N, connettori). Firmware sicuro
+  ripristinato; `D` -> `E,MOTION_DISABLED`.
+- In corso: diagnosi del guasto sotto carico del 2026-11-04
+  (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`): batteria e BMS sotto carico, temperatura L298N,
+  canali separati a ruote sollevate, connettori. Completare i segni IMU e chiudere i punti
+  aperti di B0.
+- Prossimi passi: isolare la causa, ripetere 3 volte il test a coppia a ruote sollevate,
+  misurare cm/s a PWM noto, tarare `cruise`/guadagni, implementare `GAP_CROSS` F1 con timeout
+  e riacquisizione, poi prova a ruote sollevate e bassa velocita'.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

@@ -68,11 +68,13 @@ controllati i serraggi. La velocita' massima non e' ancora misurata.
 
 ## Prossimo passo
 
-1. Ripetere il test a coppia 3 volte dopo aver controllato i connettori.
-2. Misurare PWM minimo e cm/s a PWM noto, con ruote sollevate/prima a bassa velocita'.
-3. Tarare `cruise` e guadagni del controller dry-run.
-4. Ripetere la prova del controller prima di collegare i motori al firmware operativo.
-5. Implementare `GAP_CROSS` F1 solo dopo la misura di velocita' e i test di ripresa.
+1. Diagnosi del guasto sotto carico del 2026-11-04
+   (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`): batteria/BMS, L298N, connettori, canale A.
+2. Ripetere il test a coppia 3 volte a ruote sollevate solo dopo la diagnosi.
+3. Misurare PWM minimo e cm/s a PWM noto, con ruote sollevate/prima a bassa velocita'.
+4. Tarare `cruise` e guadagni del controller dry-run.
+5. Ripetere la prova del controller prima di collegare i motori al firmware operativo.
+6. Implementare `GAP_CROSS` F1 solo dopo la misura di velocita' e i test di ripresa.
 
 ## Test entrambi i canali a 255
 
@@ -112,3 +114,46 @@ E' pronto `firmware/test/pwm_staggered_test/`:
 Serve a distinguere un limite di alimentazione/corrente (fallisce il secondo
 motore aggiunto) da un canale/motore che fallisce sempre. Il file e' compilato
 ma non caricato.
+
+## Test a coppia 255 - 2026-11-04 (F0-5 / PWM-2)
+
+**Scopo:** ripetere 3 volte la coppia a 255 per verificare l'affidabilita' dopo il guasto
+intermittente del 2026-11-03.
+
+**Software:** `pwm_sweep.py` esteso ai PWM negativi (positivo = avanti, negativo = indietro);
+firmware `rcj2027` con `BENCH_MOTION_ENABLED=true`, `PWM_MAX=255`,
+`WATCHDOG_TIMEOUT_MS=1000`.
+**Sequenza:** 3 x (avanti 255 per 3 s, stop 2 s, indietro -255 per 3 s, stop 2 s).
+**Log:** `software/logs/pwm-pair-repeat-001.jsonl`.
+
+**Deviazione:** il robot e' stato appoggiato sul tavolo invece di essere lasciato con le ruote
+sollevate. La prova e' quindi un test **sotto carico**, non la ripetizione a ruote sollevate
+prevista. Non chiude il criterio "ruote sollevate", ma e' un dato utile per il comportamento
+reale.
+
+### Esito software
+
+| Fase | Comando | Ack | Status con motori attivi | Stop |
+|---|---|---:|---:|---|
+| 1 avanti | 255,255 | 7 ms | 30 campioni, ~2,9 s | ack |
+| 2 indietro | -255,-255 | 6 ms | 30 campioni, ~2,9 s | ack |
+| 3 avanti | 255,255 | 7 ms | 31 campioni, ~3,0 s | ack |
+| 4 indietro | -255,-255 | 6 ms | 31 campioni, ~3,0 s | ack |
+| 5 avanti | 255,255 | 7 ms | 31 campioni, ~3,0 s | ack |
+| 6 indietro | -255,-255 | 6 ms | 30 campioni, ~2,9 s | ack |
+
+6/6 comandi `D` accettati, 6/6 stop con ack, 0 errori, 0 frame invalidi, `motors_active`
+coerente. Il firmware sicuro e' stato ripristinato e `D` risponde `E,MOTION_DISABLED`.
+
+### Esito fisico
+
+- prima fase avanti: entrambe le ruote girano;
+- prima fase indietro: la ruota destra non gira;
+- fasi successive: entrambe le ruote fanno uno scatto iniziale e poi si fermano.
+
+**Esito: FAIL sotto carico.** Il percorso software e' sano; il guasto e' a valle dei pin
+(alimentazione, L298N, connettori o motore). Le ipotesi e la procedura di diagnosi sono in
+`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`.
+
+Il test a coppia resta aperto: non e' stata ottenuta una ripetizione consecutiva valida a
+ruote sollevate. PWM minimo, cm/s e taratura del controller sono sospesi fino alla diagnosi.

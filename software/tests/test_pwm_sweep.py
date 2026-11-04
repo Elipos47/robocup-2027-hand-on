@@ -11,9 +11,17 @@ class PwmSweepTests(unittest.TestCase):
     def test_parse_pwms(self) -> None:
         self.assertEqual(_parse_pwms("150, 160,255"), [150, 160, 255])
 
+    def test_parse_pwms_accepts_reverse(self) -> None:
+        self.assertEqual(_parse_pwms("255,-255"), [255, -255])
+
     def test_parse_rejects_out_of_range(self) -> None:
+        for text in ("150,256", "150,-256"):
+            with self.assertRaises(ValueError):
+                _parse_pwms(text)
+
+    def test_parse_rejects_zero(self) -> None:
         with self.assertRaises(ValueError):
-            _parse_pwms("150,256")
+            _parse_pwms("0")
 
     def test_parse_rejects_empty(self) -> None:
         with self.assertRaises(ValueError):

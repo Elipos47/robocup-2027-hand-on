@@ -133,9 +133,11 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. F0-5: ripetere 3 volte il test a coppia a 255 e controllare i serraggi dei connettori;
-   poi misurare PWM minimo e cm/s e tarare `cruise`/guadagni. Il firmware sicuro è già
-   ripristinato.
+1. F0-5: diagnosi del guasto sotto carico emerso il 2026-11-04 (prima avanti ok, poi ruota
+   destra ferma e fasi successive solo scatto). Misurare batteria/BMS sotto carico, temperatura
+   L298N e provare i canali separati a ruote sollevate
+   (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`); solo dopo, PWM minimo e cm/s e taratura di
+   `cruise`/guadagni. Il firmware sicuro è già ripristinato.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Ripetere con illuminazione e superfici diverse; implementare `GAP_CROSS` F1 con timeout e

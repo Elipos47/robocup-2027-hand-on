@@ -34,6 +34,7 @@ required=(
   docs/testing/F0_GAP_TEST.md
   docs/testing/F0_DRY_RUN.md
   docs/testing/PWM_SWEEP_TEST.md
+  docs/testing/MOTOR_POWER_DIAGNOSTIC.md
   docs/MEASUREMENT_LOG.md
   docs/DECISIONS.md
   docs/SOURCE_MAP.md

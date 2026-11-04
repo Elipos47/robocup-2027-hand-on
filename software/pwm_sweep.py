@@ -3,7 +3,10 @@
 Questo script muove davvero i motori. Richiede il flag esplicito
 ``--confirm-wheels-raised`` e usa ``OPERATIONAL_CONFIG`` (pwm_max=255,
 watchdog 1.0 s). Non e' un test di missione: serve a trovare il PWM minimo che
-muove il robot e a misurare la risposta.
+muove il robot, a misurare la risposta e a ripetere una coppia di valori.
+
+I valori positivi comandano avanti, quelli negativi indietro: per ripetere il
+test a coppia a 255 tre volte usare ``--pwms=255,-255,255,-255,255,-255``.
 """
 
 from __future__ import annotations
@@ -29,8 +32,10 @@ def _parse_pwms(text: str) -> list[int]:
         if not part:
             continue
         value = int(part)
-        if not 0 <= value <= 255:
+        if not -255 <= value <= 255:
             raise ValueError(f"PWM fuori range: {value}")
+        if value == 0:
+            raise ValueError("PWM 0 non e' un gradino; lo stop e' automatico")
         values.append(value)
     if not values:
         raise ValueError("lista PWM vuota")
@@ -79,12 +84,21 @@ def run_sweep(
             print(f"avvio tra {countdown_s:g} s; ruote sollevate")
             _hold(session, countdown_s)
         for pwm in pwms:
-            print(f"PWM {pwm}: {hold_s:g} s", flush=True)
-            logger.log("pwm_step_start", pwm=pwm, hold_s=hold_s)
+            direction = "avanti" if pwm > 0 else "indietro"
+            print(
+                f"PWM {pwm} ({direction}): {hold_s:g} s",
+                flush=True,
+            )
+            logger.log(
+                "pwm_step_start",
+                pwm=pwm,
+                direction=direction,
+                hold_s=hold_s,
+            )
             session.drive(pwm, pwm)
             _hold(session, hold_s)
             session.stop()
-            logger.log("pwm_step_stop", pwm=pwm)
+            logger.log("pwm_step_stop", pwm=pwm, direction=direction)
             if pause_s:
                 _hold(session, pause_s)
     finally:
