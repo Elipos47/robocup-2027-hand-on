@@ -4,6 +4,8 @@
 **Data:** 2026-11-04
 **Contesto:** test a coppia 255 con il robot appoggiato al tavolo
 (`software/logs/pwm-pair-repeat-001.jsonl`).
+**Stato:** sospeso il 2026-11-04 in attesa delle misure con multimetro. Nessun comando ai
+motori finche' non vengono registrate tensione batteria e temperatura L298N.
 **Obiettivo:** isolare la causa del guasto sotto carico prima di riprendere le misure di PWM
 minimo e cm/s.
 
