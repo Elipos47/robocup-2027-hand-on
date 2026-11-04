@@ -80,6 +80,25 @@ dell'anno scorso e il sospetto torna su cavi, connettori, L298N o motore. Se non
 non serve cambiare i cavi: vanno spostati sui pin del firmware attuale, oppure va cambiata la
 mappa nel firmware.
 
+## Caduta sui cavi e sui morsetti
+
+Un cavo molto grosso in un morsetto piccolo puo' essere serrato solo su poche trecce: la
+resistenza di contatto sale e sotto carico si perde tensione. Non e' il diametro in se', e' la
+superficie di contatto.
+
+Prova:
+
+1. A da solo a 255 per 3-5 s, ruote sollevate.
+2. Misurare la tensione sui morsetti `OUT1`/`OUT2` del L298N e ai capi del motore.
+3. Se la differenza e' maggiore di 0,5 V a 1-2 A, il cavo o il morsetto e' il problema.
+4. A motori spenti, controllare continuita' e resistenza del cavo; muovere il cavo per cercare
+   un'intermittenza.
+5. Dopo la prova, toccare i morsetti: un contatto caldo e' un contatto resistivo.
+
+Rimedio: capocorda a tubetto o un pigtail di 1,0-1,5 mm² crimpato, con guaina termorestringente;
+non saldare a stagno il cavo nel morsetto. Il cavo va dimensionato per la corrente, non per il
+diametro massimo del morsetto.
+
 ## Ipotesi
 
 | # | Ipotesi | Come discriminare |
