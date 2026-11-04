@@ -157,3 +157,33 @@ coerente. Il firmware sicuro e' stato ripristinato e `D` risponde `E,MOTION_DISA
 
 Il test a coppia resta aperto: non e' stata ottenuta una ripetizione consecutiva valida a
 ruote sollevate. PWM minimo, cm/s e taratura del controller sono sospesi fino alla diagnosi.
+
+### Seconda run con multimetro (F0-5 / PWM-2b, 2026-11-04)
+
+**Scopo:** ripetere la stessa sequenza con il multimetro in DC su `+12`/`GND` del L298N per
+distinguere un problema di batteria/BMS da un problema del ponte o dei motori.
+**Log:** `software/logs/pwm-pair-repeat-002.jsonl`.
+**Condizione:** ruote sollevate e robot fissato, confermati dall'operatore.
+
+| Fase | Comando | Ack | Status con motori attivi |
+|---|---|---:|---:|
+| 1 avanti | 255,255 | 7 ms | 30 campioni, ~2,9 s |
+| 2 indietro | -255,-255 | 7 ms | 30 campioni, ~2,9 s |
+| 3 avanti | 255,255 | 8 ms | 30 campioni, ~2,9 s |
+| 4 indietro | -255,-255 | 7 ms | 31 campioni, ~3,0 s |
+| 5 avanti | 255,255 | 5 ms | 30 campioni, ~2,9 s |
+| 6 indietro | -255,-255 | 7 ms | 30 campioni, ~2,9 s |
+
+6/6 comandi accettati, 0 errori, 6/6 stop con ack.
+
+**Esito fisico:** stesso comportamento della prima run: prima avanti con entrambe le ruote,
+poi ruota destra ferma in retromarcia e fasi successive con solo uno scatto iniziale.
+
+**Tensione `+12`/`GND` del L298N:** stabile **10-12 V** per tutta la prova (multimetro in DC,
+lettura a display non campionata).
+
+**Conseguenza:** batteria, BMS e caduta di tensione sul collegamento di alimentazione sono
+esclusi come causa primaria. Il guasto e' nel L298N (canale A o protezione termica), nel motore
+destro o nei connettori. Il passo successivo e' il test dei canali separati con misura di
+`OUT1`/`OUT2` e `OUT3`/`OUT4` e della temperatura del L298N
+(`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`).

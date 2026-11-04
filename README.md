@@ -133,9 +133,11 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. F0-5: diagnosi del guasto sotto carico emerso il 2026-11-04 (prima avanti ok, poi ruota
-   destra ferma e fasi successive solo scatto). Misurare batteria/BMS sotto carico, temperatura
-   L298N e provare i canali separati a ruote sollevate
+1. F0-5: diagnosi del guasto emerso il 2026-11-04 (prima avanti ok, poi ruota destra ferma e
+   fasi successive solo scatto). La seconda run con multimetro ha misurato `+12`/`GND` del
+   L298N stabile a 10-12 V: batteria/BMS esclusi come causa primaria. Restano L298N canale A o
+   protezione termica, motore destro e connettori. Prossimo test: canali separati con misura di
+   `OUT1`/`OUT2` e `OUT3`/`OUT4` e temperatura
    (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`); solo dopo, PWM minimo e cm/s e taratura di
    `cruise`/guadagni. Il firmware sicuro è già ripristinato.
 2. Completare la convenzione dei segni IMU.

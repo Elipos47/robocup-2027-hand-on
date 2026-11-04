@@ -2,10 +2,10 @@
 
 **ID:** F0-5 / PWM-DIAG-1
 **Data:** 2026-11-04
-**Contesto:** test a coppia 255 con il robot appoggiato al tavolo
-(`software/logs/pwm-pair-repeat-001.jsonl`).
-**Stato:** sospeso il 2026-11-04 in attesa delle misure con multimetro. Nessun comando ai
-motori finche' non vengono registrate tensione batteria e temperatura L298N.
+**Contesto:** due run del test a coppia 255
+(`software/logs/pwm-pair-repeat-001.jsonl`, `software/logs/pwm-pair-repeat-002.jsonl`).
+**Stato:** seconda run eseguita con multimetro; alimentazione stabile, in corso l'isolamento
+tra L298N, motore destro e connettori.
 **Obiettivo:** isolare la causa del guasto sotto carico prima di riprendere le misure di PWM
 minimo e cm/s.
 
@@ -19,6 +19,19 @@ Il software ha accettato tutti i 6 comandi (`ack` 6-7 ms), lo status riporta `mo
 per tutta la durata e gli stop hanno ricevuto ack. Il firmware non ha segnalato errori o
 watchdog. Il guasto e' quindi a valle dei pin del Mega: alimentazione, L298N, connettori o
 motori.
+
+## Risultati delle due run
+
+| Run | Condizione | Esito fisico | Tensione +12/GND L298N |
+|---|---|---|---|
+| `pwm-pair-repeat-001` | robot appoggiato al tavolo, sotto carico | prima avanti ok, poi ruota destra ferma e scatti | non misurata |
+| `pwm-pair-repeat-002` | ruote sollevate, multimetro DC | stesso guasto | stabile 10-12 V per tutta la prova |
+
+La tensione stabile esclude batteria, BMS e caduta sul collegamento di alimentazione come causa
+primaria. Restano il L298N (canale A o protezione termica), il motore destro e i connettori.
+La prossima prova utile e' il test dei canali separati con misura di `OUT1`/`OUT2` e
+`OUT3`/`OUT4` durante A avanti, A indietro, B avanti e B indietro, piu' la temperatura del
+L298N.
 
 ## Ipotesi
 

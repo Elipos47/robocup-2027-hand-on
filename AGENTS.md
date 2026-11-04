@@ -205,12 +205,15 @@ contiene il codice applicativo del progetto precedente.
   0 errori. La prova e' stata eseguita con il robot appoggiato al tavolo, quindi **sotto
   carico** e non a ruote sollevate: primo avanti con entrambe le ruote, in retromarcia la ruota
   destra non gira, poi tutte le fasi fanno solo uno scatto iniziale. **FAIL sotto carico**;
-  software sano, causa a valle dei pin (batteria/BMS, L298N, connettori). Firmware sicuro
-  ripristinato; `D` -> `E,MOTION_DISABLED`.
-- In corso: diagnosi del guasto sotto carico del 2026-11-04
-  (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`): batteria e BMS sotto carico, temperatura L298N,
-  canali separati a ruote sollevate, connettori. Completare i segni IMU e chiudere i punti
-  aperti di B0.
+  software sano, causa a valle dei pin. Firmware sicuro ripristinato; `D` ->
+  `E,MOTION_DISABLED`.
+- Fatto: seconda run F0-5/PWM-2b con multimetro (`software/logs/pwm-pair-repeat-002.jsonl`),
+  ruote sollevate: stesso guasto fisico, 6/6 `D` accettati, ack 5-8 ms, 0 errori, `+12`/`GND`
+  del L298N stabile 10-12 V. Batteria/BMS e caduta di alimentazione esclusi come causa
+  primaria; restano L298N canale A o protezione termica, motore destro e connettori.
+- In corso: diagnosi del guasto del 2026-11-04 (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`):
+  test canali separati con misura di `OUT1`/`OUT2` e `OUT3`/`OUT4`, temperatura L298N,
+  connettori. Completare i segni IMU e chiudere i punti aperti di B0.
 - Prossimi passi: isolare la causa, ripetere 3 volte il test a coppia a ruote sollevate,
   misurare cm/s a PWM noto, tarare `cruise`/guadagni, implementare `GAP_CROSS` F1 con timeout
   e riacquisizione, poi prova a ruote sollevate e bassa velocita'.
