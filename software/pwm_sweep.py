@@ -7,6 +7,8 @@ muove il robot, a misurare la risposta e a ripetere una coppia di valori.
 
 I valori positivi comandano avanti, quelli negativi indietro: per ripetere il
 test a coppia a 255 tre volte usare ``--pwms=255,-255,255,-255,255,-255``.
+Con ``--side left`` o ``--side right`` si muove una sola ruota, per la diagnosi
+del canale o del motore.
 """
 
 from __future__ import annotations
@@ -46,6 +48,15 @@ def _default_run_id() -> str:
     return datetime.now(timezone.utc).strftime("pwm-sweep-%Y%m%dT%H%M%SZ")
 
 
+def _motor_values(pwm: int, side: str) -> tuple[int, int]:
+    """Restituisce i PWM (sinistra, destra) per il lato richiesto."""
+    if side not in ("both", "left", "right"):
+        raise ValueError(f"lato non valido: {side}")
+    left = pwm if side in ("both", "left") else 0
+    right = pwm if side in ("both", "right") else 0
+    return left, right
+
+
 def _hold(session: RobotSession, seconds: float) -> None:
     deadline = time.monotonic() + seconds
     while time.monotonic() < deadline:
@@ -61,6 +72,7 @@ def run_sweep(
     pause_s: float,
     countdown_s: float,
     logger: JsonlLogger,
+    side: str = "both",
 ) -> None:
     transport = SerialTransport(port=port, baudrate=baud)
     session = RobotSession(transport, logger, config=OPERATIONAL_CONFIG)
@@ -72,6 +84,7 @@ def run_sweep(
         pwms=pwms,
         hold_s=hold_s,
         pause_s=pause_s,
+        side=side,
         safety=OPERATIONAL_CONFIG.snapshot(),
     )
     try:
@@ -85,20 +98,30 @@ def run_sweep(
             _hold(session, countdown_s)
         for pwm in pwms:
             direction = "avanti" if pwm > 0 else "indietro"
+            sides = {"both": "entrambe", "left": "sinistra", "right": "destra"}
             print(
-                f"PWM {pwm} ({direction}): {hold_s:g} s",
+                f"PWM {pwm} ({direction}, ruota {sides[side]}): {hold_s:g} s",
                 flush=True,
             )
+            left, right = _motor_values(pwm, side)
             logger.log(
                 "pwm_step_start",
                 pwm=pwm,
                 direction=direction,
+                side=side,
+                left=left,
+                right=right,
                 hold_s=hold_s,
             )
-            session.drive(pwm, pwm)
+            session.drive(left, right)
             _hold(session, hold_s)
             session.stop()
-            logger.log("pwm_step_stop", pwm=pwm, direction=direction)
+            logger.log(
+                "pwm_step_stop",
+                pwm=pwm,
+                direction=direction,
+                side=side,
+            )
             if pause_s:
                 _hold(session, pause_s)
     finally:
@@ -112,6 +135,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--port", default="/dev/ttyACM0")
     parser.add_argument("--baud", type=int, default=115200)
     parser.add_argument("--pwms", default=DEFAULT_PWMS)
+    parser.add_argument(
+        "--side",
+        choices=("both", "left", "right"),
+        default="both",
+        help="ruota da comandare: both, left o right",
+    )
     parser.add_argument("--hold", type=float, default=4.0)
     parser.add_argument("--pause", type=float, default=2.0)
     parser.add_argument("--countdown", type=float, default=3.0)
@@ -149,6 +178,7 @@ def main(argv: list[str] | None = None) -> int:
                 pause_s=args.pause,
                 countdown_s=args.countdown,
                 logger=logger,
+                side=args.side,
             )
     except (SafetyError, SessionError, RuntimeError, OSError) as exc:
         print(f"ERR {exc}", file=sys.stderr)

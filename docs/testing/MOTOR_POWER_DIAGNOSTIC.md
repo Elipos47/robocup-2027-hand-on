@@ -4,8 +4,8 @@
 **Data:** 2026-11-04
 **Contesto:** due run del test a coppia 255
 (`software/logs/pwm-pair-repeat-001.jsonl`, `software/logs/pwm-pair-repeat-002.jsonl`).
-**Stato:** seconda run eseguita con multimetro; alimentazione stabile, in corso l'isolamento
-tra L298N, motore destro e connettori.
+**Stato:** seconda run eseguita con multimetro; alimentazione stabile, misura A da solo 3 V e
+A+B 0-1 V. In corso l'isolamento tra L298N, motore destro e connettori.
 **Obiettivo:** isolare la causa del guasto sotto carico prima di riprendere le misure di PWM
 minimo e cm/s.
 
@@ -32,6 +32,26 @@ primaria. Restano il L298N (canale A o protezione termica), il motore destro e i
 La prossima prova utile e' il test dei canali separati con misura di `OUT1`/`OUT2` e
 `OUT3`/`OUT4` durante A avanti, A indietro, B avanti e B indietro, piu' la temperatura del
 L298N.
+
+## Misura con `pwm_staggered_test` (2026-11-04)
+
+- A da solo a 255: **3 V** ai capi di `OUT1`/`OUT2`, motore A gira lentamente;
+- A+B insieme: **0-1 V** ai capi di `OUT1`/`OUT2`, motore A fermo o solo scatto;
+- multimetro in DC, puntali su `OUT1`/`OUT2`, ruote sollevate.
+
+3 V sono troppo pochi: con alimentazione 10-12 V e la caduta tipica dell'L298N il motore
+dovrebbe vedere circa 7-9 V. Il calo a 0-1 V quando si aggiunge B indica un limite condiviso:
+alimentazione, massa o protezione termica. Poiche' `+12`/`GND` era stabile, i candidati
+principali sono il **canale A del L298N** (caduta interna o protezione) e il **motore A**
+(assorbimento anomalo per attrito o corto).
+
+Misure successive, in ordine:
+
+1. `5V` dell'Arduino rispetto a `GND`, a riposo e durante A da solo: atteso ~5 V;
+2. `ENA` rispetto a `GND` durante A da solo: atteso ~5 V a 255;
+3. temperatura del L298N dopo A da solo: se molto caldo, e' protezione termica;
+4. scambio dei due connettori motore su `OUT1`/`OUT2` e `OUT3`/`OUT4`, a motori spenti e con
+   approvazione: se il guasto segue il motore A e' il motore, se resta sul canale A e' l'L298N.
 
 ## Ipotesi
 
