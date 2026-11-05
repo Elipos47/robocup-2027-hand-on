@@ -128,6 +128,9 @@ terra finche' la causa non e' isolata. Non cambiare cablaggi senza approvazione.
 
 3. **Canali separati a ruote sollevate**
    - caricare `firmware/test/pwm_channel_test/`;
+   - per misure ripetute con il multimetro usare `firmware/test/pwm_a_forward_test/`;
+     tiene A avanti 255 per 5 s e fermo per 5 s, in loop, cosi' non serve
+     premere reset a ogni lettura;
    - osservare A avanti, B avanti, A indietro, B indietro a 255;
    - se un solo verso del canale A fallisce, il sospetto e' il semiconduttore del ponte;
    - se tutti i canali funzionano da soli ma falliscono insieme, il sospetto e' la batteria o
