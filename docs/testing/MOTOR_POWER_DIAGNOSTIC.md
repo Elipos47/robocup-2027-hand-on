@@ -71,6 +71,14 @@ Da fare: ricollegare batteria `+` a `+12` e batteria `-` a `GND`, verificare il
 jumper `5V`, controllare i rail 5 V di L298N, Arduino e Raspberry, poi ripetere
 `pwm_a_forward_test` e misurare di nuovo.
 
+## Ponte verificato a banco (2026-11-05)
+
+Con `+12` alimentato e il `5V` del L298N collegato direttamente a `IN1` (bridge
+chiuso a mano, senza PWM), il motore A gira. Quindi il 7805, il ponte e il motore
+sono sani; il mancato movimento dopo il ricablaggio era un problema di connessioni
+(segnale, GND o alimentazione logica). Resta da verificare il percorso
+Arduino -> `ENA`/`IN1`/`IN2` con `pwm_a_forward_test` e la PWM.
+
 ## Confronto con il codice 2025-2026
 
 | Progetto | EN destra (A) | IN destra (A) | EN sinistra (B) | IN sinistra (B) | Note |
