@@ -54,6 +54,23 @@ Misure successive, in ordine:
 4. scambio dei due connettori motore su `OUT1`/`OUT2` e `OUT3`/`OUT4`, a motori spenti e con
    approvazione: se il guasto segue il motore A e' il motore, se resta sul canale A e' l'L298N.
 
+## Alimentazione motori assente (2026-11-05)
+
+La batteria era collegata al morsetto `5V` del L298N invece che a `+12`. Il morsetto
+`5V` e' l'uscita del 7805 (con jumper inserito) oppure l'ingresso del rail logico
+(con jumper rimosso): non e' un ingresso di potenza. Con 11,1 V su quel morsetto il
+rail logico e' fuori specifica (L298N `Vss` massimo 7 V) e i motori non avevano la
+supply `Vs`. La lettura di 10-12 V su `+12` fatta in precedenza non dimostra che il
+morsetto fosse alimentato: puo' essere la tensione di ritorno attraverso il 7805,
+che sotto carico crolla. Le uscite OUT1=4 V, OUT2=0,8 V, OUT3=3 V, OUT4=0,6 V sono
+coerenti con questo errore, non con due canali del ponte guasti. Il modulo non si e'
+bruciato perche' la corrente era limitata dal percorso del 7805 e dal carico della
+logica; resta fuori specifica e va considerato sospetto.
+
+Da fare: ricollegare batteria `+` a `+12` e batteria `-` a `GND`, verificare il
+jumper `5V`, controllare i rail 5 V di L298N, Arduino e Raspberry, poi ripetere
+`pwm_a_forward_test` e misurare di nuovo.
+
 ## Confronto con il codice 2025-2026
 
 | Progetto | EN destra (A) | IN destra (A) | EN sinistra (B) | IN sinistra (B) | Note |
