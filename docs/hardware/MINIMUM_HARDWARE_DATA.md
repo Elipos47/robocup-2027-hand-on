@@ -70,6 +70,18 @@ led e interruttore.
 - La corrispondenza e' verificata a banco: canale A = ruota destra, canale B = ruota sinistra.
 - La mappa e' una decisione, non una misura: freno e limite PWM restano da verificare.
 
+### Alimentazione L298N
+
+| Morsetto L298N | Uso | Note |
+|---|---|---|
+| `+12` | ingresso positivo batteria motori | 11.1 V; la batteria va qui, non sul `5V` |
+| `GND` | negativo batteria e GND comune | obbligatorio, comune con Arduino |
+| `5V` | uscita 7805 (jumper inserito) o rail logico | non alimentare a 11.1 V |
+
+La batteria motori va su `+12` e `GND`. Il morsetto `5V` non e' un ingresso di potenza: con il
+jumper inserito e' l'uscita del 7805, senza jumper e' il rail logico. Non collegarlo al 5V
+dell'Arduino se l'Arduino e' alimentato via USB.
+
 ### HC-SR04 - mappa fornita dall'utente
 
 | Segnale | Pin Arduino Mega 2560 | Note |

@@ -25,6 +25,8 @@ ripristinato. B1-3: HC-SR04 e BNO085 letti nello status, con bit di validita'
 
 Mappa verificata: canale A = ruota destra, canale B = ruota sinistra. La polarita' di entrambi i
 canali e' invertita nel firmware. Alimentazione motori separata dall'Arduino, con GND comune.
+La batteria motori va su `+12`/`GND` del L298N; il morsetto `5V` e' l'uscita del 7805 (jumper
+inserito) o il rail logico, non un ingresso di potenza.
 
 ## Build e upload
 

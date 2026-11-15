@@ -133,14 +133,11 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. F0-5: diagnosi del guasto emerso il 2026-11-04 (prima avanti ok, poi ruota destra ferma e
-   fasi successive solo scatto). La seconda run con multimetro ha misurato `+12`/`GND` del
-   L298N stabile a 10-12 V: batteria/BMS esclusi come causa primaria. Il confronto con
-   l'archivio 2025-2026 mostra la stessa legge di comando ma una mappa pin diversa (attuale
-   `EN 12/13` + `IN 22-25`; archivio `EN 44/45` + `IN 23-26` oppure `EN 22/27` + `IN 23-26`):
-   verificare il cablaggio reale prima di cambiare i cavi
-   (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`); poi PWM minimo e cm/s e taratura di
-   `cruise`/guadagni. Il firmware sicuro è già ripristinato.
+1. F0-5: diagnosi chiusa il 2026-11-15. La batteria era collegata al morsetto `5V` del L298N
+   invece di `+12`; dopo lo spostamento su `+12`/`GND` e la sistemazione dei connettori,
+   `pwm_both_test` mostra entrambe le ruote avanti e indietro a 255. Ripetere 3 volte il test
+   a coppia con log, misurare PWM minimo e cm/s, poi tarare `cruise`/guadagni. Il firmware
+   sicuro va ricaricato se la scheda ha ancora lo sketch di banco.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Ripetere con illuminazione e superfici diverse; implementare `GAP_CROSS` F1 con timeout e

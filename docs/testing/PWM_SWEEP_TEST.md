@@ -68,13 +68,12 @@ controllati i serraggi. La velocita' massima non e' ancora misurata.
 
 ## Prossimo passo
 
-1. Diagnosi del guasto sotto carico del 2026-11-04
-   (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`): batteria/BMS, L298N, connettori, canale A.
-2. Ripetere il test a coppia 3 volte a ruote sollevate solo dopo la diagnosi.
-3. Misurare PWM minimo e cm/s a PWM noto, con ruote sollevate/prima a bassa velocita'.
-4. Tarare `cruise` e guadagni del controller dry-run.
-5. Ripetere la prova del controller prima di collegare i motori al firmware operativo.
-6. Implementare `GAP_CROSS` F1 solo dopo la misura di velocita' e i test di ripresa.
+1. Ripetere 3 volte il test a coppia 255 con `pwm_sweep.py` e log, ora che l'alimentazione e'
+   corretta.
+2. Misurare PWM minimo e cm/s a PWM noto, con ruote sollevate/prima a bassa velocita'.
+3. Tarare `cruise` e guadagni del controller dry-run.
+4. Ripetere la prova del controller prima di collegare i motori al firmware operativo.
+5. Implementare `GAP_CROSS` F1 solo dopo la misura di velocita' e i test di ripresa.
 
 ## Test entrambi i canali a 255
 
@@ -187,3 +186,18 @@ esclusi come causa primaria. Il guasto e' nel L298N (canale A o protezione termi
 destro o nei connettori. Il passo successivo e' il test dei canali separati con misura di
 `OUT1`/`OUT2` e `OUT3`/`OUT4` e della temperatura del L298N
 (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`).
+
+**Correzione (2026-11-15):** la lettura stabile su `+12`/`GND` non dimostrava che `+12` fosse
+alimentato. La batteria era collegata al morsetto `5V` del L298N; la tensione letta era di
+ritorno attraverso il 7805. La causa e' stata corretta e la diagnosi e' chiusa: vedi
+`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`.
+
+## Risoluzione (2026-11-15)
+
+La causa del FAIL del 2026-11-04 era la batteria collegata al morsetto `5V` del L298N invece
+di `+12`. Dopo lo spostamento su `+12`/`GND` e la sistemazione dei connettori, `pwm_both_test`
+mostra entrambe le ruote avanti e indietro a 255 (2 cicli, osservazione dell'operatore, nessun
+log seriale).
+
+Il test a coppia resta da ripetere in forma loggata 3x per chiudere il gate. PWM minimo, cm/s e
+taratura del controller restano aperti.

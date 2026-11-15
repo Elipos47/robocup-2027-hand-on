@@ -6,6 +6,7 @@ scrivere il contratto software o per lo scaffolding del logger.
 
 - [ ] Fotografare il montaggio completo e i connettori.
 - [ ] Verificare batterie, tensione, polarità e protezioni.
+- [ ] Alimentare il L298N da `+12`/`GND`, mai dal morsetto `5V`.
 - [ ] Verificare massa, stabilita' e centro di massa.
 - [ ] Collegare Raspberry e Arduino con alimentazione e messa a terra definite.
 - [ ] Testare comunicazione senza motori collegati.

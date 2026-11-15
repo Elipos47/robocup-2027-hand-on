@@ -1,12 +1,12 @@
 # Diagnosi alimentazione motori
 
 **ID:** F0-5 / PWM-DIAG-1
-**Data:** 2026-11-04
+**Data:** 2026-11-04 (chiusura 2026-11-15)
 **Contesto:** due run del test a coppia 255
 (`software/logs/pwm-pair-repeat-001.jsonl`, `software/logs/pwm-pair-repeat-002.jsonl`).
-**Stato:** seconda run eseguita con multimetro; alimentazione stabile, misura A da solo 3 V e
-A+B 0-1 V. Confronto con l'archivio fatto: mappa pin diversa, da verificare sul cablaggio
-prima di cambiare i cavi.
+**Stato:** RISOLTO il 2026-11-15. La batteria era collegata al morsetto `5V` del L298N invece
+di `+12`; dopo lo spostamento su `+12`/`GND` e la sistemazione dei connettori, `pwm_both_test`
+mostra entrambe le ruote avanti e indietro a 255.
 **Obiettivo:** isolare la causa del guasto sotto carico prima di riprendere le misure di PWM
 minimo e cm/s.
 
@@ -71,13 +71,35 @@ Da fare: ricollegare batteria `+` a `+12` e batteria `-` a `GND`, verificare il
 jumper `5V`, controllare i rail 5 V di L298N, Arduino e Raspberry, poi ripetere
 `pwm_a_forward_test` e misurare di nuovo.
 
+**Eseguito il 2026-11-15:** batteria `+` spostata su `+12`, batteria `-` su `GND`, connettori
+e morsetti sistemati. `pwm_both_test` mostra entrambe le ruote avanti e indietro a 255.
+
 ## Ponte verificato a banco (2026-11-05)
 
 Con `+12` alimentato e il `5V` del L298N collegato direttamente a `IN1` (bridge
 chiuso a mano, senza PWM), il motore A gira. Quindi il 7805, il ponte e il motore
 sono sani; il mancato movimento dopo il ricablaggio era un problema di connessioni
-(segnale, GND o alimentazione logica). Resta da verificare il percorso
-Arduino -> `ENA`/`IN1`/`IN2` con `pwm_a_forward_test` e la PWM.
+(segnale, GND o alimentazione logica). Il percorso Arduino -> `ENA`/`IN1`/`IN2` e la PWM
+sono stati verificati il 2026-11-15 con `pwm_both_test` (vedi Esito finale).
+
+## Esito finale (2026-11-15)
+
+- **Causa:** batteria collegata al morsetto `5V` del L298N invece di `+12`. Il `5V` e'
+  l'uscita del 7805 (jumper inserito) o il rail logico, non l'ingresso di potenza. La lettura
+  di 10-12 V su `+12` era una tensione di ritorno attraverso il 7805, non la prova che il
+  morsetto fosse alimentato.
+- **Intervento:** batteria `+` su `+12`, batteria `-` su `GND`, connettori e morsetti
+  sistemati.
+- **Verifica:** `pwm_both_test`, 2 cicli avanti/indietro a 255; entrambe le ruote girano in
+  entrambi i versi (osservazione dell'operatore, nessun log seriale).
+- **Stato: RISOLTO.** Se la scheda ha ancora caricato `pwm_both_test`, ricaricare il firmware
+  sicuro `firmware/rcj2027` con `BENCH_MOTION_ENABLED=false`.
+
+Restano da fare:
+
+1. ripetizione formale 3x a coppia 255 con `pwm_sweep.py` e log;
+2. misura del PWM minimo e dei cm/s;
+3. taratura di `cruise`, guadagni e deadband.
 
 ## Confronto con il codice 2025-2026
 

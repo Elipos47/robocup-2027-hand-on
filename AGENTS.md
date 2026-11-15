@@ -209,16 +209,18 @@ contiene il codice applicativo del progetto precedente.
   `E,MOTION_DISABLED`.
 - Fatto: seconda run F0-5/PWM-2b con multimetro (`software/logs/pwm-pair-repeat-002.jsonl`),
   ruote sollevate: stesso guasto fisico, 6/6 `D` accettati, ack 5-8 ms, 0 errori, `+12`/`GND`
-  del L298N stabile 10-12 V. Batteria/BMS e caduta di alimentazione esclusi come causa
-  primaria; restano L298N canale A o protezione termica, motore destro e connettori.
-- In corso: diagnosi del guasto del 2026-11-04 (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`):
-  verificare prima la mappa dei pin contro l'archivio 2025-2026 (attuale `EN 12/13` +
-  `IN 22-25`; archivio `EN 44/45` + `IN 23-26` oppure `EN 22/27` + `IN 23-26`), poi test
-  canali separati con misura di `OUT1`/`OUT2` e `OUT3`/`OUT4`, temperatura L298N, connettori.
-  Completare i segni IMU e chiudere i punti aperti di B0.
-- Prossimi passi: isolare la causa, ripetere 3 volte il test a coppia a ruote sollevate,
-  misurare cm/s a PWM noto, tarare `cruise`/guadagni, implementare `GAP_CROSS` F1 con timeout
-  e riacquisizione, poi prova a ruote sollevate e bassa velocita'.
+  del L298N stabile 10-12 V. La lettura era una tensione di ritorno: la batteria era collegata
+  al morsetto `5V` invece di `+12`.
+- Fatto: diagnosi chiusa il 2026-11-15. Batteria `+` spostata da `5V` a `+12`, batteria `-` su
+  `GND`, connettori/morsetti sistemati. `pwm_both_test` mostra entrambe le ruote avanti e
+  indietro a 255 (2 cicli, osservazione operatore, nessun log seriale). Se la scheda ha ancora
+  lo sketch di banco, ricaricare `firmware/rcj2027` sicuro.
+- In corso: F0-5 movimento a bassa velocita': ripetere 3 volte il test a coppia 255 con
+  `pwm_sweep.py` e log, misurare PWM minimo e cm/s, poi tarare `cruise`/guadagni. Completare
+  i segni IMU e chiudere i punti aperti di B0.
+- Prossimi passi: ripetere 3 volte il test a coppia con log, misurare cm/s a PWM noto, tarare
+  `cruise`/guadagni, implementare `GAP_CROSS` F1 con timeout e riacquisizione, poi prova a
+  ruote sollevate e bassa velocita'.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione
