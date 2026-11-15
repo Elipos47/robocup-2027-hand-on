@@ -133,13 +133,12 @@ L'inventario, il contratto minimo e le limitazioni sono in
 
 ## Prossimo lavoro
 
-1. F0-5: line following a bassa velocita'. La diagnosi motori e' chiusa e il PWM minimo a
-   vuoto e' circa 65. `line-live --drive` usa `LOW_SPEED_CONFIG` (cruise 100, correzione
-   massima 30, limite 130), richiede `--confirm-motion` e si ferma quando la linea non e'
-   confermata. Prima prova a ruote sollevate, poi su linea retta a terra
-   (`docs/testing/F0_LOW_SPEED_LINE_FOLLOW.md`). Restano la ripetizione 3x a coppia con log,
-   i cm/s e la taratura di `cruise`/guadagni. Il firmware sicuro va ricaricato se la scheda ha
-   ancora lo sketch di banco.
+1. F0-5: primo line following a terra con PASS qualitativo (2026-11-15,
+   `f0-line-follow-ground-001`): il robot seguiva la linea a `cruise=100`, con micro-scatti
+   rari. Restano da ridurre i micro-scatti, verificare l'offset camera/telaio (~65 px) e
+   provare una curva; poi ripetizione 3x a coppia con log, cm/s e taratura di
+   `cruise`/guadagni. Dettagli in `docs/testing/F0_LOW_SPEED_LINE_FOLLOW.md`. Il firmware
+   sicuro è già ripristinato.
 2. Completare la convenzione dei segni IMU.
 3. Chiudere B0: freno/coast, ripetizione e verifica termica di PWM 255/watchdog.
 4. Ripetere con illuminazione e superfici diverse; implementare `GAP_CROSS` F1 con timeout e

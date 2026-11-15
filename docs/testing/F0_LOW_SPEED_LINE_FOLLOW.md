@@ -87,7 +87,50 @@ Alla chiusura il programma invia `X` e chiude la sessione.
   `session_end`.
 - Report: `motor_output=true`, `control.commands_sent`, `control.stops_sent`, `summary`.
 
-## Esito
+## Esito (2026-11-15)
 
-Da compilare dopo la prova. Il gate F0-5 resta aperto finche' non c'e' una prova a terra
-ripetibile.
+**Run:** `f0-line-follow-ground-001`
+**Log:** `software/logs/f0-line-follow-ground-001.jsonl`
+**Condizione:** linea retta a terra, robot libero di muoversi, operatore presente. Firmware di
+banco con `BENCH_MOTION_ENABLED=true`, `PWM_MAX=255`, watchdog 1000 ms; dopo la prova firmware
+sicuro ripristinato e `D` -> `E,MOTION_DISABLED`.
+**Configurazione:** `cruise=100`, `max_correction=30`, `pwm_max=130`, `k_offset=0.35`,
+`k_heading=1.5`, `control_interval=0.1 s`.
+
+| Metrica | Valore |
+|---|---:|
+| Frame | 155 in 10,01 s (15,5 FPS) |
+| Linea trovata | 134/155 (86,45%) |
+| Linea confermata | 153/155 (98,71%) |
+| Perdite massime | 4 frame |
+| Offset | mediana 64,89 px, range 59,6-89,1 |
+| Heading | mediana -0,39 deg, range -6,06..0,54 |
+| Confidenza | mediana 0,948 |
+| Comandi motore | 69 drive, 12 stop, 0 errori |
+| Comandi FOLLOW | sinistra 120-130, destra 70-80 |
+
+**Osservazione dell'operatore:** il robot seguiva la linea correttamente, la ruota destra
+girava bene; micro-scatti rari e accettabili.
+
+**Interpretazione:** PASS qualitativo. I micro-scatti coincidono con i 21 frame in cui la linea
+non era trovata: il controller ferma i motori su `found=false`, poi riparte al frame successivo.
+Sono rari e non hanno fatto uscire il robot. L'offset stabile di circa 65 px indica un possibile
+disallineamento camera/telaio o una linea non centrata rispetto all'asse ottico: va verificato
+prima di tarare i guadagni. I comandi sono sempre molto sbilanciati (destra vicina al minimo
+65): per curve piu' strette o attrito maggiore conviene alzare `cruise` o ridurre
+`max_correction`. La distanza percorsa non e' stata misurata: il criterio "almeno 1 m" resta
+da verificare.
+
+L'avvio della camera ha richiesto 26,09 s fino al primo frame (camera start 17,05 s, warmup
+19,05 s), anomalo rispetto ai 2,08-2,19 s delle run precedenti: da indagare, non ha influito
+sul test perche' la durata parte dal primo frame.
+
+**Prossimi passi:**
+
+1. ridurre i micro-scatti (valutare l'uso di `confirmed` o una breve tolleranza di perdita);
+2. verificare l'offset camera/telaio;
+3. ripetere su linea retta e poi su curva;
+4. ripetizione 3x a coppia 255 con log, cm/s e taratura di `cruise`/guadagni.
+
+Il gate F0-5 resta aperto: questa e' una prova qualitativa singola, non una ripetizione
+completa.

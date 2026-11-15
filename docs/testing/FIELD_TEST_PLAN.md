@@ -87,6 +87,8 @@ sostituito con una stima: se riguarda la sicurezza, il movimento resta disabilit
 - [x] diagnosi alimentazione L298N: batteria sul morsetto `5V` invece di `+12`, corretta il
   2026-11-15; entrambe le ruote avanti/indietro a 255 con `pwm_both_test`
   (`docs/testing/MOTOR_POWER_DIAGNOSTIC.md`);
+- [x] primo line following a bassa velocita' su linea retta a terra, PASS qualitativo con
+  micro-scatti rari (`docs/testing/F0_LOW_SPEED_LINE_FOLLOW.md`);
 - [x] sessione seriale reale Raspberry-Mega con handshake, heartbeat, status a 10 Hz, logger
   JSONL e stop `X` (B1-1, `docs/testing/B1_INTEGRATION_TEST.md`);
 - [x] comandi motori con gate, ack e stop durante il movimento (B1-2, ruote sollevate,

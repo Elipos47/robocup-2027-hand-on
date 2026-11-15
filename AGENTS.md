@@ -220,14 +220,18 @@ contiene il codice applicativo del progetto precedente.
   Misura provvisoria, soglia sinistra non isolata, nessun cm/s.
 - Fatto: `line-live --drive` con `LineFollower` e `LOW_SPEED_CONFIG` (cruise 100,
   max_correction 30, pwm_max 130): gate `--confirm-motion`, stop su linea persa e stop `X`
-  alla chiusura. Procedura in `docs/testing/F0_LOW_SPEED_LINE_FOLLOW.md`; non ancora provato
-  sul robot.
-- In corso: F0-5 line following a bassa velocita': prima prova a ruote sollevate, poi su linea
-  retta a terra. Restano la ripetizione 3x a coppia 255 con log, i cm/s e la taratura di
+  alla chiusura. Procedura in `docs/testing/F0_LOW_SPEED_LINE_FOLLOW.md`.
+- Fatto: primo line following a terra (2026-11-15, `f0-line-follow-ground-001`): PASS
+  qualitativo a cruise 100. 155 frame in 10,01 s, 134/155 trovate, 153/155 confermate, 69
+  drive, 12 stop, 0 errori; il robot seguiva la linea, ruota destra ok, micro-scatti rari.
+  Offset stabile ~65 px e comandi 120-130/70-80 da verificare/tarare; avvio camera anomalo
+  (26 s al primo frame). Firmware sicuro ripristinato.
+- In corso: F0-5 line following: ridurre i micro-scatti, verificare l'offset camera/telaio,
+  poi prova su curva. Restano la ripetizione 3x a coppia 255 con log, i cm/s e la taratura di
   `cruise`/guadagni. Completare i segni IMU e chiudere i punti aperti di B0.
-- Prossimi passi: prova di line following a bassa velocita', ripetizione 3x a coppia con log,
-  misura cm/s a PWM noto, taratura `cruise`/guadagni, `GAP_CROSS` F1 con timeout e
-  riacquisizione.
+- Prossimi passi: ridurre i micro-scatti e verificare l'offset, prova su curva, ripetizione 3x
+  a coppia con log, misura cm/s a PWM noto, taratura `cruise`/guadagni, `GAP_CROSS` F1 con
+  timeout e riacquisizione.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

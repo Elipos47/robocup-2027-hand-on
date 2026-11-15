@@ -157,6 +157,10 @@ poi su una linea retta a terra con operatore pronto a fermare. Il firmware deve 
 `BENCH_MOTION_ENABLED=true`, `PWM_MAX=255` e watchdog 1000 ms; dopo la prova ricaricare il
 firmware sicuro. Dettagli e criteri in `docs/testing/F0_LOW_SPEED_LINE_FOLLOW.md`.
 
+Primo esito a terra (2026-11-15): PASS qualitativo a `cruise=100`, con micro-scatti rari;
+offset stabile ~65 px e avvio camera lento da verificare. Il firmware sicuro e' stato
+ripristinato.
+
 ## Uso da Thonny
 
 Apri `software/line_live.py` in Thonny, modifica `CONDITION` (`curva`, `ombra`, `gap-7`, ...)
