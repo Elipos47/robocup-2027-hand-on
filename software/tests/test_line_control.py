@@ -13,6 +13,8 @@ from rcj2027.line_control import (
     LineControlConfig,
     LineControlError,
     LineController,
+    LineFollower,
+    LOW_SPEED_CONFIG,
 )
 from rcj2027.line_vision import LineObservation, TrackState
 
@@ -154,6 +156,14 @@ class LineControllerTests(unittest.TestCase):
             with self.assertRaises(LineControlError):
                 LineControlConfig(**kwargs)
 
+    def test_low_speed_config_keeps_both_wheels_above_minimum(self) -> None:
+        controller = LineController(LOW_SPEED_CONFIG)
+        command = controller.update(track(offset=1000.0, heading=90.0))
+
+        self.assertEqual(command.state, "FOLLOW")
+        self.assertGreaterEqual(min(command.left, command.right), 70)
+        self.assertLessEqual(max(command.left, command.right), 130)
+
     def test_cli_dry_run_reads_log(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -207,6 +217,64 @@ class LineControllerTests(unittest.TestCase):
         self.assertEqual(report["summary"]["stop_not_confirmed"], 2)
         self.assertEqual(report["summary"]["stop_not_found"], 1)
         self.assertEqual(len(commands), 7)
+
+
+class FakeSession:
+    def __init__(self) -> None:
+        self.drives: list[tuple[int, int]] = []
+        self.stops = 0
+        self.closed: str | None = None
+
+    def drive(self, left: int, right: int) -> None:
+        self.drives.append((left, right))
+
+    def stop(self) -> None:
+        self.stops += 1
+
+    def close(self, *, reason: str = "session_end") -> None:
+        self.closed = reason
+
+
+class LineFollowerTests(unittest.TestCase):
+    def test_sends_drive_at_the_configured_interval(self) -> None:
+        session = FakeSession()
+        follower = LineFollower(
+            session,
+            LOW_SPEED_CONFIG,
+            send_interval_s=0.1,
+        )
+
+        follower.update(track(), now=0.0)
+        follower.update(track(), now=0.05)
+        follower.update(track(), now=0.11)
+
+        self.assertEqual(session.drives, [(100, 100), (100, 100)])
+        self.assertEqual(follower.commands_sent, 2)
+
+    def test_stops_once_when_line_is_lost_and_resumes(self) -> None:
+        session = FakeSession()
+        follower = LineFollower(session, LOW_SPEED_CONFIG, send_interval_s=0.1)
+
+        follower.update(track(), now=0.0)
+        follower.update(track(found=False, confirmed=False), now=0.1)
+        follower.update(track(found=False, confirmed=False), now=0.2)
+        follower.update(track(), now=0.3)
+
+        self.assertEqual(session.stops, 1)
+        self.assertEqual(len(session.drives), 2)
+        self.assertEqual(follower.stops_sent, 1)
+
+    def test_close_forwards_the_reason(self) -> None:
+        session = FakeSession()
+        follower = LineFollower(session, LOW_SPEED_CONFIG)
+
+        follower.close(reason="prova")
+
+        self.assertEqual(session.closed, "prova")
+
+    def test_rejects_invalid_interval(self) -> None:
+        with self.assertRaises(LineControlError):
+            LineFollower(FakeSession(), LOW_SPEED_CONFIG, send_interval_s=0)
 
 
 if __name__ == "__main__":

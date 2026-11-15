@@ -144,5 +144,29 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertEqual(parser.parse_args(["camera-capture"]).device, "auto")
 
 
+    def test_parser_builds_line_live_drive_command(self) -> None:
+        parser = build_parser()
+
+        args = parser.parse_args(
+            [
+                "line-live",
+                "--drive",
+                "--confirm-motion",
+                "--cruise",
+                "100",
+                "--max-correction",
+                "30",
+                "--pwm-limit",
+                "130",
+            ]
+        )
+
+        self.assertTrue(args.drive)
+        self.assertTrue(args.confirm_motion)
+        self.assertEqual(args.cruise, 100)
+        self.assertEqual(args.max_correction, 30)
+        self.assertEqual(args.pwm_limit, 130)
+
+
 if __name__ == "__main__":
     unittest.main()

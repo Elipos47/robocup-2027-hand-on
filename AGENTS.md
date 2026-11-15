@@ -215,12 +215,19 @@ contiene il codice applicativo del progetto precedente.
   `GND`, connettori/morsetti sistemati. `pwm_both_test` mostra entrambe le ruote avanti e
   indietro a 255 (2 cicli, osservazione operatore, nessun log seriale). Se la scheda ha ancora
   lo sketch di banco, ricaricare `firmware/rcj2027` sicuro.
-- In corso: F0-5 movimento a bassa velocita': ripetere 3 volte il test a coppia 255 con
-  `pwm_sweep.py` e log, misurare PWM minimo e cm/s, poi tarare `cruise`/guadagni. Completare
-  i segni IMU e chiudere i punti aperti di B0.
-- Prossimi passi: ripetere 3 volte il test a coppia con log, misurare cm/s a PWM noto, tarare
-  `cruise`/guadagni, implementare `GAP_CROSS` F1 con timeout e riacquisizione, poi prova a
-  ruote sollevate e bassa velocita'.
+- Fatto: PWM minimo a vuoto (2026-11-15): sotto 65 nessuna rotazione continua; a 65 la ruota
+  destra parte molto lentamente (`software/logs/pwm-min-001.jsonl`, `pwm-min-002.jsonl`).
+  Misura provvisoria, soglia sinistra non isolata, nessun cm/s.
+- Fatto: `line-live --drive` con `LineFollower` e `LOW_SPEED_CONFIG` (cruise 100,
+  max_correction 30, pwm_max 130): gate `--confirm-motion`, stop su linea persa e stop `X`
+  alla chiusura. Procedura in `docs/testing/F0_LOW_SPEED_LINE_FOLLOW.md`; non ancora provato
+  sul robot.
+- In corso: F0-5 line following a bassa velocita': prima prova a ruote sollevate, poi su linea
+  retta a terra. Restano la ripetizione 3x a coppia 255 con log, i cm/s e la taratura di
+  `cruise`/guadagni. Completare i segni IMU e chiudere i punti aperti di B0.
+- Prossimi passi: prova di line following a bassa velocita', ripetizione 3x a coppia con log,
+  misura cm/s a PWM noto, taratura `cruise`/guadagni, `GAP_CROSS` F1 con timeout e
+  riacquisizione.
 - Differito: masse, baricentro, cablaggi completi, tarature ottiche, capacita' batteria,
   ruote/cinghie, servo e prove termiche esaurienti.
 - Blocchi / decisioni aperte: regolamento 2027, ruote/cinghie, RPM, massa, servo, calibrazione

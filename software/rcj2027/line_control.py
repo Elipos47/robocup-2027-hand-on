@@ -15,10 +15,14 @@ Convenzioni:
 from __future__ import annotations
 
 import math
+import time
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .line_vision import TrackState
+
+if TYPE_CHECKING:
+    from .session import RobotSession
 
 
 class LineControlError(RuntimeError):
@@ -139,3 +143,71 @@ class LineController:
             correction=correction,
             reason="ok",
         )
+
+
+# Configurazione provvisoria per il primo line following a bassa velocita'.
+# Il PWM minimo misurato a vuoto e' 65 (ruota destra, molto lenta); cruise=100
+# e max_correction=30 tengono entrambe le ruote tra 70 e 130.
+LOW_SPEED_CONFIG = LineControlConfig(
+    pwm_max=130,
+    cruise=100,
+    k_offset=0.35,
+    k_heading=1.5,
+    max_correction=30,
+    offset_deadband_px=3.0,
+    heading_deadband_deg=1.0,
+)
+
+
+class LineFollower:
+    """Invia i comandi del controller alla sessione, con un limite di frequenza.
+
+    Non apre la seriale: riceve una ``RobotSession`` gia' pronta. Se la linea
+    non e' confermata invia uno stop una sola volta; quando la linea torna
+    confermata riprende a comandare i motori.
+    """
+
+    def __init__(
+        self,
+        session: "RobotSession",
+        config: LineControlConfig | None = None,
+        *,
+        send_interval_s: float = 0.1,
+    ) -> None:
+        if not math.isfinite(send_interval_s) or send_interval_s <= 0:
+            raise LineControlError("send_interval_s deve essere positivo")
+        self.session = session
+        self.controller = LineController(config or LOW_SPEED_CONFIG)
+        self.send_interval_s = send_interval_s
+        self.commands_sent = 0
+        self.stops_sent = 0
+        self._last_state = "STOP"
+        self._last_send = -math.inf
+
+    def update(
+        self,
+        state: TrackState,
+        *,
+        now: float | None = None,
+    ) -> DriveCommand:
+        command = self.controller.update(state)
+        current = time.monotonic() if now is None else now
+
+        if command.state == "FOLLOW":
+            if (
+                self._last_state != "FOLLOW"
+                or current - self._last_send >= self.send_interval_s
+            ):
+                self.session.drive(command.left, command.right)
+                self._last_send = current
+                self._last_state = "FOLLOW"
+                self.commands_sent += 1
+        elif self._last_state != "STOP":
+            self.session.stop()
+            self._last_state = "STOP"
+            self.stops_sent += 1
+
+        return command
+
+    def close(self, *, reason: str = "line_follow_end") -> None:
+        self.session.close(reason=reason)

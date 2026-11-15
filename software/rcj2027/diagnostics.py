@@ -42,11 +42,16 @@ from .camera_calibration import (
 )
 from .checkerboard import CheckerboardError, make_checkerboard_pdf
 from . import line_vision
-from .line_control import LineControlConfig, LineController
+from .line_control import (
+    LOW_SPEED_CONFIG,
+    LineControlConfig,
+    LineController,
+    LineFollower,
+)
 from .live_view import LiveViewError, MjpegServer
 from .logger import JsonlLogger
 from .protocol import SensorReading
-from .safety import DEFAULT_CONFIG
+from .safety import DEFAULT_CONFIG, OPERATIONAL_CONFIG
 from .sensor_checks import (
     ImuReport,
     SonarReport,
@@ -467,6 +472,22 @@ def _line_live_report(args: argparse.Namespace) -> int:
         raise ValueError("--save-every deve essere positivo")
     if not 0 <= args.min_found_ratio <= 1:
         raise ValueError("--min-found-ratio deve essere tra 0 e 1")
+    if args.control_interval <= 0:
+        raise ValueError("--control-interval deve essere positivo")
+    if args.countdown < 0:
+        raise ValueError("--countdown non puo' essere negativo")
+    if args.drive and not args.confirm_motion:
+        raise ValueError(
+            "--drive richiede --confirm-motion: il robot si muove davvero"
+        )
+
+    control_config = LineControlConfig(
+        pwm_max=args.pwm_limit,
+        cruise=args.cruise,
+        k_offset=args.k_offset,
+        k_heading=args.k_heading,
+        max_correction=args.max_correction,
+    )
 
     from libcamera import controls
     from picamera2 import Picamera2
@@ -517,6 +538,8 @@ def _line_live_report(args: argparse.Namespace) -> int:
     saved = 0
     interrupted = False
     old_sigint = None
+    motor_session: RobotSession | None = None
+    follower: LineFollower | None = None
 
     with JsonlLogger(log_path, run_id) as logger:
         def _request_stop(signum: int, frame: object) -> None:
@@ -599,6 +622,50 @@ def _line_live_report(args: argparse.Namespace) -> int:
             warmup_s = time.monotonic() - process_started
             logger.log("warmup_done", elapsed_s=round(warmup_s, 2))
 
+            if args.drive:
+                if not need_preview and not need_http:
+                    print(
+                        "ATTENZIONE: nessuna preview ne' stream; "
+                        "usa Ctrl-C per fermare il robot",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                motor_session = RobotSession(
+                    SerialTransport(port=args.port, baudrate=args.baud),
+                    logger,
+                    config=OPERATIONAL_CONFIG,
+                )
+                info = motor_session.handshake(boot_delay_s=2.0)
+                print(
+                    f"motori: protocollo {info.protocol}, scheda {info.board}, "
+                    f"firmware {info.firmware}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                follower = LineFollower(
+                    motor_session,
+                    control_config,
+                    send_interval_s=args.control_interval,
+                )
+                logger.log(
+                    "drive_start",
+                    port=args.port,
+                    baud=args.baud,
+                    cruise=control_config.cruise,
+                    max_correction=control_config.max_correction,
+                    pwm_max=control_config.pwm_max,
+                    send_interval_s=args.control_interval,
+                )
+                if args.countdown:
+                    print(
+                        f"motori attivi tra {args.countdown:g} s",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                    deadline = time.monotonic() + args.countdown
+                    while time.monotonic() < deadline:
+                        motor_session.step(read_timeout_s=0.05)
+
             started_at = time.monotonic()
             while (
                 not interrupted
@@ -653,6 +720,15 @@ def _line_live_report(args: argparse.Namespace) -> int:
                     **observation.to_dict(),
                     tracker=asdict(state),
                 )
+                if follower is not None:
+                    command = follower.update(state)
+                    logger.log(
+                        "line_command",
+                        frame=frames - 1,
+                        **command.to_dict(),
+                    )
+                    if motor_session is not None:
+                        motor_session.step(read_timeout_s=0.0)
                 if debug is not None and save_debug and (frames - 1) % args.save_every == 0:
                     stem = f"frame-{frames - 1:05d}"
                     if annotated_dir is not None and annotated is not None:
@@ -701,6 +777,18 @@ def _line_live_report(args: argparse.Namespace) -> int:
                 "stream_port": (
                     http_server.port if http_server is not None else None
                 ),
+                "motor_output": follower is not None,
+                "control": {
+                    "pwm_max": control_config.pwm_max,
+                    "cruise": control_config.cruise,
+                    "max_correction": control_config.max_correction,
+                    "commands_sent": (
+                        follower.commands_sent if follower is not None else 0
+                    ),
+                    "stops_sent": (
+                        follower.stops_sent if follower is not None else 0
+                    ),
+                },
                 "summary": {
                     "frames": frames,
                     "found": found,
@@ -761,6 +849,24 @@ def _line_live_report(args: argparse.Namespace) -> int:
                 found_ratio=round(found_ratio, 4),
             )
         finally:
+            if follower is not None:
+                try:
+                    follower.close(reason="line_live_end")
+                except Exception as exc:
+                    logger.log(
+                        "stop_failed",
+                        error=str(exc),
+                        reason="line_live_end",
+                    )
+            elif motor_session is not None:
+                try:
+                    motor_session.close(reason="line_live_end")
+                except Exception as exc:
+                    logger.log(
+                        "stop_failed",
+                        error=str(exc),
+                        reason="line_live_end",
+                    )
             if http_server is not None:
                 http_server.stop()
             if preview_cv2 is not None:
@@ -1259,6 +1365,41 @@ def build_parser() -> argparse.ArgumentParser:
     live.add_argument("--min-valid-ratio", type=float, default=0.45)
     live.add_argument("--min-found-ratio", type=float, default=0.8)
     live.add_argument("--json-out", default=None)
+    live.add_argument(
+        "--drive",
+        action="store_true",
+        help="invia i comandi ai motori; richiede --confirm-motion",
+    )
+    live.add_argument(
+        "--confirm-motion",
+        action="store_true",
+        help="conferma esplicita che il robot puo' muoversi",
+    )
+    live.add_argument("--port", default="/dev/ttyACM0")
+    live.add_argument("--baud", type=int, default=115200)
+    live.add_argument("--cruise", type=int, default=LOW_SPEED_CONFIG.cruise)
+    live.add_argument(
+        "--max-correction",
+        type=int,
+        default=LOW_SPEED_CONFIG.max_correction,
+    )
+    live.add_argument(
+        "--pwm-limit",
+        type=int,
+        default=LOW_SPEED_CONFIG.pwm_max,
+    )
+    live.add_argument(
+        "--k-offset",
+        type=float,
+        default=LOW_SPEED_CONFIG.k_offset,
+    )
+    live.add_argument(
+        "--k-heading",
+        type=float,
+        default=LOW_SPEED_CONFIG.k_heading,
+    )
+    live.add_argument("--control-interval", type=float, default=0.1)
+    live.add_argument("--countdown", type=float, default=5.0)
 
     undistort = subparsers.add_parser(
         "line-undistort",

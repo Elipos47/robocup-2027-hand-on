@@ -201,3 +201,25 @@ log seriale).
 
 Il test a coppia resta da ripetere in forma loggata 3x per chiudere il gate. PWM minimo, cm/s e
 taratura del controller restano aperti.
+
+## PWM minimo a vuoto (2026-11-15)
+
+**Obiettivo:** trovare il PWM minimo che muove le ruote da fermo, con ruote sollevate, come
+limite inferiore per la configurazione a bassa velocita'.
+**Software:** `pwm_sweep.py`, entrambe le ruote, stop tra i gradini.
+**Log:** `software/logs/pwm-min-001.jsonl` (40-255), `software/logs/pwm-min-002.jsonl`
+(40-80 con gradini da 5).
+
+| Prova | Gradini | Tenuta | Esito software |
+|---|---|---:|---|
+| `pwm-min-001` | 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 255 | 2 s | 12/12 `D` accettati, 0 errori, stop ack |
+| `pwm-min-002` | 40, 45, 50, 55, 60, 65, 70, 75, 80 | 3 s | 9/9 `D` accettati, 0 errori, stop ack |
+
+**Osservazione dell'operatore:** sotto 65 non c'e' rotazione continua; a **65 la ruota destra
+parte, molto lentamente**. La soglia della ruota sinistra non e' stata isolata. La prova e'
+stata interrotta per passare al seguimento della linea; non sono stati misurati cm/s.
+
+**Conseguenza:** 65 e' un limite inferiore provvisorio, non una misura di coppia o di velocita'.
+Per il primo line following si usa una configurazione che tiene entrambe le ruote sopra 65:
+`cruise=100`, `max_correction=30`, `pwm_max=130` (comandi tra 70 e 130). Restano da misurare
+cm/s e la risposta sotto carico.

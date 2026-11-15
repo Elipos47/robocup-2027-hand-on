@@ -17,11 +17,13 @@ software/
     camera_calibration.py calibrazione checkerboard
     checkerboard.py       target PDF a dimensione reale
     line_vision.py        undistort, rilevamento linea e tracker F0
-    line_control.py       controller dry-run FOLLOW/STOP
+    line_control.py       controller FOLLOW/STOP e LineFollower per i motori
     live_view.py          stream MJPEG per la vista live
     diagnostics.py        CLI di diagnostica camera/sonar/IMU/linea
     calibrations/         JSON delle calibrazioni telecamere
     __main__.py    demo, sessione reale e console manuale
+  line_live.py     avvio rapido line-live da Thonny
+  line_follow.py   avvio rapido line-live --drive da Thonny
   tests/           test host con unittest
   requirements.txt pyserial, OpenCV e numpy
 ```
@@ -132,6 +134,28 @@ python3 -m rcj2027.diagnostics line-live --http-port 8080 --duration 10
 # Durata illimitata fino a q/ESC e maschera di segmentazione in overlay
 python3 -m rcj2027.diagnostics line-live --preview --debug-overlay --duration 0
 ```
+
+## Line following a bassa velocita'
+
+`line_control.py` contiene `LOW_SPEED_CONFIG`: `pwm_max=130`, `cruise=100`,
+`max_correction=30`, guadagni provvisori. `LineFollower` invia i comandi del controller alla
+`RobotSession` a circa 10 Hz, ferma i motori quando la linea non e' confermata e chiude con
+`X`.
+
+```sh
+cd software
+python3 -m rcj2027.diagnostics line-live \
+  --drive --confirm-motion \
+  --port /dev/ttyACM0 \
+  --cruise 100 --max-correction 30 --pwm-limit 130 \
+  --duration 0 --countdown 5 --preview \
+  --run-id f0-line-follow-001
+```
+
+`--drive` senza `--confirm-motion` viene rifiutato. La prima prova va fatta a ruote sollevate,
+poi su una linea retta a terra con operatore pronto a fermare. Il firmware deve avere
+`BENCH_MOTION_ENABLED=true`, `PWM_MAX=255` e watchdog 1000 ms; dopo la prova ricaricare il
+firmware sicuro. Dettagli e criteri in `docs/testing/F0_LOW_SPEED_LINE_FOLLOW.md`.
 
 ## Uso da Thonny
 
